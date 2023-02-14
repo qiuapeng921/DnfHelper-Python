@@ -1,16 +1,14 @@
-from common import memory
+from common import mem
 from game import address
 
 
 def init_empty_addr():
     """
     初始化全局空白
-    :return:
     """
-    pm = memory.Memory()
-    address.RwKbAddr = pm.memory().allocate(2048)
-    address.BuffKbAddr = pm.memory().allocate(2048)
-    address.NcBhKbAddr = pm.memory().allocate(2048)
-    address.PtGgKbAddr = pm.memory().allocate(2048)
-    address.JnKbAddr = pm.memory().allocate(2048)
-    address.GtKbAddr = pm.memory().allocate(2048)
+    address.RwKbAddr = mem.allocate(2048)
+    address.BuffKbAddr = mem.allocate(2048)
+    address.NcBhKbAddr = mem.allocate(2048)
+    address.PtGgKbAddr = mem.allocate(2048)
+    address.JnKbAddr = mem.allocate(2048)
+    address.GtKbAddr = mem.allocate(2048)

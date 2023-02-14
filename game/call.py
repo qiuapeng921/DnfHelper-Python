@@ -20,31 +20,30 @@ def compile_call(byte_arr: bytes):
     hook_shell = address.HBCallAddr
     hook_shell = hook_shell + 144
     hook_jump = hook_shell + 19
-    hook_data = mem.ReadBytes(hook_shell, 19)
+    hook_data = mem.read_bytes(hook_shell, 19)
     hook_old_data = hook_data
 
-    hook_data = hook_data + convert.AddBytes(hook_data, [72, 184], convert.IntToBytes(jump_address, 8))
-    hook_data = convert.AddBytes(hook_data, [131, 56, 1, 117, 42, 72, 129, 236, 0, 3, 0, 0])
+    hook_data = hook_data + convert.add_bytes(hook_data, [72, 184], convert.int_to_bytes(jump_address, 8))
+    hook_data = convert.add_bytes(hook_data, [131, 56, 1, 117, 42, 72, 129, 236, 0, 3, 0, 0])
+    hook_data = convert.add_bytes(hook_data, [72, 187], convert.int_to_bytes(blank_address, 8))
+    hook_data = convert.add_bytes(hook_data, [255, 211])
+    hook_data = convert.add_bytes(hook_data, [72, 184], convert.int_to_bytes(blank_address, 8))
+    hook_data = convert.add_bytes(hook_data, [199, 0, 3, 0, 0, 0])
+    hook_data = convert.add_bytes(hook_data, [72, 129, 196, 0, 3, 0, 0])
+    hook_data = convert.add_bytes(hook_data, [255, 37, 0, 0, 0, 0], convert.int_to_bytes(hook_jump, 8))
 
-    hook_data = convert.AddBytes(hook_data, [72, 187], convert.IntToBytes(kbDz, 8))
-    hook_data = convert.AddBytes(hook_data, [255, 211])
-    hook_data = convert.AddBytes(hook_data, [72, 184], convert.IntToBytes(pdDz, 8))
-    hook_data = convert.AddBytes(hook_data, [199, 0, 3, 0, 0, 0])
-    hook_data = convert.AddBytes(hook_data, [72, 129, 196, 0, 3, 0, 0])
-    hook_data = convert.AddBytes(hook_data, [255, 37, 0, 0, 0, 0], convert.IntToBytes(hook_jump, 8))
+    if mem.read_int(assembly_transit) == 0:
+        mem.write_bytes(assembly_transit, hook_data)
 
-    if mem.ReadInt(assembly_transit) == 0:
-        mem.WriteBytes(hbZz, hook_data)
+    mem.write_bytes(assembly_transit, convert.add_bytes(byte_arr, [195]))
+    hook_shell_value = convert.add_list([255, 37, 0, 0, 0, 0], convert.int_to_bytes(assembly_transit, 8),
+                                        [144, 144, 144, 144, 144])
+    mem.write_bytes(hook_shell, bytes(hook_shell_value))
+    mem.write_int(jump_address, 1)
 
-    mem.WriteBytes(kbDz, convert.AddBytes(paramsShellCode, [195]))
-    hook_shell_value = convert.AddList([255, 37, 0, 0, 0, 0], convert.IntToBytes(assembly_transit, 8),
-                                       [144, 144, 144, 144, 144])
-    mem.WriteBytes(HookShell, bytes(hook_shell_value))
-    mem.WriteInt(pdDz, 1)
-
-    while mem.ReadInt(pdDz) == 1:
+    while mem.read_int(jump_address) == 1:
         time.sleep(20)
 
-    mem.WriteBytes(hook_shell, hook_old_data)
-    mem.WriteBytes(blank_address, convert.GetEmptyBytes(len(byte_arr) + 16))
+    mem.write_bytes(hook_shell, hook_old_data)
+    mem.write_bytes(blank_address, convert.get_empty_bytes(len(byte_arr) + 16))
     run_status = False

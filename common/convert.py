@@ -2,7 +2,7 @@ import struct
 from datetime import datetime
 
 
-def GetNowDate():
+def get_now_date():
     """
     get_now_date 获取系统当前日期
     :return:  string
@@ -12,7 +12,7 @@ def GetNowDate():
     return current_time
 
 
-def IntToBytes(int_val, int_type):
+def int_to_bytes(int_val, int_type):
     """
     int转bytes
         :param int_val: int
@@ -27,7 +27,7 @@ def IntToBytes(int_val, int_type):
         return struct.pack('<q', int_val)
 
 
-def FloatToBytes(float_val, float_type):
+def float_to_bytes(float_val, float_type):
     """
     float转bytes
     :param float_val: float
@@ -40,7 +40,7 @@ def FloatToBytes(float_val, float_type):
         return struct.pack('<d', float_type)
 
 
-def AddBytes(old_bytes: bytes, *new_bytes_arr):
+def add_bytes(old_bytes: bytes, *new_bytes_arr):
     """
     追加bytes
     :param old_bytes:
@@ -48,11 +48,11 @@ def AddBytes(old_bytes: bytes, *new_bytes_arr):
     :return: bytes
     Example: add_byte(b'\x83\x84', [236, 0, 1, 0, 0], [1, 2, 3, 4]) -> b'\x83\x84\xec\x00\x01\x00\x00\x01\x02\x03\x04'
     """
-    ret_bytes = AddList(list(old_bytes), *new_bytes_arr)
+    ret_bytes = add_list(list(old_bytes), *new_bytes_arr)
     return bytes(ret_bytes)
 
 
-def AddList(old_list: list, *new_list_arr: list) -> list:
+def add_list(old_list: list, *new_list_arr: list) -> list:
     """
     追加list
     :param old_list: list
@@ -67,7 +67,7 @@ def AddList(old_list: list, *new_list_arr: list) -> list:
     return old_list
 
 
-def GetEmptyBytes(count: int) -> bytes:
+def get_empty_bytes(count: int) -> bytes:
     result = list()
     for i in range(count):
         result.append(0)

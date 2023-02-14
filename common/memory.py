@@ -14,29 +14,35 @@ class Memory:
         self.pm = Pymem(process_id)
         self.processId = process_id
 
-    def ReadInt(self, address):
+    def read_int(self, address):
         return self.pm.read_int(address)
 
-    def ReadLong(self, address):
+    def read_long(self, address):
         return self.pm.read_long(address)
 
-    def ReadFloat(self, address):
+    def read_float(self, address):
         return self.pm.read_float(address)
 
-    def ReadBytes(self, address, length):
+    def read_bytes(self, address, length):
         return self.pm.read_bytes(address, length)
 
-    def WriteInt(self, address, value):
+    def write_int(self, address, value):
         return self.pm.write_int(address, value)
 
-    def WriteLong(self, address, value):
+    def write_long(self, address, value):
         return self.pm.write_long(address, value)
 
-    def WriteFloat(self, address, value):
+    def write_float(self, address, value):
         return self.pm.write_float(address, value)
 
-    def WriteBytes(self, address, value, length):
+    def write_bytes(self, address, value, length):
         return self.pm.write_bytes(address, value, length)
 
-    def memory(self):
+    def allocate(self, length):
+        return self.pm.allocate(length)
+
+    def memory(self) -> Pymem:
+        """
+        获取Pymem实例
+        """
         return self.pm

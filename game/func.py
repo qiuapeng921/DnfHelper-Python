@@ -1,7 +1,7 @@
+import _thread
 import time
 
 from common import convert
-import _thread
 
 
 class FullScreen:
@@ -24,7 +24,7 @@ class FullScreen:
 
     def run(self):
         while self.__switch:
-            print(convert.GetNowDate())
+            print(convert.get_now_date())
             time.sleep(1)
 
     def stop(self):
