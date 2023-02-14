@@ -21,3 +21,6 @@ if __name__ == '__main__':
         main()
     except Exception as err:
         print(err.args)
+    except KeyboardInterrupt as err:
+        print(err)
+        pass
