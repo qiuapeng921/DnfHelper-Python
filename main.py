@@ -8,8 +8,8 @@ def main():
     globle.process_id = 5080
     mem.set_process_id(globle.process_id)
 
-    fullScreen = FullScreen()
-    keyboard.add_hotkey('END', fullScreen.SkillSwitch)
+    full_screen = FullScreen()
+    keyboard.add_hotkey('END', full_screen.switch)
     keyboard.wait()
 
     while 1:
