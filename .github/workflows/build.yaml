@@ -31,6 +31,13 @@ jobs:
       - name: Build
         run: |
           pyinstaller -F -w --icon=resource/WeGame.ico -n helper main.py
+      - name: Run UPX
+        uses: crazy-max/ghaction-upx@v2
+        with:
+          version: latest
+          files: |
+            ./dist/*.exe
+          args: -fq
 
       - name: Set Up Release
         uses: softprops/action-gh-release@v1
