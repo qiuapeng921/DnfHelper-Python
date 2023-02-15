@@ -37,10 +37,5 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-
-      - name: Upload Release
-        if: startsWith(github.ref, 'refs/tags/')
-        run: dir
-        with:
           files: |
             dist/*
