@@ -32,10 +32,15 @@ jobs:
         run: |
           pyinstaller -F -w --icon=resource/WeGame.ico -n helper main.py
 
-      - name: Set Up Release And Upload
+      - name: Set Up Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
+
+      - name: Upload Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        run: dir
         with:
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           files: |
             dist/*
-
