@@ -39,13 +39,9 @@ jobs:
             ./dist/*.exe
           args: -fq
 
-      - name: Set up Release
+      - name: Upload Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
-
-      - name: Upload Release
-        if: startsWith(github.ref, 'refs/tags/')
-        run: dir dist
         with:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           files: |
