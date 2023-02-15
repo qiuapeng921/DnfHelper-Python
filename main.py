@@ -5,6 +5,7 @@ import keyboard
 from common import globle, mem
 from common.logger import logger
 from driver import driver
+from game import init_empty_addr, address
 from game.func import FullScreen
 
 if __name__ == '__main__':
@@ -17,6 +18,10 @@ if __name__ == '__main__':
         logger.info("驱动加载成功")
         globle.process_id = 5080
         mem.set_process_id(globle.process_id)
+
+        init_empty_addr()
+
+        print(address.RwKbAddr)
 
         full_screen = FullScreen()
         keyboard.add_hotkey('END', full_screen.switch)
