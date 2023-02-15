@@ -1,3 +1,8 @@
+altgraph==0.17.3
 keyboard==0.13.5
+pefile==2023.2.7
+pyinstaller==5.8.0
+pyinstaller-hooks-contrib==2023.0
 Pymem==1.10.0
 pywin32==305
+pywin32-ctypes==0.2.0
