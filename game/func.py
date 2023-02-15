@@ -7,7 +7,10 @@ from common import convert
 class FullScreen:
     __switch = False
 
-    def __init__(self):
+    mem = None
+
+    def __init__(self, mem):
+        self.mem = mem
         pass
 
     def switch(self):

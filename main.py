@@ -2,11 +2,10 @@ import sys
 
 import keyboard
 
-from common import globle, mem
-from common.logger import logger
+from common import globle
+from common import mem, logger
 from driver import driver
-from game import init_empty_addr, address
-from game.func import FullScreen
+from game import init_empty_addr, address, full_screen
 
 if __name__ == '__main__':
     try:
@@ -23,7 +22,6 @@ if __name__ == '__main__':
 
         print(address.RwKbAddr)
 
-        full_screen = FullScreen()
         keyboard.add_hotkey('END', full_screen.switch)
         keyboard.wait()
 

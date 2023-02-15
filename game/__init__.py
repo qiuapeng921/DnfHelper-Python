@@ -1,5 +1,9 @@
 from common import mem
-from game import address
+from game import address, func, auto, map_data
+
+full_screen = func.FullScreen(mem)
+auto = auto.Auto(mem)
+map_data = map_data.MapData(mem)
 
 
 def init_empty_addr():
