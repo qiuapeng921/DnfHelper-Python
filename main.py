@@ -7,7 +7,7 @@ from driver import driver
 from game import init_empty_addr, address
 
 if __name__ == '__main__':
-    process_id = helper.get_process_id_by_name("jetbrains-toolbox.exe")
+    process_id = helper.get_process_id_by_name("DNF.exe")
 
     if process_id == 0:
         win32api.MessageBoxEx(0, "请打开dnf后运行", "Helper")
@@ -21,7 +21,7 @@ if __name__ == '__main__':
             sys.exit()
 
         logger.info("驱动加载成功")
-        globle.process_id = 5080
+        globle.process_id = process_id
         mem.set_process_id(globle.process_id)
 
         init_empty_addr()
