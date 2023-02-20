@@ -24,15 +24,16 @@ class Hotkey:
         user32.RegisterHotKey(None, 0, 0, win32con.VK_F2)
         user32.RegisterHotKey(None, 0, 0, win32con.VK_F3)
         user32.RegisterHotKey(None, 0, 0, win32con.VK_F4)
+        user32.RegisterHotKey(None, 0, 0, win32con.VK_END)
         user32.RegisterHotKey(None, 0, 0, 192)  # 波浪
-        user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_UP)
-        user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_DOWN)
-        user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_LEFT)
-        user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_RIGHT)
-        user32.RegisterHotKey(None, 0, win32con.MOD_ALT, win32con.VK_UP)
-        user32.RegisterHotKey(None, 0, win32con.MOD_ALT, win32con.VK_DOWN)
-        user32.RegisterHotKey(None, 0, win32con.MOD_ALT, win32con.VK_LEFT)
-        user32.RegisterHotKey(None, 0, win32con.MOD_ALT, win32con.VK_RIGHT)
+        # user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_UP)
+        # user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_DOWN)
+        # user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_LEFT)
+        # user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_RIGHT)
+        # user32.RegisterHotKey(None, 0, win32con.MOD_ALT, win32con.VK_UP)
+        # user32.RegisterHotKey(None, 0, win32con.MOD_ALT, win32con.VK_DOWN)
+        # user32.RegisterHotKey(None, 0, win32con.MOD_ALT, win32con.VK_LEFT)
+        # user32.RegisterHotKey(None, 0, win32con.MOD_ALT, win32con.VK_RIGHT)
 
         # 以下为检测热键是否被按下，并在最后释放快捷键
         msg = ctypes.wintypes.MSG()
@@ -45,6 +46,8 @@ class Hotkey:
                         print("VK_F2")
                     if win32api.HIWORD(msg.lParam) == win32con.VK_F3:
                         print("VK_F3")
+                    if win32api.HIWORD(msg.lParam) == win32con.VK_END:
+                        print("VK_END")
                     if win32api.HIWORD(msg.lParam) == 192:
                         print("波浪")
                     if win32api.HIWORD(msg.lParam) == win32con.VK_UP:
