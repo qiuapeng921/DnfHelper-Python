@@ -1,6 +1,9 @@
+import configparser
 import logging
 
 from common import memory
+
+ini = configparser.ConfigParser()
 
 mem = memory.Memory()
 
