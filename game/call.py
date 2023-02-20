@@ -60,3 +60,7 @@ def get_per_ptr_call(addr: int):
     shell_code = convert.add_list(shell_code, [100])
     compile_call(bytes(shell_code))
     return mem.read_int(addr)
+
+
+def go_map_call(map_id: int, map_level: int):
+    pass

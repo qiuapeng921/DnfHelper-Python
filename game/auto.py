@@ -4,6 +4,7 @@
 import _thread
 import time
 
+from game import call
 from game import global_data
 from game import map_data as data
 
@@ -12,26 +13,28 @@ class Auto:
     # 内存
     mem = None
     # 首次进图
-    firstEnterMap = bool
+    firstEnterMap = False
     # 已完成角色数量
-    completedRoleNum = int
+    completedRoleNum = 0
     # 已完成刷图次数
-    completedNum = int
+    completedNum = 0
 
     def __init__(self, mem):
         self.mem = mem
 
-    def switch(self):
+    @classmethod
+    def switch(cls):
         """自动开关"""
         global_data.auto_switch = not global_data.auto_switch
         if global_data.auto_switch:
-            _thread.start_new_thread(self.auto_thread, ())
+            _thread.start_new_thread(cls.auto_thread, ())
             print("自动刷图 [ √ ]")
         else:
             global_data.auto_switch = False
             print("自动刷图 [ x ]")
 
-    def auto_thread(self):
+    @classmethod
+    def auto_thread(cls):
         """自动线程"""
         while global_data.auto_switch:
             time.sleep(0.2)
@@ -39,24 +42,24 @@ class Auto:
             # 进入城镇
             if data.get_stat() == 0:
                 time.sleep(0.2)
-                self.enter_town()
+                cls.enter_town()
                 continue
 
             # 城镇处理
             if data.get_stat() == 1 and data.is_town() == True:
-                self.town_handle()
+                cls.town_handle()
                 continue
 
             # 进入副本
             if data.get_stat() == 2:
-                self.enter_map(global_data.map_id, global_data.map_level)
+                cls.enter_map(global_data.map_id, global_data.map_level)
                 continue
 
             # 在地图内
             if data.get_stat() == 3:
-                if self.firstEnterMap is False and data.is_town() is False:
+                if cls.firstEnterMap is False and data.is_town() is False:
                     # todo 透明call
-                    self.start_func()
+                    cls.start_func()
                     pass
 
                 # 过图
@@ -67,27 +70,65 @@ class Auto:
                 if data.is_boss_room() is False:
                     pass
 
-    def start_func(self):
+    @classmethod
+    def start_func(cls):
         pass
 
-    def enter_town(self):
+    @classmethod
+    def enter_town(cls):
         """进入城镇"""
         pass
 
-    def town_handle(self):
+    @classmethod
+    def town_handle(cls):
         """城镇处理"""
         pass
 
-    def select_map(self):
+    @classmethod
+    def select_map(cls):
         """选图"""
-        pass
+        while 1:
+            time.sleep(0.2)
+            # TODO 进图
+            # 不在选图界面跳出循环
+            if data.get_stat() == 2:
+                break
 
-    def enter_map(self, map_id: int, map_level: int):
+    @classmethod
+    def enter_map(cls, map_id: int, map_level: int):
         """进图"""
-        pass
+        if map_level == 5:
+            if map_id < 10 or map_id == 1000:
+                call.go_map_call(map_id, 0)
+            else:
+                for i in range(4, -1, -1):
+                    call.go_map_call(map_id, i)
+        else:
+            call.go_map_call(map_id, map_level)
 
-    def pass_map(self):
+        for i in range(0, 10):
+            time.sleep(0.2)
+            # 进图副本跳出循环
+            if data.get_stat() == 3:
+                break
+
+    @classmethod
+    def pass_map(cls):
         """过图"""
+        if data.is_open_door() is False or data.is_boss_room() is True:
+            return
+        # todo 寻路过图
 
-    def quit_map(self):
+    @classmethod
+    def quit_map(cls):
         """出图"""
+        cls.completedNum = cls.completedNum + 1
+        print("副本名称 [ {} ]".format("格蓝迪发电站"))
+        print("自动刷图 [ {} ] 剩余疲劳 [ {}} ]".format(cls.completedNum, data.get_pl()))
+        time.sleep(0.2)
+        # 翻牌
+        while 1:
+            time.sleep(0.2)
+            # TODO 回城
+            if data.get_stat() == 1 or data.is_town() is True:
+                break

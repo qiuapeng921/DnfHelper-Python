@@ -1,12 +1,10 @@
 import sys
 
-import win32api
-
-from common import helper, logger, globle, mem
-from driver import driver
-from game import init_empty_addr, address
-
 if __name__ == '__main__':
+    for i in range(0, 11):
+        print(i)
+
+    sys.exit(1)
     process_id = helper.get_process_id_by_name("DNF.exe")
 
     if process_id == 0:
