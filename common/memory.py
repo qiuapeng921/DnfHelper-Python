@@ -18,7 +18,7 @@ class Memory:
         return self.pm.read_int(address)
 
     def read_long(self, address):
-        return self.pm.read_long(address)
+        return self.pm.write_longlong(address)
 
     def read_float(self, address):
         return self.pm.read_float(address)
@@ -30,7 +30,7 @@ class Memory:
         return self.pm.write_int(address, value)
 
     def write_long(self, address, value):
-        return self.pm.write_long(address, value)
+        return self.pm.write_longlong(address, value)
 
     def write_float(self, address, value):
         return self.pm.write_float(address, value)

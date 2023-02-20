@@ -47,3 +47,16 @@ def compile_call(byte_arr: bytes):
     mem.write_bytes(hook_shell, hook_old_data)
     mem.write_bytes(blank_address, convert.get_empty_bytes(len(byte_arr) + 16))
     run_status = False
+
+
+def get_per_ptr_call(addr: int):
+    """
+    取人物指针Call
+    :param addr:
+    :return:
+    """
+    shell_code = convert.add_list([100], [address.RWCallAddr], [72, 163])
+    shell_code = convert.add_list(shell_code, convert.int_to_bytes(addr, 8))
+    shell_code = convert.add_list(shell_code, [100])
+    compile_call(bytes(shell_code))
+    return mem.read_int(addr)
