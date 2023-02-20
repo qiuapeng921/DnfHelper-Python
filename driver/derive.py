@@ -54,6 +54,7 @@ class MemoryRw:
         """驱动卸载"""
         try:
             status = service.ControlService(self._hService, service.SERVICE_CONTROL_STOP)
+            service.DeleteService(self._hService)
         finally:
             service.CloseServiceHandle(self._hService)
 
