@@ -1,10 +1,12 @@
 import sys
 
-if __name__ == '__main__':
-    for i in range(0, 11):
-        print(i)
+import win32api
 
-    sys.exit(1)
+from common import helper, logger, globle, mem
+from driver import driver
+from game import init_empty_addr
+
+if __name__ == '__main__':
     process_id = helper.get_process_id_by_name("DNF.exe")
 
     if process_id == 0:
@@ -21,11 +23,8 @@ if __name__ == '__main__':
         logger.info("驱动加载成功")
         globle.process_id = process_id
         mem.set_process_id(globle.process_id)
-
         init_empty_addr()
-
-        print(address.RwKbAddr)
-
+        
     except Exception as err:
         print(err.args)
     except KeyboardInterrupt as err:
