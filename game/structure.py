@@ -6,10 +6,11 @@ class CoordinateType:
         self.z = 0
 
 
+# 全局数据
 class GlobalData:
     def __init__(self):
         # 自动开关
-        auto_switch = bool
+        self.auto_switch = False
         # 任务编号
         self.task_id = 0
         # 副本编号
