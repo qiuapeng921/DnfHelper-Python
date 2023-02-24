@@ -1,7 +1,17 @@
-from game.structure import CoordinateType, GameMapType
+from typing import Type
+
+from common import mem
+from game import address
+from game.map_data import MapData
+from game.structure import CoordinateType, GameMapType, MapDataType
 
 
 class GameMap:
+    map_data = MapData
+
+    def __init__(self):
+        self.map_data = MapData(mem)
+
     @classmethod
     def get_direction(cls, cut_room: CoordinateType, next_room: CoordinateType) -> int:
         """获取方向"""
@@ -25,8 +35,10 @@ class GameMap:
     @classmethod
     def judge_direction(cls, tx: int, fx: int) -> bool:
         """寻路_判断方向"""
-        fxArr = []
-        fxJh = [
+        # 方向数组
+        direction_arr = []
+        # 方向集合
+        direction_set = [
             [0, 0, 0, 0],
             [0, 1, 0, 0],
             [0, 0, 1, 0],
@@ -46,12 +58,12 @@ class GameMap:
         ]
         if fx <= 15:
             for i in range(3):
-                fxArr[i] = fxJh[tx][i]
+                direction_arr[i] = direction_set[tx][i]
         else:
             for i in range(3):
-                fxArr[i] = 0
+                direction_arr[i] = 0
 
-        if fxArr[fx] == 1:
+        if direction_arr[fx] == 1:
             return True
 
         return False
@@ -79,24 +91,70 @@ class GameMap:
         return k, reality_route
 
     @classmethod
-    def gen_map(cls, width: int, height: int, map_channel: list, game_map: [[[GameMapType]]]) -> [[GameMapType]]:
-        game_map = [[GameMapType] * 10]
-        for x in range(width):
-            game_map[x] = [GameMapType] * height
-
+    def gen_map(cls, width: int, height: int, map_channel: list, game_map):
+        """生成地图"""
         i, x, y = (0, 0, 0)
-        for y in range(height):
-            for x in range(width):
-                game_map[x][y].MapCoordinates.X = x
-                game_map[x][y].MapCoordinates.Y = y
-                game_map[x][y].MapChannel = map_channel[i]
-                game_map[x][y].Left = cls.judge_direction(map_channel[i], 0)
-                game_map[x][y].Right = cls.judge_direction(map_channel[i], 1)
-                game_map[x][y].Up = cls.judge_direction(map_channel[i], 2)
-                game_map[x][y].Down = cls.judge_direction(map_channel[i], 3)
-                game_map[x][y].BackgroundColor = 0xFFFFFF
+        for x in range(width):
+            y_game_map = []
+            for y in range(height):
+                y_data = GameMapType
+                y_data.MapCoordinates.X = x
+                y_data.MapCoordinates.Y = y
+                y_data.MapChannel = map_channel[i]
+                y_data.Left = cls.judge_direction(map_channel[i], 0)
+                y_data.Right = cls.judge_direction(map_channel[i], 1)
+                y_data.Up = cls.judge_direction(map_channel[i], 2)
+                y_data.Down = cls.judge_direction(map_channel[i], 3)
+                y_data.BackgroundColor = 0xFFFFFF
                 i = i + 1
-                if game_map[x][y].MapChannel == 0:
-                    game_map[x][y].BackgroundColor = 0x000000
+                if y_data.MapChannel == 0:
+                    y_data.BackgroundColor = 0x000000
+
+                y_game_map.insert(y, y_data)
+
+            game_map.insert(x, y_game_map)
 
         return game_map
+
+    @classmethod
+    def MapData(cls) -> Type[MapDataType]:
+        """地图数据"""
+        mapData = MapDataType
+
+        roomData = mem.read_long(mem.read_long(mem.read_long(address.FJBHAddr) + address.SJAddr) + address.MxPyAddr)
+        roomIndex = cls.map_data.decode(roomData + address.SyPyAddr)
+
+        mapData.Width = mem.read_int(mem.read_long(roomData + address.KgPyAddr) + roomIndex * 8 + 0)
+        mapData.Height = mem.read_int(mem.read_long(roomData + address.KgPyAddr) + roomIndex * 8 + 4)
+        mapData.Tmp = mem.read_long(mem.read_long(roomData + address.SzPyAddr) + 32 * roomIndex + 8)
+        mapData.ChannelNum = mapData.Width * mapData.Height
+
+        for i in range(len(mapData.ChannelNum)):
+            mapData.MapChannel.insert(0 + i, mem.read_int(mapData.Tmp + i * 4))
+
+        mapData.StartZb.X = cls.map_data.get_cut_room().X + 1
+        mapData.StartZb.Y = cls.map_data.get_cut_room().Y + 1
+        mapData.EndZb.X = cls.map_data.get_boss_room().X + 1
+        mapData.EndZb.Y = cls.map_data.get_boss_room().Y + 1
+
+        if mapData.StartZb.X == mapData.EndZb.X and mapData.StartZb.Y == mapData.EndZb.Y:
+            return mapData
+
+        mapData.ConsumeFatigue = cls.get_route(mapData.MapChannel, mapData.Width, mapData.Height, mapData.StartZb,
+                                               mapData.EndZb, mapData.MapRoute)
+        return mapData
+
+    @classmethod
+    def get_route(cls, a, b, c, d, e, f) -> int:
+        """获取走法"""
+        pass
+
+    @classmethod
+    def display_map(cls, a, b, c, d, e, f) -> int:
+        """显示地图"""
+        pass
+
+    @classmethod
+    def route_calculate(cls, a, b, c, d, e, f) -> int:
+        """路径计算"""
+        pass
