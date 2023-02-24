@@ -44,7 +44,7 @@ class MapData:
         """是否boss房"""
         cut = self.get_cut_room()
         boss = self.get_boss_room()
-        if cut.x == boss.x and cut.y == boss.y:
+        if cut.X == boss.X and cut.Y == boss.Y:
             return True
 
         return False
