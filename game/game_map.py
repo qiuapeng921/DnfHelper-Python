@@ -302,11 +302,11 @@ class GameMap:
                     else:
                         guess_g = 14
 
-                    wait_handle_node.G = tmp_node.g + guess_g
-                    wait_handle_node.H = map_end.x - wait_handle_coordinate.x * 10 + map_end.y - wait_handle_coordinate.y * 10
-                    wait_handle_node.F = wait_handle_node.G + wait_handle_node.H
-                    wait_handle_node.CurrentCoordinates = wait_handle_coordinate
-                    wait_handle_node.FinalCoordinates = tmp_node.current_coordinates
+                    wait_handle_node.g = tmp_node.g + guess_g
+                    wait_handle_node.h = map_end.x - wait_handle_coordinate.x * 10 + map_end.y - wait_handle_coordinate.y * 10
+                    wait_handle_node.f = wait_handle_node.g + wait_handle_node.h
+                    wait_handle_node.current_coordinates = wait_handle_coordinate
+                    wait_handle_node.final_coordinates = tmp_node.current_coordinates
                     open_list.insert(0, wait_handle_node)
 
                 if len(open_list) == 0:
