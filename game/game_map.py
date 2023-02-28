@@ -7,10 +7,10 @@ from game.structure import CoordinateType, GameMapType, MapDataType
 
 
 class GameMap:
-    map_data = MapData
+    map = MapData
 
     def __init__(self):
-        self.map_data = MapData(mem)
+        self.map = MapData(mem)
 
     @classmethod
     def get_direction(cls, cut_room: CoordinateType, next_room: CoordinateType) -> int:
@@ -117,32 +117,32 @@ class GameMap:
         return game_map
 
     @classmethod
-    def MapData(cls) -> Type[MapDataType]:
+    def map_data(cls) -> Type[MapDataType]:
         """地图数据"""
-        mapData = MapDataType
+        data = MapDataType
 
-        roomData = mem.read_long(mem.read_long(mem.read_long(address.FJBHAddr) + address.SJAddr) + address.MxPyAddr)
-        roomIndex = cls.map_data.decode(roomData + address.SyPyAddr)
+        room_data = mem.read_long(mem.read_long(mem.read_long(address.FJBHAddr) + address.SJAddr) + address.MxPyAddr)
+        room_index = cls.map.decode(room_data + address.SyPyAddr)
 
-        mapData.Width = mem.read_int(mem.read_long(roomData + address.KgPyAddr) + roomIndex * 8 + 0)
-        mapData.Height = mem.read_int(mem.read_long(roomData + address.KgPyAddr) + roomIndex * 8 + 4)
-        mapData.Tmp = mem.read_long(mem.read_long(roomData + address.SzPyAddr) + 32 * roomIndex + 8)
-        mapData.ChannelNum = mapData.Width * mapData.Height
+        data.Width = mem.read_int(mem.read_long(room_data + address.KgPyAddr) + room_index * 8 + 0)
+        data.Height = mem.read_int(mem.read_long(room_data + address.KgPyAddr) + room_index * 8 + 4)
+        data.Tmp = mem.read_long(mem.read_long(room_data + address.SzPyAddr) + 32 * room_index + 8)
+        data.ChannelNum = data.Width * data.Height
 
-        for i in range(len(mapData.ChannelNum)):
-            mapData.MapChannel.insert(0 + i, mem.read_int(mapData.Tmp + i * 4))
+        for i in range(len(data.ChannelNum)):
+            data.MapChannel.insert(0 + i, mem.read_int(data.Tmp + i * 4))
 
-        mapData.StartZb.X = cls.map_data.get_cut_room().X + 1
-        mapData.StartZb.Y = cls.map_data.get_cut_room().Y + 1
-        mapData.EndZb.X = cls.map_data.get_boss_room().X + 1
-        mapData.EndZb.Y = cls.map_data.get_boss_room().Y + 1
+        data.StartZb.X = cls.map.get_cut_room().X + 1
+        data.StartZb.Y = cls.map.get_cut_room().Y + 1
+        data.EndZb.X = cls.map.get_boss_room().X + 1
+        data.EndZb.Y = cls.map.get_boss_room().Y + 1
 
-        if mapData.StartZb.X == mapData.EndZb.X and mapData.StartZb.Y == mapData.EndZb.Y:
-            return mapData
+        if data.StartZb.X == data.EndZb.X and data.StartZb.Y == data.EndZb.Y:
+            return data
 
-        mapData.ConsumeFatigue = cls.get_route(mapData.MapChannel, mapData.Width, mapData.Height, mapData.StartZb,
-                                               mapData.EndZb, mapData.MapRoute)
-        return mapData
+        data.ConsumeFatigue = cls.get_route(data.MapChannel, data.Width, data.Height, data.StartZb,
+                                            data.EndZb, data.MapRoute)
+        return data
 
     @classmethod
     def get_route(cls, a, b, c, d, e, f) -> int:
