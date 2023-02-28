@@ -1,9 +1,7 @@
-from typing import Type
-
 from common import mem
 from game import address
 from game.map_data import MapData
-from game.structure import CoordinateType, GameMapType, MapDataType
+from game.structure import CoordinateType, GameMapType, MapDataType, MapNodeType
 
 
 class GameMap:
@@ -14,7 +12,7 @@ class GameMap:
 
     @classmethod
     def get_direction(cls, cut_room: CoordinateType, next_room: CoordinateType) -> int:
-        """获取方向"""
+        """获取方向 ok"""
         direction = 0
         x = cut_room.x - next_room.x
         y = cut_room.y - next_room.y
@@ -34,7 +32,7 @@ class GameMap:
 
     @classmethod
     def judge_direction(cls, tx: int, fx: int) -> bool:
-        """寻路_判断方向"""
+        """寻路_判断方向 ok"""
         # 方向数组
         direction_arr = []
         # 方向集合
@@ -69,7 +67,8 @@ class GameMap:
         return False
 
     @classmethod
-    def tidy_coordinate(cls, simulation_route: [CoordinateType], reality_route: [CoordinateType]):
+    def tidy_coordinate(cls, simulation_route: [CoordinateType], reality_route: [CoordinateType]) -> tuple[int, [CoordinateType]]:
+
         """
         整理坐标
         :param simulation_route:
@@ -77,51 +76,47 @@ class GameMap:
         :return:
         """
         x, y, k = (0, 0, 0)
-        temp_coordinates = CoordinateType
+        temp_coordinates = CoordinateType()
         for i in range(len(simulation_route)):
-            x = (simulation_route[i].X + 2) % 3
-            y = (simulation_route[i].Y + 2) % 3
+            x = (simulation_route[i].x + 2) % 3
+            y = (simulation_route[i].y + 2) % 3
             if x == 0 and y == 0:
-                temp_coordinates.X = (simulation_route[i].X + 2) / 3 - 1
-                temp_coordinates.Y = (simulation_route[i].Y + 2) / 3 - 1
-                # 参_真实走法.insert(参_真实走法.begin() + k, 局_临时坐标);
+                temp_coordinates.x = (simulation_route[i].x + 2) / 3 - 1
+                temp_coordinates.y = (simulation_route[i].y + 2) / 3 - 1
                 reality_route.insert(0 + k, temp_coordinates)
                 k = k + 1
 
         return k, reality_route
 
     @classmethod
-    def gen_map(cls, width: int, height: int, map_channel: list, game_map):
+    def gen_map(cls, width: int, height: int, map_channel: [int]) -> [[GameMapType]]:
         """生成地图"""
+        game_map = [[GameMapType]] * width
+        for x in range(width):
+            game_map[x] = [GameMapType] * height
+
         i, x, y = (0, 0, 0)
         for x in range(width):
-            y_game_map = []
             for y in range(height):
-                y_data = GameMapType
-                y_data.map_coordinates.x = x
-                y_data.map_coordinates.y = y
-                y_data.MapChannel = map_channel[i]
-                y_data.Left = cls.judge_direction(map_channel[i], 0)
-                y_data.Right = cls.judge_direction(map_channel[i], 1)
-                y_data.Up = cls.judge_direction(map_channel[i], 2)
-                y_data.Down = cls.judge_direction(map_channel[i], 3)
-                y_data.BackgroundColor = 0xFFFFFF
+                game_map[x][y].map_coordinates.x = x
+                game_map[x][y].map_coordinates.y = y
+                game_map[x][y].map_channel = map_channel[i]
+                game_map[x][y].left = cls.judge_direction(map_channel[i], 0)
+                game_map[x][y].right = cls.judge_direction(map_channel[i], 1)
+                game_map[x][y].up = cls.judge_direction(map_channel[i], 2)
+                game_map[x][y].down = cls.judge_direction(map_channel[i], 3)
+                game_map[x][y].background_color = 0xFFFFFF
                 i = i + 1
-                if y_data.MapChannel == 0:
-                    y_data.BackgroundColor = 0x000000
-
-                y_game_map.insert(y, y_data)
-
-            game_map.insert(x, y_game_map)
+                if game_map[x][y].map_channel == 0:
+                    game_map[x][y].background_color = 0x000000
 
         return game_map
 
     @classmethod
-    def map_data(cls) -> Type[MapDataType]:
+    def map_data(cls) -> MapDataType:
         """地图数据"""
         map_obj = MapData(mem)
-
-        data = MapDataType
+        data = MapDataType()
 
         room_data = mem.read_long(mem.read_long(mem.read_long(address.FJBHAddr) + address.SJAddr) + address.MxPyAddr)
         room_index = map_obj.decode(room_data + address.SyPyAddr)
@@ -147,30 +142,25 @@ class GameMap:
         return data
 
     @classmethod
-    def get_route(cls, map_channel: [], width: int, height: int, map_start: CoordinateType, map_end: CoordinateType,
-                  reality_route: [CoordinateType]) -> int:
+    def get_route(cls, map_channel: [int], width: int, height: int, map_start: CoordinateType, map_end: CoordinateType, reality_route: [CoordinateType]) -> tuple[int, [[CoordinateType]]]:
         """获取走法"""
-        start_coordinate = CoordinateType
-        end_coordinate = CoordinateType
-
-        map_flag = [[]]
-        map_array = [[]]
-        cross_way = [[]]
+        start_coordinate = CoordinateType()
+        end_coordinate = CoordinateType()
 
         if map_start.x == map_end.x and map_start.y == map_end.y:
-            return 0
+            return 0, None
 
-        map_array = cls.gen_map(width, height, map_channel, map_array)
-        map_flag = cls.display_map(map_array, width, height, map_flag)
-        start_coordinate.X = map_start.x * 3 - 2
-        start_coordinate.Y = map_start.y * 3 - 2
-        end_coordinate.X = map_end.x * 3 - 2
-        end_coordinate.Y = map_end.y * 3 - 2
-        cls.route_calculate(map_flag, start_coordinate, end_coordinate, width * 3, height * 3, cross_way)
+        map_array = cls.gen_map(width, height, map_channel)
+        map_flag = cls.display_map(map_array, width, height)
+        start_coordinate.x = map_start.x * 3 - 2
+        start_coordinate.y = map_start.y * 3 - 2
+        end_coordinate.x = map_end.x * 3 - 2
+        end_coordinate.y = map_end.y * 3 - 2
+        cross_way = cls.route_calculate(map_flag, start_coordinate, end_coordinate, width * 3, height * 3)
         return cls.tidy_coordinate(cross_way, reality_route)
 
     @classmethod
-    def display_map(cls, map_arr: [[GameMapType]], width: int, height: int, map_label: [[GameMapType]]) -> [
+    def display_map(cls, map_arr: [[GameMapType]], width: int, height: int) -> [
         [GameMapType]]:
         """显示地图"""
         map_label = [[GameMapType]] * 3
@@ -192,6 +182,132 @@ class GameMap:
         return map_arr
 
     @classmethod
-    def route_calculate(cls, a, b, c, d, e, f) -> int:
+    def route_calculate(cls, map_label: [[GameMapType]], map_start: CoordinateType, map_end: CoordinateType, width: int, height: int) -> [CoordinateType]:
         """路径计算"""
-        pass
+        exist_open_list, exist_close_list = False, False  # 已存在开放列表, 已存在关闭列表
+        wait_handle_coordinate = CoordinateType()  # 待检测坐标
+        wait_handle_node, tmp_node = MapNodeType(), MapNodeType()  # 待检测节点, 临时节点
+        open_list = [MapNodeType]  # 开放列表
+        close_list = [MapNodeType]  # 关闭列表
+
+        short_est_num = 0  # 最短编号
+        min_f, guess_g = 0, 0  # 最小F值, 预测G值
+
+        tmp_node.current_coordinates.x = map_start.x
+        tmp_node.current_coordinates.y = map_start.y
+
+        map_label[map_start.x][map_start.y].background_color = 0x00FF00
+        map_label[map_start.x][map_start.y].background_color = 0x0000FF
+        open_list.insert(0, tmp_node)
+
+        move_arr = [CoordinateType]
+
+        while True:
+            min_f = 0
+            for y in range(len(open_list)):
+                if min_f == 0:
+                    min_f = open_list[0].f
+                    short_est_num = y
+                if open_list[y].f < min_f:
+                    min_f = open_list[y].f
+                    short_est_num = y
+
+            tmp_node = open_list[short_est_num]
+            open_list.pop(0 + short_est_num)
+            close_list.insert(0, tmp_node)
+
+            if tmp_node.current_coordinates.x != map_start.x or tmp_node.current_coordinates.y != map_start.y:
+                if tmp_node.current_coordinates.x != map_end.x or tmp_node.current_coordinates.y != map_end.y:
+                    map_label[tmp_node.current_coordinates.x][
+                        tmp_node.current_coordinates.y].background_color = 0x0080FF
+
+            for y in range(len(close_list)):
+                if close_list[y].current_coordinates.x == map_end.x and \
+                        close_list[y].current_coordinates.y == map_end.y:
+                    wait_handle_node = close_list[y]
+                    while True:
+                        for x in range(len(close_list)):
+                            if close_list[x].current_coordinates.x == wait_handle_node.final_coordinates.x:
+                                if close_list[x].current_coordinates.y == wait_handle_node.final_coordinates.y:
+                                    wait_handle_node = close_list[x]
+                                    break
+
+                        if wait_handle_node.current_coordinates.x != map_start.x or \
+                                wait_handle_node.current_coordinates.y != map_start.y:
+                            map_label[wait_handle_node.current_coordinates.x][wait_handle_node.current_coordinates.y]. \
+                                background_color = 0x00D8D8
+
+                            move_arr.insert(0, wait_handle_node.current_coordinates)
+
+                        if wait_handle_node.current_coordinates.x == map_start.x and \
+                                wait_handle_node.current_coordinates.y == map_start.y:
+                            break
+
+                    move_arr.insert(0, map_start)
+                    move_arr.append(map_end)
+                    return move_arr
+
+            for y in range(4):
+                if y == 0:
+                    wait_handle_coordinate.x = tmp_node.current_coordinates.x
+                    wait_handle_coordinate.y = tmp_node.current_coordinates.y - 1
+                elif y == 1:
+                    wait_handle_coordinate.x = tmp_node.current_coordinates.x - 1
+                    wait_handle_coordinate.y = tmp_node.current_coordinates.y
+                elif y == 2:
+                    wait_handle_coordinate.x = tmp_node.current_coordinates.x + 1
+                    wait_handle_coordinate.y = tmp_node.current_coordinates.y
+                else:
+                    wait_handle_coordinate.x = tmp_node.current_coordinates.x
+                    wait_handle_coordinate.y = tmp_node.current_coordinates.y + 1
+
+                if wait_handle_coordinate.x < 0 or wait_handle_coordinate.x > (
+                        width - 1) or wait_handle_coordinate.y < 0 or wait_handle_coordinate.y > (height - 1):
+                    continue
+
+                if map_label[wait_handle_coordinate.x][wait_handle_coordinate.y].background_color == 0x000000:
+                    continue
+
+                exist_close_list = False
+                for x in range(len(close_list)):
+                    if close_list[x].current_coordinates.X == wait_handle_coordinate.x and \
+                            close_list[x].current_coordinates.y == wait_handle_coordinate.y:
+                        exist_close_list = True
+                        break
+
+                if exist_close_list:
+                    continue
+
+                exist_open_list = False
+                for x in range(len(open_list)):
+                    if open_list[x].current_coordinates.x == wait_handle_coordinate.x and \
+                            open_list[x].current_coordinates.y == wait_handle_coordinate.y:
+
+                        if wait_handle_coordinate.x != tmp_node.current_coordinates.X or \
+                                wait_handle_coordinate.y != tmp_node.current_coordinates.y:
+                            guess_g = 14
+                        else:
+                            guess_g = 10
+
+                        if tmp_node.g + guess_g < open_list[x].g:
+                            open_list[x].final_coordinates = tmp_node.current_coordinates
+
+                        exist_open_list = True
+                        break
+
+                if not exist_open_list:
+                    if wait_handle_coordinate.x == tmp_node.current_coordinates.x or \
+                            wait_handle_coordinate.y == tmp_node.current_coordinates.y:
+                        guess_g = 10
+                    else:
+                        guess_g = 14
+
+                    wait_handle_node.G = tmp_node.g + guess_g
+                    wait_handle_node.H = map_end.x - wait_handle_coordinate.x * 10 + map_end.y - wait_handle_coordinate.y * 10
+                    wait_handle_node.F = wait_handle_node.G + wait_handle_node.H
+                    wait_handle_node.CurrentCoordinates = wait_handle_coordinate
+                    wait_handle_node.FinalCoordinates = tmp_node.current_coordinates
+                    open_list.insert(0, wait_handle_node)
+
+                if len(open_list) == 0:
+                    break
