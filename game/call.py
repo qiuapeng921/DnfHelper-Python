@@ -42,11 +42,40 @@ def compile_call(byte_arr: bytes):
     mem.write_int(jump_address, 1)
 
     while mem.read_int(jump_address) == 1:
-        time.sleep(20)
+        time.sleep(0.2)
 
     mem.write_bytes(hook_shell, hook_old_data)
     mem.write_bytes(blank_address, convert.get_empty_bytes(len(byte_arr) + 16))
     run_status = False
+
+
+def sub_rsp(i):
+    """
+    :param i: int
+    :return: [int]
+    """
+    if i > 127:
+        return convert.add_list([72, 129, 236], convert.int_to_bytes(i, 4))
+    return convert.add_list([72, 131, 236], convert.int_to_bytes(i, 2))
+
+
+def add_rsp(i):
+    """
+    :param i: int
+    :return: [int]
+    """
+    if i > 127:
+        return convert.add_list([72, 129, 196], convert.int_to_bytes(i, 4))
+    return convert.add_list([72, 131, 196], convert.int_to_bytes(i, 2))
+
+
+def call(addr):
+    """
+    :param addr: int
+    :return: [int]
+    """
+    shell_code = [255, 21, 2, 0, 0, 0, 235, 8]
+    return convert.add_list(shell_code, convert.int_to_bytes(addr, 8))
 
 
 def get_per_ptr_call(addr: int):
@@ -62,5 +91,49 @@ def get_per_ptr_call(addr: int):
     return mem.read_int(addr)
 
 
-def go_map_call(map_id: int, map_level: int):
-    pass
+def person_ptr():
+    """人物指针"""
+    return get_per_ptr_call(address.RwKbAddr)
+
+
+def skill_call(addr, code, harm, x, y, z, size):
+    """
+    技能call
+    :param addr:int 触发地址
+    :param code:int 技能代码
+    :param harm:int 技能伤害
+    :param x:int
+    :param y:int
+    :param z:int
+    :param size: float 技能大小
+    :return:
+    """
+    empty_addr = address.JnKbAddr
+    mem.write_long(empty_addr, addr)
+    mem.write_int(empty_addr + 16, code)
+    mem.write_int(empty_addr + 20, harm)
+    mem.write_int(empty_addr + 32, x)
+    mem.write_int(empty_addr + 36, y)
+    mem.write_int(empty_addr + 40, z)
+    mem.write_float(empty_addr + 140, size)
+    mem.write_int(empty_addr + 144, 65535)
+    mem.write_int(empty_addr + 148, 65535)
+    shell_code = [72, 129, 236, 0, 2, 0, 0]
+    shell_code = convert.add_list(shell_code, [72, 185], convert.int_to_bytes(empty_addr, 8))
+    shell_code = convert.add_list(shell_code, [72, 184], convert.int_to_bytes(address.JNCallAddr, 8))
+    shell_code = convert.add_list(shell_code, [255, 208, 72, 129, 196, 0, 2, 0, 0])
+    compile_call(bytes(shell_code))
+
+
+def hide_call(obj_ptr: int):
+    """透明call"""
+    shell_code = [72, 129, 236, 0, 2, 0, 0]
+    shell_code = convert.add_list(shell_code, [65, 191, 255, 255, 255, 255])
+    shell_code = convert.add_list(shell_code, [199, 68, 36, 32, 255, 255, 0, 0])
+    shell_code = convert.add_list(shell_code, [65, 185, 1, 0, 0, 0])
+    shell_code = convert.add_list(shell_code, [73, 184, 1, 0, 0, 0, 0, 0, 0, 0])
+    shell_code = convert.add_list(shell_code, [186, 1, 0, 0, 0])
+    shell_code = convert.add_list(shell_code, [72, 185], convert.int_to_bytes(obj_ptr, 8))
+    shell_code = convert.add_list(shell_code, [72, 184], convert.int_to_bytes(address.TmCallAddr, 8))
+    shell_code = convert.add_list(shell_code, [255, 208, 72, 129, 196, 0, 2, 0, 0])
+    compile_call(bytes(shell_code))

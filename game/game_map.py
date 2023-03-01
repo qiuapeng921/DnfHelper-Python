@@ -11,8 +11,13 @@ class GameMap:
         pass
 
     @classmethod
-    def get_direction(cls, cut_room: CoordinateType, next_room: CoordinateType) -> int:
-        """获取方向 ok"""
+    def get_direction(cls, cut_room, next_room):
+        """
+        获取方向
+        :param cut_room: CoordinateType
+        :param next_room: CoordinateType
+        :return: int
+        """
         direction = 0
         x = cut_room.x - next_room.x
         y = cut_room.y - next_room.y
@@ -31,8 +36,13 @@ class GameMap:
         return direction
 
     @classmethod
-    def judge_direction(cls, tx: int, fx: int) -> bool:
-        """寻路_判断方向 ok"""
+    def judge_direction(cls, tx, fx):
+        """
+        寻路_判断方向
+        :param tx: int
+        :param fx: int
+        :return: bool
+        """
         # 方向数组
         direction_arr = []
         # 方向集合
@@ -67,13 +77,12 @@ class GameMap:
         return False
 
     @classmethod
-    def tidy_coordinate(cls, simulation_route: [CoordinateType], reality_route: [CoordinateType]) -> tuple[int, [CoordinateType]]:
-
+    def tidy_coordinate(cls, simulation_route, reality_route):
         """
         整理坐标
-        :param simulation_route:
-        :param reality_route:
-        :return:
+        :param simulation_route: [CoordinateType]
+        :param reality_route: [CoordinateType]
+        :return: (int, [CoordinateType])
         """
         x, y, k = (0, 0, 0)
         temp_coordinates = CoordinateType()
@@ -89,8 +98,14 @@ class GameMap:
         return k, reality_route
 
     @classmethod
-    def gen_map(cls, width: int, height: int, map_channel: [int]) -> [[GameMapType]]:
-        """生成地图"""
+    def gen_map(cls, width, height, map_channel):
+        """
+        生成地图
+        :param width: int
+        :param height: int
+        :param map_channel: [int]
+        :return: [[GameMapType]]
+        """
         game_map = [[GameMapType]] * width
         for x in range(width):
             game_map[x] = [GameMapType] * height
@@ -142,8 +157,17 @@ class GameMap:
         return data
 
     @classmethod
-    def get_route(cls, map_channel: [int], width: int, height: int, map_start: CoordinateType, map_end: CoordinateType, reality_route: [CoordinateType]) -> tuple[int, [[CoordinateType]]]:
-        """获取走法"""
+    def get_route(cls, map_channel, width, height, map_start, map_end, reality_route):
+        """
+        获取走法
+        :param map_channel: [int]
+        :param width: int
+        :param height: int
+        :param map_start: CoordinateType
+        :param map_end: CoordinateType
+        :param reality_route: [CoordinateType]
+        :return: (int, [[CoordinateType]])
+        """
         start_coordinate = CoordinateType()
         end_coordinate = CoordinateType()
 
@@ -160,9 +184,14 @@ class GameMap:
         return cls.tidy_coordinate(cross_way, reality_route)
 
     @classmethod
-    def display_map(cls, map_arr: [[GameMapType]], width: int, height: int) -> [
-        [GameMapType]]:
-        """显示地图"""
+    def display_map(cls, map_arr, width, height):
+        """
+        显示地图
+        :param map_arr: [[GameMapType]]
+        :param width: int
+        :param height: int
+        :return: [[GameMapType]]
+        """
         map_label = [[GameMapType]] * 3
         for x in range(width * 3):
             map_label[x] = [GameMapType] * height * 3
@@ -182,8 +211,16 @@ class GameMap:
         return map_arr
 
     @classmethod
-    def route_calculate(cls, map_label: [[GameMapType]], map_start: CoordinateType, map_end: CoordinateType, width: int, height: int) -> [CoordinateType]:
-        """路径计算"""
+    def route_calculate(cls, map_label, map_start, map_end, width, height):
+        """
+        路径计算
+        :param map_label: [[GameMapType]]
+        :param map_start: CoordinateType
+        :param map_end: CoordinateType
+        :param width: int
+        :param height: int
+        :return: [CoordinateType]
+        """
         exist_open_list, exist_close_list = False, False  # 已存在开放列表, 已存在关闭列表
         wait_handle_coordinate = CoordinateType()  # 待检测坐标
         wait_handle_node, tmp_node = MapNodeType(), MapNodeType()  # 待检测节点, 临时节点

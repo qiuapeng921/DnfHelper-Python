@@ -2,6 +2,7 @@ import _thread
 import time
 
 from common import convert
+from game import call
 
 
 class FullScreen:
@@ -32,3 +33,8 @@ class FullScreen:
 
     def stop(self):
         self.__switch = False
+
+    def wxms(self):
+        """秒杀完毕"""
+        call.skill_call(0, 54141, 0, 0, 0, 0, 1)
+        print("秒杀完毕 [ √ ]")
