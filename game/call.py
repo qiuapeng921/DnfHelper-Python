@@ -56,7 +56,7 @@ def sub_rsp(i):
     """
     if i > 127:
         return convert.add_list([72, 129, 236], convert.int_to_bytes(i, 4))
-    return convert.add_list([72, 131, 236], [i])
+    return convert.add_list([72, 131, 236]).append(i)
 
 
 def add_rsp(i):
@@ -66,7 +66,7 @@ def add_rsp(i):
     """
     if i > 127:
         return convert.add_list([72, 129, 196], convert.int_to_bytes(i, 4))
-    return convert.add_list([72, 131, 196], [i])
+    return convert.add_list([72, 131, 196]).append(i)
 
 
 def call(addr):
