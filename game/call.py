@@ -13,7 +13,7 @@ def compile_call(byte_arr: bytes):
     blank_address = address.NcBhKbAddr + 500
     jump_address = blank_address - 100
     global run_status
-    if not run_status:
+    if run_status:
         return
 
     run_status = True
@@ -31,7 +31,6 @@ def compile_call(byte_arr: bytes):
     hook_data = convert.add_bytes(hook_data, [199, 0, 3, 0, 0, 0])
     hook_data = convert.add_bytes(hook_data, [72, 129, 196, 0, 3, 0, 0])
     hook_data = convert.add_bytes(hook_data, [255, 37, 0, 0, 0, 0], convert.int_to_bytes(hook_jump, 8))
-
     if mem.read_int(assembly_transit) == 0:
         mem.write_bytes(assembly_transit, hook_data)
 

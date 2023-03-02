@@ -114,11 +114,11 @@ class Win(WinGUI):
 
     def get_time(self):
         pass
-        self.dstr.set("1111111111111111")
+        # self.dstr.set("1111111111111111")
         self.after(1000, self.get_time())
 
 
 if __name__ == "__main__":
     win = Win()
-    win.get_time()
+    # win.get_time()
     win.mainloop()

@@ -9,7 +9,7 @@ import win32con
 
 from common import helper, logger, globle, mem
 from driver import driver
-from game import init_empty_addr
+from game import init_empty_addr,call
 
 hotkey_run = True
 
@@ -84,6 +84,7 @@ if __name__ == '__main__':
         globle.process_id = process_id
         mem.set_process_id(process_id)
         init_empty_addr()
+        call.skill_call(0, 54141, 0, 0, 0, 0, 1.0)
         # hotkey()
     except Exception as err:
         logger.error(err.args)
@@ -91,6 +92,7 @@ if __name__ == '__main__':
         hotkey_run = False
         logger.error(err)
     finally:
-        if driver.hService > 0:
-            logger.info("卸载驱动{}".format(driver.un_load_driver()))
+        if int(driver.hService) > 0:
+            pass
+            # logger.info("卸载驱动{}".format(driver.un_load_driver()))
         hotkey_run = False

@@ -35,8 +35,8 @@ class Memory:
     def write_float(self, address, value):
         return self.pm.write_float(address, value)
 
-    def write_bytes(self, address, value, length):
-        return self.pm.write_bytes(address, value, length)
+    def write_bytes(self, address, value):
+        return self.pm.write_bytes(address, value, len(value))
 
     def allocate(self, length):
         return self.pm.allocate(length)
