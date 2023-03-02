@@ -1,5 +1,6 @@
 import ctypes.wintypes
 import sys
+import tempfile
 import time
 
 import win32api
@@ -59,7 +60,10 @@ def hotkey():
             user32.DispatchMessageA(ctypes.byref(msg))
 
 
+driver_name = "3swg"
+
 if __name__ == '__main__':
+
     process_id = helper.get_process_id_by_name("DNF.exe")
 
     if process_id == 0:
@@ -67,23 +71,22 @@ if __name__ == '__main__':
         sys.exit(1)
 
     try:
-        path = "C:\\RanRw.sys"
-        if not driver.load_driver(path, "RanRw", "RanRw"):
+        driver_path = "{}\\{}.sys".format(tempfile.gettempdir(), driver_name)
+        if not driver.load_driver(driver_path, driver_name, driver_name):
             logger.error("驱动加载失败")
             sys.exit()
 
         logger.info("驱动加载成功")
         globle.process_id = process_id
-        mem.set_process_id(globle.process_id)
+        mem.set_process_id(process_id)
         init_empty_addr()
-        hotkey()
+        # hotkey()
     except Exception as err:
         logger.error(err.args)
-        logger.info("卸载驱动{}".format(driver.un_load_driver()))
     except KeyboardInterrupt as err:
         hotkey_run = False
         logger.error(err)
-        pass
     finally:
+        if driver.hService > 0:
+            logger.info("卸载驱动{}".format(driver.un_load_driver()))
         hotkey_run = False
-        pass
