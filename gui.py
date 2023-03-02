@@ -100,7 +100,6 @@ class WinGUI(Tk):
 
 
 class Win(WinGUI):
-    hr_t, min_t, sec_t = (0, 0, 0)
 
     def __init__(self):
         super().__init__()
@@ -115,20 +114,8 @@ class Win(WinGUI):
 
     def get_time(self):
         pass
-        self.dstr.set(self.get_app_run_time())
+        self.dstr.set("1111111111111111")
         self.after(1000, self.get_time())
-
-    def get_app_run_time(self):
-        """获取app运行时间"""
-        self.sec_t = self.sec_t + 1
-        if self.sec_t == 60:
-            self.sec_t = 0
-            self.min_t = self.min_t + 1
-        if self.min_t == 60:
-            self.min_t = 0
-            self.hr_t = self.hr_t + 1
-        string = "{}:{}:{}".format(self.hr_t, self.min_t, self.sec_t)
-        return string
 
 
 if __name__ == "__main__":
