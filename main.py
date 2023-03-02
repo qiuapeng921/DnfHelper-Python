@@ -1,4 +1,5 @@
 import ctypes.wintypes
+import os
 import sys
 import tempfile
 import time
@@ -63,15 +64,18 @@ def hotkey():
 driver_name = "3swg"
 
 if __name__ == '__main__':
+    driver_path = "{}\\{}.sys".format(tempfile.gettempdir(), driver_name)
+
+    if os.path.exists(driver_path) is False:
+        logger.error("驱动不存在")
+        sys.exit()
 
     process_id = helper.get_process_id_by_name("DNF.exe")
-
     if process_id == 0:
         win32api.MessageBoxEx(0, "请打开dnf后运行", "Helper")
         sys.exit(1)
 
     try:
-        driver_path = "{}\\{}.sys".format(tempfile.gettempdir(), driver_name)
         if not driver.load_driver(driver_path, driver_name, driver_name):
             logger.error("驱动加载失败")
             sys.exit()
