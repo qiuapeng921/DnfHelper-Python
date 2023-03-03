@@ -3,7 +3,6 @@ import os
 import tempfile
 import time
 
-import pkg_resources
 import win32api
 import win32con
 
@@ -85,7 +84,7 @@ if __name__ == '__main__':
         globle.process_id = process_id
         mem.set_process_id(process_id)
         game.init_empty_addr()
-        call.person_ptr()
+        call.skill_call(0, 54141, 0, 0, 0, 0, 1.0)
         # hotkey()
     except Exception as err:
         logger.error(err.args)

@@ -22,26 +22,23 @@ def compile_call(byte_arr: bytes):
     hook_jump = hook_shell + 19
     hook_data = mem.read_bytes(hook_shell, 19)
     hook_old_data = hook_data
-    print(hook_data, list(hook_data))
 
     hook_data = convert.add_bytes(hook_data, [72, 184], convert.int_to_bytes(jump_address, 8))
     hook_data = convert.add_bytes(hook_data, [131, 56, 1, 117, 42, 72, 129, 236, 0, 3, 0, 0])
     hook_data = convert.add_bytes(hook_data, [72, 187], convert.int_to_bytes(blank_address, 8))
     hook_data = convert.add_bytes(hook_data, [255, 211])
-    hook_data = convert.add_bytes(hook_data, [72, 184], convert.int_to_bytes(blank_address, 8))
+    hook_data = convert.add_bytes(hook_data, [72, 184], convert.int_to_bytes(jump_address, 8))
     hook_data = convert.add_bytes(hook_data, [199, 0, 3, 0, 0, 0])
     hook_data = convert.add_bytes(hook_data, [72, 129, 196, 0, 3, 0, 0])
     hook_data = convert.add_bytes(hook_data, [255, 37, 0, 0, 0, 0], convert.int_to_bytes(hook_jump, 8))
-    print(hook_data, list(hook_data))
 
     if mem.read_int(assembly_transit) == 0:
         mem.write_bytes(assembly_transit, hook_data)
 
-    mem.write_bytes(assembly_transit, convert.add_bytes(byte_arr, [195]))
+    mem.write_bytes(blank_address, convert.add_bytes(byte_arr, [195]))
     hook_shell_value = convert.add_list([255, 37, 0, 0, 0, 0], convert.int_to_bytes(assembly_transit, 8),
                                         [144, 144, 144, 144, 144])
 
-    print(hook_shell_value, list(hook_shell_value))
     mem.write_bytes(hook_shell, bytes(hook_shell_value))
     mem.write_int(jump_address, 1)
 
@@ -60,7 +57,7 @@ def sub_rsp(i):
     """
     if i > 127:
         return convert.add_list([72, 129, 236], convert.int_to_bytes(i, 4))
-    return convert.add_list([72, 131, 236]).append(i)
+    return convert.add_list([72, 131, 236], [i])
 
 
 def add_rsp(i):
@@ -70,7 +67,7 @@ def add_rsp(i):
     """
     if i > 127:
         return convert.add_list([72, 129, 196], convert.int_to_bytes(i, 4))
-    return convert.add_list([72, 131, 196]).append(i)
+    return convert.add_list([72, 131, 196], [i])
 
 
 def call(addr):
@@ -88,9 +85,9 @@ def get_per_ptr_call(addr: int):
     :param addr:
     :return:
     """
-    shell_code = convert.add_list([100], [address.RWCallAddr], [72, 163])
+    shell_code = convert.add_list(sub_rsp(100), call(address.RWCallAddr), [72, 163])
     shell_code = convert.add_list(shell_code, convert.int_to_bytes(addr, 8))
-    shell_code = convert.add_list(shell_code, [100])
+    shell_code = convert.add_list(shell_code, add_rsp(100))
     compile_call(bytes(shell_code))
     return mem.read_int(addr)
 
@@ -140,4 +137,61 @@ def hide_call(obj_ptr: int):
     shell_code = convert.add_list(shell_code, [72, 185], convert.int_to_bytes(obj_ptr, 8))
     shell_code = convert.add_list(shell_code, [72, 184], convert.int_to_bytes(address.TmCallAddr, 8))
     shell_code = convert.add_list(shell_code, [255, 208, 72, 129, 196, 0, 2, 0, 0])
+    compile_call(bytes(shell_code))
+
+
+def drift_call(ptr, x, y, z, speed):
+    """
+    漂移call
+    :param ptr: int
+    :param x: int
+    :param y: int
+    :param z: int
+    :param speed: int 速度
+    :return:
+    """
+    shell_code = [72, 129, 236, 0, 8, 0, 0]
+    shell_code = convert.add_list(shell_code, [185, 241, 0, 0, 0])
+    shell_code = convert.add_list(shell_code, [72, 184], convert.int_to_bytes(address.SqNcCallAddr, 8))
+    shell_code = convert.add_list(shell_code, [255, 208])
+    shell_code = convert.add_list(shell_code, [72, 139, 240, 72, 139, 200])
+    shell_code = convert.add_list(shell_code, [72, 184], convert.int_to_bytes(address.PyCall1Addr, 8))
+    shell_code = convert.add_list(shell_code, [255, 208])
+    shell_code = convert.add_list(shell_code, [185], convert.int_to_bytes(x, 4))
+    shell_code = convert.add_list(shell_code, [137, 8])
+    shell_code = convert.add_list(shell_code, [185], convert.int_to_bytes(y, 4))
+    shell_code = convert.add_list(shell_code, [137, 72, 4])
+    shell_code = convert.add_list(shell_code, [185], convert.int_to_bytes(z, 4))
+    shell_code = convert.add_list(shell_code, [137, 72, 8, 72, 141, 72, 24])
+    shell_code = convert.add_list(shell_code, [186], convert.int_to_bytes(speed, 4))
+    shell_code = convert.add_list(shell_code, [72, 184], convert.int_to_bytes(address.PyCall2Addr, 8))
+    shell_code = convert.add_list(shell_code, [255, 208])
+    shell_code = convert.add_list(shell_code, [72, 141, 84, 36, 112, 49, 219, 72, 137, 92, 36, 112, 72, 137, 92, 36, 120, 49, 210, 72, 141, 76, 36, 112])
+    shell_code = convert.add_list(shell_code, [72, 184], convert.int_to_bytes(address.XrNcCallAddr, 8))
+    shell_code = convert.add_list(shell_code, [255, 208])
+    shell_code = convert.add_list(shell_code, [72, 139, 206, 72, 139, 1])
+    shell_code = convert.add_list(shell_code, [72, 186], convert.int_to_bytes(ptr, 8))
+    shell_code = convert.add_list(shell_code, [72, 49, 219, 73, 189, 255, 255, 255, 255, 255, 255, 255, 255])
+    shell_code = convert.add_list(shell_code, [137, 92, 36, 64, 72, 137, 92, 36, 56, 68, 137, 108, 36, 48])
+    shell_code = convert.add_list(shell_code, [199, 68, 36, 40, 232, 2, 0, 0])
+    shell_code = convert.add_list(shell_code, [72, 141, 124, 36, 112, 72, 137, 124, 36, 32, 69, 51, 201])
+    shell_code = convert.add_list(shell_code, [73, 184], convert.int_to_bytes(ptr, 8))
+    shell_code = convert.add_list(shell_code, [255, 144], convert.int_to_bytes(312, 4))
+    shell_code = convert.add_list(shell_code, [72, 129, 196, 0, 8, 0, 0])
+    compile_call(bytes(shell_code))
+
+
+def move_call(max_map, mix_map, x, y):
+    """移动Call"""
+    role_ptr = mem.read_long(address.JSPtrAddr)
+    mem.read_int(address.CzSyRdxAddr, max_map)
+    mem.read_int(address.CzSyRdxAddr+4, mix_map)
+    mem.read_int(address.CzSyRdxAddr+8, x)
+    mem.read_int(address.CzSyRdxAddr+12, y)
+
+    shell_code = sub_rsp(256)
+    shell_code = convert.add_list(shell_code, [72, 186], convert.int_to_bytes(address.CzSyRdxAddr, 8))
+    shell_code = convert.add_list(shell_code, [72, 185], convert.int_to_bytes(role_ptr, 8))
+    shell_code = convert.add_list(shell_code, call(address.CzSyCallAddr))
+    shell_code = convert.add_list(shell_code, add_rsp(256))
     compile_call(bytes(shell_code))
