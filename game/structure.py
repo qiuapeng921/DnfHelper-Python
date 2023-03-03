@@ -51,3 +51,24 @@ class GlobalData:
         self.map_level = 0
         # 角色总数
         self.role_count = 0
+
+
+# 地图遍历
+class Traversal:
+    rw_addr = 0  # 人物地址
+    map_data = 0  # 地图数据
+    start = 0  # 首部地址
+    end = 0  # 尾部地址
+    obj_num = 0  # 对象数量
+    obj_tmp = 0  # 对象变量
+    obj_ptr = 0  # 对象指针
+    obj_camp = 0  # 对象阵营
+    obj_blood = 0  # 对象血量
+    obj_type_a = 0  # 对象类型A
+    obj_type_b = 0  # 对象类型B
+    obj_code = 0  # 对象代码
+    obj_name_a = ""  # 对象名称
+    obj_name_b = ""  # 物品名称
+    rw_coordinate = CoordinateType  # 人物坐标
+    gw_coordinate = CoordinateType  # 怪物坐标
+    wp_coordinate = CoordinateType  # 物品坐标
