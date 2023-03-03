@@ -31,7 +31,7 @@ class DemoWindow(XWindow):
         # 设置窗口图标
         self.setIcon(gui.XImage.loadSvgString(svgIcon))
         # 禁止改变大小
-        self.enableDragBorder(True)
+        self.enableDragBorder(False)
         # 设置边框
         self.setBorderSize(0, 30, 0, 0)
 
