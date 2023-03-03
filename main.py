@@ -1,15 +1,16 @@
 import ctypes.wintypes
 import os
-import sys
 import tempfile
 import time
 
+import pkg_resources
 import win32api
 import win32con
 
-from common import helper, logger, globle, mem
+import game
+from common import logger, globle, mem, helper
 from driver import driver
-from game import init_empty_addr,call
+from game import call, address
 
 hotkey_run = True
 
@@ -61,29 +62,29 @@ def hotkey():
             user32.DispatchMessageA(ctypes.byref(msg))
 
 
-driver_name = "3swg"
+driver_name = "Randw"
 
 if __name__ == '__main__':
     driver_path = "{}\\{}.sys".format(tempfile.gettempdir(), driver_name)
 
     if os.path.exists(driver_path) is False:
         logger.error("驱动不存在")
-        sys.exit()
+        exit()
 
     process_id = helper.get_process_id_by_name("DNF.exe")
     if process_id == 0:
         win32api.MessageBoxEx(0, "请打开dnf后运行", "Helper")
-        sys.exit(1)
+        exit()
 
     try:
         if not driver.load_driver(driver_path, driver_name, driver_name):
             logger.error("驱动加载失败")
-            sys.exit()
+            exit()
 
         logger.info("驱动加载成功")
         globle.process_id = process_id
         mem.set_process_id(process_id)
-        init_empty_addr()
+        game.init_empty_addr()
         call.skill_call(0, 54141, 0, 0, 0, 0, 1.0)
         # hotkey()
     except Exception as err:
@@ -92,7 +93,8 @@ if __name__ == '__main__':
         hotkey_run = False
         logger.error(err)
     finally:
-        if int(driver.hService) > 0:
-            pass
-            # logger.info("卸载驱动{}".format(driver.un_load_driver()))
-        hotkey_run = False
+        pass
+        # if int(driver.hService) > 0:
+        #     pass
+        #logger.info("卸载驱动{}".format(driver.un_load_driver()))
+        #hotkey_run = False
