@@ -21,10 +21,10 @@ def compile_call(byte_arr: bytes):
     hook_shell = hook_shell + 144
     hook_jump = hook_shell + 19
     hook_data = mem.read_bytes(hook_shell, 19)
-    print(hook_data, list(hook_data))
     hook_old_data = hook_data
+    print(hook_data, list(hook_data))
 
-    hook_data = hook_data + convert.add_bytes(hook_data, [72, 184], convert.int_to_bytes(jump_address, 8))
+    hook_data = convert.add_bytes(hook_data, [72, 184], convert.int_to_bytes(jump_address, 8))
     hook_data = convert.add_bytes(hook_data, [131, 56, 1, 117, 42, 72, 129, 236, 0, 3, 0, 0])
     hook_data = convert.add_bytes(hook_data, [72, 187], convert.int_to_bytes(blank_address, 8))
     hook_data = convert.add_bytes(hook_data, [255, 211])
@@ -32,8 +32,8 @@ def compile_call(byte_arr: bytes):
     hook_data = convert.add_bytes(hook_data, [199, 0, 3, 0, 0, 0])
     hook_data = convert.add_bytes(hook_data, [72, 129, 196, 0, 3, 0, 0])
     hook_data = convert.add_bytes(hook_data, [255, 37, 0, 0, 0, 0], convert.int_to_bytes(hook_jump, 8))
-
     print(hook_data, list(hook_data))
+
     if mem.read_int(assembly_transit) == 0:
         mem.write_bytes(assembly_transit, hook_data)
 
@@ -126,7 +126,6 @@ def skill_call(addr, code, harm, x, y, z, size):
     shell_code = convert.add_list(shell_code, [72, 185], convert.int_to_bytes(empty_addr, 8))
     shell_code = convert.add_list(shell_code, [72, 184], convert.int_to_bytes(address.JNCallAddr, 8))
     shell_code = convert.add_list(shell_code, [255, 208, 72, 129, 196, 0, 2, 0, 0])
-    print(shell_code)
     compile_call(bytes(shell_code))
 
 

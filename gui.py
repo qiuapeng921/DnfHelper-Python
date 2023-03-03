@@ -1,11 +1,10 @@
+import _thread
 import time
 
 import xcgui._xcgui as gui
 from xcgui import XApp, XWindow, XButton, XEdit, XShapeText
 
 from common import logger, helper, convert
-
-import _thread
 
 svgIcon = '<svg t="1674984352573" class="icon" viewBox="0 0 1024 1024" version="1.1" ' \
           'xmlns="http://www.w3.org/2000/svg" p-id="10315" width="16" height="16"><path d="M901.957085 ' \
@@ -22,9 +21,11 @@ svgIcon = '<svg t="1674984352573" class="icon" viewBox="0 0 1024 1024" version="
           '53.245781-163.36386z" fill="#1afa29" opacity=".65" p-id="10316"></path></svg>'
 
 
+version = '1.0.0'
+
 class DemoWindow(XWindow):
     def __init__(self):
-        super(DemoWindow, self).__init__(0, 0, 300, 400, "当前时间：" + convert.get_now_date(), 0,
+        super(DemoWindow, self).__init__(0, 0, 300, 400, "情歌 √ 当前时间 {}".format(convert.get_now_date()), 0,
                                          gui.window_style_modal)
         _thread.start_new_thread(self.title_time, ())
 
@@ -57,7 +58,7 @@ class DemoWindow(XWindow):
         _thread.start_new_thread(self.app_run_time, ())
 
         self.version_label = XShapeText(220, 375, 60, 30, "版本号:", self)
-        self.version_value = XShapeText(260, 375, 60, 30, "v1.0.0", self)
+        self.version_value = XShapeText(260, 375, 60, 30, version, self)
 
     def activation(self, event, userdata):
         card_edit_val = self.card_edit.getText()
@@ -76,7 +77,7 @@ class DemoWindow(XWindow):
     def title_time(self):
         while 1:
             time.sleep(1)
-            self.setTitle("当前时间：{}".format(convert.get_now_date()))
+            self.setTitle("情歌 √ 当前时间 {}".format(convert.get_now_date()))
             self.redraw()
 
 

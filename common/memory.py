@@ -1,4 +1,7 @@
+import pymem
 from pymem import Pymem
+
+from common import logger
 
 
 class Memory:
@@ -15,16 +18,28 @@ class Memory:
         self.processId = process_id
 
     def read_int(self, address):
-        return self.pm.read_int(address)
+        try:
+            return self.pm.read_int(address)
+        except pymem.exception.WinAPIError as e:
+            logger.error("read_int", e)
 
     def read_long(self, address):
-        return self.pm.write_longlong(address)
+        try:
+            return self.pm.read_longlong(address)
+        except pymem.exception.WinAPIError as e:
+            logger.error("read_long", e)
 
     def read_float(self, address):
-        return self.pm.read_float(address)
+        try:
+            return self.pm.read_float(address)
+        except pymem.exception.WinAPIError as e:
+            logger.error("read_float", e)
 
     def read_bytes(self, address, length):
-        return self.pm.read_bytes(address, length)
+        try:
+            return self.pm.read_bytes(address, length)
+        except pymem.exception.WinAPIError as e:
+            logger.error("read_float", e)
 
     def write_int(self, address, value):
         return self.pm.write_int(address, value)
@@ -40,9 +55,3 @@ class Memory:
 
     def allocate(self, length):
         return self.pm.allocate(length)
-
-    def memory(self) -> Pymem:
-        """
-        获取Pymem实例
-        """
-        return self.pm

@@ -62,7 +62,7 @@ def hotkey():
             user32.DispatchMessageA(ctypes.byref(msg))
 
 
-driver_name = "6swg"
+driver_name = "3swg"
 
 if __name__ == '__main__':
     driver_path = "{}\\{}.sys".format(tempfile.gettempdir(), driver_name)
