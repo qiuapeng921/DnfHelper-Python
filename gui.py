@@ -1,124 +1,92 @@
-"""
-本代码由[Tkinter布局助手]生成
-当前版本:3.1.2
-官网:https://www.pytk.net/tkinter-helper
-QQ交流群:788392508
-"""
-from tkinter import *
-from tkinter.ttk import *
+import time
 
-app_version = "v1.0.0"
+import xcgui._xcgui as gui
+from xcgui import XApp, XWindow, XButton, XEdit, XShapeText
 
+from common import logger, helper, convert
 
-# 自动隐藏滚动条
-def scrollbar_autohide(bar, widget):
-    def show():
-        bar.lift(widget)
+import _thread
 
-    def hide():
-        bar.lower(widget)
-
-    hide()
-    widget.bind("<Enter>", lambda e: show())
-    bar.bind("<Enter>", lambda e: show())
-    widget.bind("<Leave>", lambda e: hide())
-    bar.bind("<Leave>", lambda e: hide())
+svgIcon = '<svg t="1674984352573" class="icon" viewBox="0 0 1024 1024" version="1.1" ' \
+          'xmlns="http://www.w3.org/2000/svg" p-id="10315" width="16" height="16"><path d="M901.957085 ' \
+          '349.126786c-60.072164-87.975001-153.76426-100.09183-187.170868-101.49977-79.698013-8.106329-155.59885 ' \
+          '46.931378-196.0025 46.931377-40.40365 0-102.779718-45.822091-168.86763-44.627473-86.908379 ' \
+          '1.279947-166.990375 50.515229-211.788509 128.421315-90.32157 156.665472-23.12437 388.762468 64.850631 ' \
+          '515.818508 43.048873 62.248073 94.332069 132.133161 161.6146 129.615933 64.850631-2.559893 ' \
+          '89.425607-41.982251 167.673013-41.982251 78.418066 0 100.433149 41.982251 169.03829 40.702304 ' \
+          '69.799758-1.279947 114.000583-63.400025 156.665473-125.818758 49.405941-72.188992 69.714429-141.98875 ' \
+          '70.909045-145.572601-1.578601-0.725303-135.973001-52.221824-137.380942-207.095371-1.279947-129.573268 ' \
+          '105.68093-191.778676 110.502062-194.893213zM715.852839 0.042665c-51.496521 2.133244-113.829924 ' \
+          '34.302571-150.820382 77.479438-33.107954 38.3984-58.706887 99.622516-50.899213 158.414733 57.51227 ' \
+          '4.479813 112.720637-29.182784 148.473814-72.530311 35.710512-43.176868 59.816174-103.377026 ' \
+          '53.245781-163.36386z" fill="#1afa29" opacity=".65" p-id="10316"></path></svg>'
 
 
-class WinGUI(Tk):
+class DemoWindow(XWindow):
     def __init__(self):
-        super().__init__()
-        self.__win()
-        self.dstr = StringVar()
+        super(DemoWindow, self).__init__(0, 0, 300, 400, "当前时间：" + convert.get_now_date(), 0,
+                                         gui.window_style_modal)
+        _thread.start_new_thread(self.title_time, ())
 
-        self.tk_label_card_label = self.__tk_label_card_label()
-        self.tk_input_card_edit = self.__tk_input_card_edit()
-        self.tk_button_activation = self.__tk_button_activation()
-        self.tk_text_edit_content = self.__tk_text_edit_content()
-        self.tk_label_run_label = self.__tk_label_run_label()
-        self.tk_label_version_label = self.__tk_label_version_label()
-        self.tk_label_run_time = self.__tk_label_run_time()
-        self.tk_label_app_version = self.__tk_label_app_version()
+        # 设置窗口图标
+        self.setIcon(gui.XImage.loadSvgString(svgIcon))
+        # 禁止改变大小
+        self.enableDragBorder(True)
+        # 设置边框
+        self.setBorderSize(0, 30, 0, 0)
 
-    def __win(self):
-        self.title("DnfHelper-Python")
+        XShapeText(0, 35, 60, 30, "卡号:", self)
+        self.card_edit = XEdit(35, 35, 200, 30, self)
+        self.card_edit.setText("19930921")
+        self.card_edit.enablePassword(True)
+        self.card_edit.setTextAlign(gui.edit_textAlign_flag_center)
 
-        # 设置窗口大小、居中
-        width = 300
-        height = 380
-        screenwidth = self.winfo_screenwidth()
-        screenheight = self.winfo_screenheight()
-        geometry = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
-        self.geometry(geometry)
-        self.resizable(False, False)
-        self.iconbitmap('./resource/WeGame.ico')
+        self.activation_but = XButton(244, 35, 50, 30, "激活", self)
+        self.activation_but.regEvent(gui.XE_BNCLICK, self.activation)
 
-    def __tk_label_card_label(self):
-        label = Label(self, text="卡号：", anchor="center")
-        label.place(x=0, y=2, width=50, height=30)
-        return label
+        self.edit_content = XEdit(1, 70, 300, 310, self)
+        self.edit_content.enableMultiLine(True)
+        self.edit_content.enableReadOnly(True)
+        self.edit_content.autoScroll()
+        self.edit_content.showSBarV(True)
+        self.edit_content.showSBarH(True)
+        self.edit_content.scrollBottom()
 
-    def __tk_input_card_edit(self):
-        ipt = Entry(self, show="*")
-        ipt.place(x=50, y=2, width=180, height=30)
-        return ipt
+        self.run_time_label = XShapeText(1, 375, 60, 30, "运行时间:", self)
+        self.run_time_value = XShapeText(56, 375, 60, 30, "00:00:00", self)
+        _thread.start_new_thread(self.app_run_time, ())
 
-    def __tk_button_activation(self):
-        btn = Button(self, text="激活")
-        btn.place(x=240, y=2, width=50, height=30)
-        return btn
+        self.version_label = XShapeText(220, 375, 60, 30, "版本号:", self)
+        self.version_value = XShapeText(260, 375, 60, 30, "v1.0.0", self)
 
-    def __tk_text_edit_content(self):
-        text = Text(self, font=("微软雅黑", 10))
-        text.place(x=2, y=40, width=293, height=320)
-        vbar = Scrollbar(self)
-        text.configure(yscrollcommand=vbar.set)
-        vbar.config(command=text.yview)
-        vbar.place(x=280, y=40, width=15, height=320)
-        scrollbar_autohide(vbar, text)
-        return text
+    def activation(self, event, userdata):
+        card_edit_val = self.card_edit.getText()
+        logger.info(card_edit_val)
+        if card_edit_val == "":
+            return 1
 
-    def __tk_label_run_label(self):
-        label = Label(self, text="运行时间：", anchor="center")
-        label.place(x=0, y=360, width=70, height=24)
-        return label
+    def app_run_time(self):
+        while 1:
+            time.sleep(1)
+            self.run_time_value.setText(helper.get_app_run_time())
+            self.run_time_value.redraw()
+            self.edit_content.addTextUser("{}\n".format(convert.get_now_date()))
+            self.edit_content.redraw()
 
-    def __tk_label_version_label(self):
-        label = Label(self, text="版本：", anchor="center")
-        label.place(x=210, y=360, width=40, height=24)
-        return label
-
-    def __tk_label_run_time(self):
-        label = Label(self, text="00:00:00", anchor="center", textvariable=self.dstr)
-        label.place(x=60, y=360, width=60, height=24)
-        return label
-
-    def __tk_label_app_version(self):
-        label = Label(self, text=app_version, anchor="center")
-        label.place(x=240, y=360, width=50, height=24)
-        return label
+    def title_time(self):
+        while 1:
+            time.sleep(1)
+            self.setTitle("当前时间：{}".format(convert.get_now_date()))
+            self.redraw()
 
 
-class Win(WinGUI):
-
-    def __init__(self):
-        super().__init__()
-        self.__event_bind()
-
-    @classmethod
-    def activation_processing(cls, evt):
-        print("<Button>事件未处理", evt)
-
-    def __event_bind(self):
-        self.tk_button_activation.bind('<Button>', self.activation_processing)
-
-    def get_time(self):
-        pass
-        # self.dstr.set("1111111111111111")
-        self.after(1000, self.get_time())
+def main():
+    app = XApp()
+    window = DemoWindow()
+    window.showWindow()
+    app.run()
+    app.exit()
 
 
-if __name__ == "__main__":
-    win = Win()
-    # win.get_time()
-    win.mainloop()
+if __name__ == '__main__':
+    main()

@@ -62,7 +62,7 @@ def hotkey():
             user32.DispatchMessageA(ctypes.byref(msg))
 
 
-driver_name = "Randw"
+driver_name = "6swg"
 
 if __name__ == '__main__':
     driver_path = "{}\\{}.sys".format(tempfile.gettempdir(), driver_name)
@@ -85,7 +85,7 @@ if __name__ == '__main__':
         globle.process_id = process_id
         mem.set_process_id(process_id)
         game.init_empty_addr()
-        call.skill_call(0, 54141, 0, 0, 0, 0, 1.0)
+        call.person_ptr()
         # hotkey()
     except Exception as err:
         logger.error(err.args)
@@ -96,5 +96,5 @@ if __name__ == '__main__':
         pass
         # if int(driver.hService) > 0:
         #     pass
-        #logger.info("卸载驱动{}".format(driver.un_load_driver()))
-        #hotkey_run = False
+        # logger.info("卸载驱动{}".format(driver.un_load_driver()))
+        # hotkey_run = False

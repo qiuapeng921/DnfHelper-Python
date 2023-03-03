@@ -6,3 +6,4 @@ pyinstaller-hooks-contrib==2023.0
 Pymem==1.10.0
 pywin32==305
 pywin32-ctypes==0.2.0
+xcgui~=0.1.7
