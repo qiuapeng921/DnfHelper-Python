@@ -26,7 +26,7 @@ class Screen:
 
 def screen_kill():
     """秒杀完毕"""
-    call.skill_call(0, 54141, 0, 0, 0, 0, 1)
+    call.skill_call(0, 54141, 0, 0, 0, 0, 1.0)
     logger.info("秒杀完毕 [ √ ]")
 
 

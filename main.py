@@ -6,6 +6,7 @@ import time
 import win32api
 import win32con
 
+import game.map_traversal
 from common import logger, globle, helper
 from driver import driver
 from game import mem, init, init_empty_addr
@@ -49,6 +50,7 @@ def hotkey():
                     init.auto.switch()
                     print("VK_END")
                 if win32api.HIWORD(msg.lParam) == 192:
+                    game.map_traversal.screen_kill()
                     print("波浪")
                 # if win32api.HIWORD(msg.lParam) == win32con.VK_UP:
                 #     print("上")
@@ -83,7 +85,6 @@ if __name__ == '__main__':
             exit()
 
         logger.info("驱动加载成功")
-        globle.process_id = process_id
         mem.set_process_id(process_id)
         init_empty_addr()
         hotkey()
