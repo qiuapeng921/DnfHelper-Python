@@ -1,3 +1,6 @@
+import struct
+from datetime import datetime
+
 import psutil
 import random
 

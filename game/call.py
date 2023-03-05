@@ -225,7 +225,6 @@ def over_map_call(fx):
     """
     if init.map_data.is_town():
         return
-
     if not init.map_data.is_open_door():
         return
     empty_addr = address.GtKbAddr

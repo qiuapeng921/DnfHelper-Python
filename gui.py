@@ -4,7 +4,7 @@ import time
 import xcgui._xcgui as gui
 from xcgui import XApp, XWindow, XButton, XEdit, XShapeText
 
-from common import logger, helper, convert
+from common import logger, helper
 
 svgIcon = '<svg t="1674984352573" class="icon" viewBox="0 0 1024 1024" version="1.1" ' \
           'xmlns="http://www.w3.org/2000/svg" p-id="10315" width="16" height="16"><path d="M901.957085 ' \
@@ -25,7 +25,7 @@ version = '1.0.0'
 
 class DemoWindow(XWindow):
     def __init__(self):
-        super(DemoWindow, self).__init__(0, 0, 300, 400, "情歌 √ 当前时间 {}".format(convert.get_now_date()), 0,
+        super(DemoWindow, self).__init__(0, 0, 300, 400, "情歌 √ 当前时间 {}".format(helper.get_now_date()), 0,
                                          gui.window_style_modal)
         _thread.start_new_thread(self.title_time, ())
 
@@ -71,13 +71,13 @@ class DemoWindow(XWindow):
             time.sleep(1)
             self.run_time_value.setText(helper.get_app_run_time())
             self.run_time_value.redraw()
-            self.edit_content.addTextUser("{}\n".format(convert.get_now_date()))
+            self.edit_content.addTextUser("{}\n".format(helper.get_now_date()))
             self.edit_content.redraw()
 
     def title_time(self):
         while 1:
             time.sleep(1)
-            self.setTitle("情歌 √ 当前时间 {}".format(convert.get_now_date()))
+            self.setTitle("情歌 √ 当前时间 {}".format(helper.get_now_date()))
             self.redraw()
 
 
