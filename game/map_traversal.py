@@ -1,14 +1,42 @@
-from common import mem
-from game import map_data, call, structure, address
+import _thread
+import time
+
+from common import logger
+from game import init, call, mem, address
+
+
+class Screen:
+    def __init__(self):
+        self._switch = False
+
+    def screen_switch(self):
+        self._switch = not self._switch
+        if self._switch:
+            _thread.start_new_thread(self.screen_thread, ())
+            logger.info("技能全屏开启")
+        else:
+            self._switch = False
+            logger.info("技能全屏关闭")
+
+    def screen_thread(self):
+        while self._switch:
+            time.sleep(0.1)
+            full_screen()
+
+
+def screen_kill():
+    """秒杀完毕"""
+    call.skill_call(0, 54141, 0, 0, 0, 0, 1)
+    logger.info("秒杀完毕 [ √ ]")
 
 
 def full_screen():
     """全屏遍历"""
-    map_obj = map_data.MapData(mem)
-    if map_obj.get_stat() is not 3:
+    map_obj = init.map_data.MapData(mem)
+    if map_obj.get_stat() != 3:
         return
 
-    data = structure.Traversal()
+    data = init.globle.Traversal()
     data.rw_addr = call.person_ptr()
     data.MapData = mem.read_long(mem.read_long(data.rw_addr + address.DtPyAddr) + 16)
     data.Start = mem.read_long(data.MapData + address.DtKs2)

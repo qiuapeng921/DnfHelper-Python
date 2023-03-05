@@ -1,5 +1,5 @@
+from common import globle
 from game import address as addr, call
-from game.structure import CoordinateType
 
 
 class MapData:
@@ -58,18 +58,18 @@ class MapData:
 
         return False
 
-    def get_boss_room(self) -> CoordinateType:
+    def get_boss_room(self) -> globle.CoordinateType:
         """获取boss房间坐标"""
-        result = CoordinateType()
+        result = globle.CoordinateType()
         rw = self.mem
         room_data = rw.read_long(rw.read_long(rw.read_long(addr.FJBHAddr) + addr.SJAddr) + addr.MxPyAddr)
         result.x = self.decode(self.mem.read_int(room_data + addr.BOSSRoomXAddr))
         result.y = self.decode(self.mem.read_int(room_data + addr.BOSSRoomYAddr))
         return result
 
-    def get_cut_room(self) -> CoordinateType:
+    def get_cut_room(self) -> globle.CoordinateType:
         """获取当前房间坐标"""
-        result = CoordinateType()
+        result = globle.CoordinateType()
         rw = self.mem
         room_data = rw.read_long(rw.read_long(rw.read_long(addr.FJBHAddr) + addr.SJAddr) + addr.MxPyAddr)
         result.x = self.mem.read_int(room_data + addr.CutRoomXAddr)
@@ -88,9 +88,9 @@ class MapData:
         """获取地图名称"""
         pass
 
-    def read_coordinate(self, param: int) -> CoordinateType:
+    def read_coordinate(self, param: int) -> globle.CoordinateType:
         """读取坐标"""
-        coordinate = CoordinateType()
+        coordinate = globle.CoordinateType()
         if self.mem.ReadInt(param + addr.LxPyAddr) == 273:
             ptr = self.mem.read_long(param + addr.DqZbAddr)
             coordinate.x = self.mem.read_float(ptr + 0)

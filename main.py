@@ -6,10 +6,9 @@ import time
 import win32api
 import win32con
 
-import game
-from common import logger, globle, mem, helper
+from common import logger, globle, helper
 from driver import driver
-from game import call, address
+from game import mem, init, init_empty_addr
 
 hotkey_run = True
 
@@ -23,6 +22,7 @@ def hotkey():
     user32.RegisterHotKey(None, 0, 0, win32con.VK_F4)
     user32.RegisterHotKey(None, 0, 0, win32con.VK_END)
     user32.RegisterHotKey(None, 0, 0, 192)  # 波浪
+
     # user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_UP)
     # user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_DOWN)
     # user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_LEFT)
@@ -35,27 +35,29 @@ def hotkey():
     # 以下为检测热键是否被按下，并在最后释放快捷键
     msg = ctypes.wintypes.MSG()
     while hotkey_run:
-        time.sleep(0.1)
+        time.sleep(0.5)
         if user32.GetMessageA(ctypes.byref(msg), None, 0, 0) > 0:
             if msg.message == win32con.WM_HOTKEY:
                 if win32api.HIWORD(msg.lParam) == win32con.VK_F1:
                     print("VK_F1")
+                    init.traversal.screen_switch()
                 if win32api.HIWORD(msg.lParam) == win32con.VK_F2:
                     print("VK_F2")
                 if win32api.HIWORD(msg.lParam) == win32con.VK_F3:
                     print("VK_F3")
                 if win32api.HIWORD(msg.lParam) == win32con.VK_END:
+                    init.auto.switch()
                     print("VK_END")
                 if win32api.HIWORD(msg.lParam) == 192:
                     print("波浪")
-                if win32api.HIWORD(msg.lParam) == win32con.VK_UP:
-                    print("上")
-                if win32api.HIWORD(msg.lParam) == win32con.VK_DOWN:
-                    print("下")
-                if win32api.HIWORD(msg.lParam) == win32con.VK_LEFT:
-                    print("左")
-                if win32api.HIWORD(msg.lParam) == win32con.VK_RIGHT:
-                    print("右")
+                # if win32api.HIWORD(msg.lParam) == win32con.VK_UP:
+                #     print("上")
+                # if win32api.HIWORD(msg.lParam) == win32con.VK_DOWN:
+                #     print("下")
+                # if win32api.HIWORD(msg.lParam) == win32con.VK_LEFT:
+                #     print("左")
+                # if win32api.HIWORD(msg.lParam) == win32con.VK_RIGHT:
+                #     print("右")
 
             user32.TranslateMessage(ctypes.byref(msg))
             user32.DispatchMessageA(ctypes.byref(msg))
@@ -83,9 +85,8 @@ if __name__ == '__main__':
         logger.info("驱动加载成功")
         globle.process_id = process_id
         mem.set_process_id(process_id)
-        game.init_empty_addr()
-        call.skill_call(0, 54141, 0, 0, 0, 0, 1.0)
-        # hotkey()
+        init_empty_addr()
+        hotkey()
     except Exception as err:
         logger.error(err.args)
     except KeyboardInterrupt as err:
@@ -93,7 +94,7 @@ if __name__ == '__main__':
         logger.error(err)
     finally:
         pass
-        # if int(driver.hService) > 0:
-        #     pass
-        # logger.info("卸载驱动{}".format(driver.un_load_driver()))
-        # hotkey_run = False
+        if int(driver.hService) > 0:
+            pass
+        logger.info("卸载驱动{}".format(driver.un_load_driver()))
+        hotkey_run = False

@@ -1,4 +1,4 @@
-from common import convert
+from common import helper
 from game import call, address
 
 
@@ -17,11 +17,11 @@ class Pack:
         :return:
         """
         cls.data = call.sub_rsp(256)
-        cls.data = convert.add_list(cls.data, [72, 185], convert.int_to_bytes(address.FbAddr, 8))
-        cls.data = convert.add_list(cls.data, [186], convert.int_to_bytes(params, 4))
-        cls.data = convert.add_list(cls.data, [72, 184], convert.int_to_bytes(address.HcCallAddr, 8))
-        cls.data = convert.add_list(cls.data, [255, 208])
-        cls.data = convert.add_list(cls.data, call.add_rsp(256))
+        cls.data = helper.add_list(cls.data, [72, 185], helper.int_to_bytes(address.FbAddr, 8))
+        cls.data = helper.add_list(cls.data, [186], helper.int_to_bytes(params, 4))
+        cls.data = helper.add_list(cls.data, [72, 184], helper.int_to_bytes(address.HcCallAddr, 8))
+        cls.data = helper.add_list(cls.data, [255, 208])
+        cls.data = helper.add_list(cls.data, call.add_rsp(256))
 
     @classmethod
     def jm_call(cls, params, length):
@@ -30,19 +30,19 @@ class Pack:
         :param length: int
         :return:
         """
-        cls.data = convert.add_list(cls.data, call.sub_rsp(256))
-        cls.data = convert.add_list(cls.data, [72, 185], convert.int_to_bytes(address.FbAddr, 8))
-        cls.data = convert.add_list(cls.data, [72, 186], convert.int_to_bytes(params, 8))
+        cls.data = helper.add_list(cls.data, call.sub_rsp(256))
+        cls.data = helper.add_list(cls.data, [72, 185], helper.int_to_bytes(address.FbAddr, 8))
+        cls.data = helper.add_list(cls.data, [72, 186], helper.int_to_bytes(params, 8))
         if length == 1:
-            cls.data = convert.add_list(cls.data, [72, 184], convert.int_to_bytes(address.JmB1CallAddr, 8))
+            cls.data = helper.add_list(cls.data, [72, 184], helper.int_to_bytes(address.JmB1CallAddr, 8))
         if length == 2:
-            cls.data = convert.add_list(cls.data, [72, 184], convert.int_to_bytes(address.JmB2CallAddr, 8))
+            cls.data = helper.add_list(cls.data, [72, 184], helper.int_to_bytes(address.JmB2CallAddr, 8))
         if length == 4:
-            cls.data = convert.add_list(cls.data, [72, 184], convert.int_to_bytes(address.JmB3CallAddr, 8))
+            cls.data = helper.add_list(cls.data, [72, 184], helper.int_to_bytes(address.JmB3CallAddr, 8))
         if length == 8:
-            cls.data = convert.add_list(cls.data, [72, 184], convert.int_to_bytes(address.JmB4CallAddr, 8))
-        cls.data = convert.add_list(cls.data, [255, 208])
-        cls.data = convert.add_list(cls.data, call.add_rsp(256))
+            cls.data = helper.add_list(cls.data, [72, 184], helper.int_to_bytes(address.JmB4CallAddr, 8))
+        cls.data = helper.add_list(cls.data, [255, 208])
+        cls.data = helper.add_list(cls.data, call.add_rsp(256))
 
     @classmethod
     def fb_call(cls):
@@ -50,11 +50,11 @@ class Pack:
         发包call
         :return:
         """
-        cls.data = convert.add_list(cls.data, call.sub_rsp(256))
-        cls.data = convert.add_list(cls.data, [72, 184], convert.int_to_bytes(address.FbCallAddr, 8))
-        cls.data = convert.add_list(cls.data, [255, 208])
-        cls.data = convert.add_list(cls.data, call.add_rsp(256))
-        call.compile_call(bytes(cls.data))
+        cls.data = helper.add_list(cls.data, call.sub_rsp(256))
+        cls.data = helper.add_list(cls.data, [72, 184], helper.int_to_bytes(address.FbCallAddr, 8))
+        cls.data = helper.add_list(cls.data, [255, 208])
+        cls.data = helper.add_list(cls.data, call.add_rsp(256))
+        call.compile_call(cls.data)
         cls.data.clear()
 
     @classmethod

@@ -1,15 +1,15 @@
-import configparser
 import logging
+from configparser import ConfigParser
 
 from common import memory
 
-ini = configparser.ConfigParser()
-
-mem = memory.Memory()
+try:
+    conf = ConfigParser()
+    conf.read('helper.ini', encoding="utf-8-sig")
+except Exception as e:
+    print(e)
+    exit()
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 logger.addHandler(logging.StreamHandler())
-
-if __name__ == "__main__":
-    pass

@@ -40,9 +40,3 @@ class Memory:
 
     def allocate(self, length):
         return self.pm.allocate(length)
-
-    def memory(self) -> Pymem:
-        """
-        获取Pymem实例
-        """
-        return self.pm

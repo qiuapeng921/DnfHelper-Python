@@ -2,13 +2,12 @@
 初始化全局变量
 """
 
-from common import mem
-from game.auto import Auto
-from game.func import FullScreen
-from game.map_data import MapData
-from game.structure import GlobalData
+from common import globle
+from game import auto, map_data,game_map, mem, map_traversal, pack
 
-full_screen = FullScreen(mem)
-auto = Auto(mem)
-map_data = MapData(mem)
-global_data = GlobalData()
+auto = auto.Auto(mem)
+traversal = map_traversal.Screen()
+map_data = map_data.MapData(mem)
+game_map = game_map.GameMap()
+global_data = globle.GlobalData()
+pack = pack.Pack()

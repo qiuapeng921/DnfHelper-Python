@@ -1,7 +1,6 @@
-from common import mem
-from game import address
+from common import globle
+from game import mem, address
 from game.map_data import MapData
-from game.structure import CoordinateType, GameMapType, MapDataType, MapNodeType
 
 
 class GameMap:
@@ -85,7 +84,7 @@ class GameMap:
         :return: (int, [CoordinateType])
         """
         x, y, k = (0, 0, 0)
-        temp_coordinates = CoordinateType()
+        temp_coordinates = globle.CoordinateType()
         for i in range(len(simulation_route)):
             x = (simulation_route[i].x + 2) % 3
             y = (simulation_route[i].y + 2) % 3
@@ -106,9 +105,9 @@ class GameMap:
         :param map_channel: [int]
         :return: [[GameMapType]]
         """
-        game_map = [[GameMapType]] * width
+        game_map = [[globle.GameMapType]] * width
         for x in range(width):
-            game_map[x] = [GameMapType] * height
+            game_map[x] = [globle.GameMapType] * height
 
         i, x, y = (0, 0, 0)
         for x in range(width):
@@ -128,10 +127,10 @@ class GameMap:
         return game_map
 
     @classmethod
-    def map_data(cls) -> MapDataType:
+    def map_data(cls) -> globle.MapDataType:
         """地图数据"""
         map_obj = MapData(mem)
-        data = MapDataType()
+        data = globle.MapDataType()
 
         room_data = mem.read_long(mem.read_long(mem.read_long(address.FJBHAddr) + address.SJAddr) + address.MxPyAddr)
         room_index = map_obj.decode(room_data + address.SyPyAddr)
@@ -168,8 +167,8 @@ class GameMap:
         :param reality_route: [CoordinateType]
         :return: (int, [[CoordinateType]])
         """
-        start_coordinate = CoordinateType()
-        end_coordinate = CoordinateType()
+        start_coordinate = globle.CoordinateType()
+        end_coordinate = globle.CoordinateType()
 
         if map_start.x == map_end.x and map_start.y == map_end.y:
             return 0, None
@@ -192,9 +191,9 @@ class GameMap:
         :param height: int
         :return: [[GameMapType]]
         """
-        map_label = [[GameMapType]] * 3
+        map_label = [[globle.GameMapType]] * 3
         for x in range(width * 3):
-            map_label[x] = [GameMapType] * height * 3
+            map_label[x] = [globle.GameMapType] * height * 3
 
         for y in range(height):
             for x in range(width):
@@ -222,10 +221,10 @@ class GameMap:
         :return: [CoordinateType]
         """
         exist_open_list, exist_close_list = False, False  # 已存在开放列表, 已存在关闭列表
-        wait_handle_coordinate = CoordinateType()  # 待检测坐标
-        wait_handle_node, tmp_node = MapNodeType(), MapNodeType()  # 待检测节点, 临时节点
-        open_list = [MapNodeType]  # 开放列表
-        close_list = [MapNodeType]  # 关闭列表
+        wait_handle_coordinate = globle.CoordinateType()  # 待检测坐标
+        wait_handle_node, tmp_node = globle.MapNodeType(), globle.MapNodeType()  # 待检测节点, 临时节点
+        open_list = [globle.MapNodeType]  # 开放列表
+        close_list = [globle.MapNodeType]  # 关闭列表
 
         short_est_num = 0  # 最短编号
         min_f, guess_g = 0, 0  # 最小F值, 预测G值
@@ -237,7 +236,7 @@ class GameMap:
         map_label[map_start.x][map_start.y].background_color = 0x0000FF
         open_list.insert(0, tmp_node)
 
-        move_arr = [CoordinateType]
+        move_arr = [globle.CoordinateType]
 
         while True:
             min_f = 0

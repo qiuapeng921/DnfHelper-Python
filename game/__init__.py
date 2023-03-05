@@ -1,5 +1,7 @@
-from common import mem
+from common import memory
 from game import address
+
+mem = memory.Memory()
 
 
 def init_empty_addr():
