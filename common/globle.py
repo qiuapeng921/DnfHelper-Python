@@ -16,7 +16,7 @@ class GlobalData:
 class CoordinateType:
     x, y, z = (0, 0, 0)
 
-    def __int__(self):
+    def __init__(self):
         self.x = 0
         self.y = 0
         self.z = 0
@@ -36,7 +36,7 @@ class MapDataType:
     channel_num = 0  # 通道数量
     tmp = 0  # 临时变量
 
-    def __int__(self):
+    def __init__(self):
         self.map_name = ""
         self.map_um = 0
         self.map_channel = [int]
@@ -60,7 +60,7 @@ class GameMapType:
     map_channel = 0  # 地图通道
     background_color = 0  # 背景颜色
 
-    def __int__(self):
+    def __init__(self):
         self.map_coordinates = CoordinateType()
         self.left = False
         self.right = False
@@ -78,7 +78,7 @@ class MapNodeType:
     current_coordinates = CoordinateType()  # 当前坐标
     final_coordinates = CoordinateType()  # 最终坐标
 
-    def __int__(self):
+    def __init__(self):
         self.f = 0
         self.g = 0
         self.h = 0
@@ -106,7 +106,7 @@ class Traversal:
     gw_coordinate = CoordinateType()  # 怪物坐标
     wp_coordinate = CoordinateType()  # 物品坐标
 
-    def __int__(self):
+    def __init__(self):
         self.rw_addr = 0
         self.map_data = 0
         self.start = 0

@@ -101,5 +101,5 @@ if __name__ == '__main__':
         pass
         if int(driver.hService) > 0:
             pass
-        logger.info("卸载驱动{}".format(driver.un_load_driver()))
+        # logger.info("卸载驱动{}".format(driver.un_load_driver()))
         hotkey_run = False
