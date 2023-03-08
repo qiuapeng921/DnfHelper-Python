@@ -137,6 +137,9 @@ class Auto:
         time.sleep(0.2)
         call.area_call(init.globle.GlobalData.map_id)
 
+        time.sleep(0.2)
+        cls.select_map()
+
     @classmethod
     def select_map(cls):
         """选图"""

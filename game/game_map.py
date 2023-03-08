@@ -191,7 +191,7 @@ class GameMap:
         :param height: int
         :return: [[GameMapType]]
         """
-        map_label = [[globle.GameMapType()] for _ in range(width*3)]
+        map_label = [[globle.GameMapType()] for _ in range(width * 3)]
         for x in range(width * 3):
             map_label[x] = [globle.GameMapType() for _ in range(height * 3)]
 
@@ -236,7 +236,7 @@ class GameMap:
         map_label[map_start.x][map_start.y].background_color = 0x0000FF
         open_list.insert(0, tmp_node)
 
-        move_arr = [globle.CoordinateType]
+        move_arr = [globle.CoordinateType()]
 
         while True:
             min_f = 0
