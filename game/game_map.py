@@ -64,11 +64,11 @@ class GameMap:
             [1, 1, 1, 1],
         ]
         if fx <= 15:
-            for i in range(3):
-                direction_arr[i] = direction_set[tx][i]
+            for i in range(4):
+                direction_arr.insert(i, direction_set[tx][i])
         else:
-            for i in range(3):
-                direction_arr[i] = 0
+            for i in range(4):
+                direction_arr.insert(i, 0)
 
         if direction_arr[fx] == 1:
             return True
@@ -105,11 +105,11 @@ class GameMap:
         :param map_channel: [int]
         :return: [[GameMapType]]
         """
-        game_map = [[globle.GameMapType]] * width
+        game_map = [[globle.GameMapType()] for _ in range(width)]
         for x in range(width):
-            game_map[x] = [globle.GameMapType] * height
+            game_map[x] = [globle.GameMapType() for _ in range(height)]
 
-        i, x, y = (0, 0, 0)
+        i = 0
         for x in range(width):
             for y in range(height):
                 game_map[x][y].map_coordinates.x = x
@@ -140,7 +140,7 @@ class GameMap:
         data.Tmp = mem.read_long(mem.read_long(room_data + address.SzPyAddr) + 32 * room_index + 8)
         data.ChannelNum = data.Width * data.Height
 
-        for i in range(len(data.ChannelNum)):
+        for i in range(data.ChannelNum):
             data.map_channel.insert(0 + i, mem.read_int(data.Tmp + i * 4))
 
         data.start_zb.x = map_obj.get_cut_room().x + 1
@@ -191,20 +191,20 @@ class GameMap:
         :param height: int
         :return: [[GameMapType]]
         """
-        map_label = [[globle.GameMapType]] * 3
+        map_label = [[globle.GameMapType()] for _ in range(width*3)]
         for x in range(width * 3):
-            map_label[x] = [globle.GameMapType] * height * 3
+            map_label[x] = [globle.GameMapType() for _ in range(height * 3)]
 
         for y in range(height):
             for x in range(width):
                 map_label[(x + 1) * 3 - 2][(y + 1) * 3 - 2].background_color = 0xFFFFFF
-                if map_arr[x][y].Left:
+                if map_arr[x][y].left:
                     map_label[(x + 1) * 3 - 3][(y + 1) * 3 - 2].background_color = 0xFFFFFF
-                if map_arr[x][y].Right:
+                if map_arr[x][y].right:
                     map_label[(x + 1) * 3 - 1][(y + 1) * 3 - 2].background_color = 0xFFFFFF
-                if map_arr[x][y].Up:
+                if map_arr[x][y].up:
                     map_label[(x + 1) * 3 - 2][(y + 1) * 3 - 3].background_color = 0xFFFFFF
-                if map_arr[x][y].Down:
+                if map_arr[x][y].down:
                     map_label[(x + 1) * 3 - 2][(y + 1) * 3 - 1].background_color = 0xFFFFFF
 
         return map_arr
@@ -223,8 +223,8 @@ class GameMap:
         exist_open_list, exist_close_list = False, False  # 已存在开放列表, 已存在关闭列表
         wait_handle_coordinate = globle.CoordinateType()  # 待检测坐标
         wait_handle_node, tmp_node = globle.MapNodeType(), globle.MapNodeType()  # 待检测节点, 临时节点
-        open_list = [globle.MapNodeType]  # 开放列表
-        close_list = [globle.MapNodeType]  # 关闭列表
+        open_list = [globle.MapNodeType()]  # 开放列表
+        close_list = [globle.MapNodeType()]  # 关闭列表
 
         short_est_num = 0  # 最短编号
         min_f, guess_g = 0, 0  # 最小F值, 预测G值
@@ -306,7 +306,7 @@ class GameMap:
 
                 exist_close_list = False
                 for x in range(len(close_list)):
-                    if close_list[x].current_coordinates.X == wait_handle_coordinate.x and \
+                    if close_list[x].current_coordinates.x == wait_handle_coordinate.x and \
                             close_list[x].current_coordinates.y == wait_handle_coordinate.y:
                         exist_close_list = True
                         break
@@ -319,7 +319,7 @@ class GameMap:
                     if open_list[x].current_coordinates.x == wait_handle_coordinate.x and \
                             open_list[x].current_coordinates.y == wait_handle_coordinate.y:
 
-                        if wait_handle_coordinate.x != tmp_node.current_coordinates.X or \
+                        if wait_handle_coordinate.x != tmp_node.current_coordinates.x or \
                                 wait_handle_coordinate.y != tmp_node.current_coordinates.y:
                             guess_g = 14
                         else:

@@ -44,7 +44,7 @@ class MapData:
         """是否boss房"""
         cut = self.get_cut_room()
         boss = self.get_boss_room()
-        if cut.X == boss.X and cut.Y == boss.Y:
+        if cut.x == boss.x and cut.y == boss.y:
             return True
 
         return False
@@ -63,8 +63,8 @@ class MapData:
         result = globle.CoordinateType()
         rw = self.mem
         room_data = rw.read_long(rw.read_long(rw.read_long(addr.FJBHAddr) + addr.SJAddr) + addr.MxPyAddr)
-        result.x = self.decode(self.mem.read_int(room_data + addr.BOSSRoomXAddr))
-        result.y = self.decode(self.mem.read_int(room_data + addr.BOSSRoomYAddr))
+        result.x = self.decode(room_data + addr.BOSSRoomXAddr)
+        result.y = self.decode(room_data + addr.BOSSRoomYAddr)
         return result
 
     def get_cut_room(self) -> globle.CoordinateType:

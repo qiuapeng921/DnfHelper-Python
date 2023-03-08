@@ -186,10 +186,10 @@ def drift_call(ptr, x, y, z, speed):
 def move_call(max_map, mix_map, x, y):
     """移动Call"""
     role_ptr = mem.read_long(address.JSPtrAddr)
-    mem.read_int(address.CzSyRdxAddr, max_map)
-    mem.read_int(address.CzSyRdxAddr + 4, mix_map)
-    mem.read_int(address.CzSyRdxAddr + 8, x)
-    mem.read_int(address.CzSyRdxAddr + 12, y)
+    mem.write_int(address.CzSyRdxAddr, max_map)
+    mem.write_int(address.CzSyRdxAddr + 4, mix_map)
+    mem.write_int(address.CzSyRdxAddr + 8, x)
+    mem.write_int(address.CzSyRdxAddr + 12, y)
     shell_code = helper.add_list(sub_rsp(256), [72, 186], helper.int_to_bytes(address.CzSyRdxAddr, 8))
     shell_code = helper.add_list(shell_code, [72, 185], helper.int_to_bytes(role_ptr, 8))
     shell_code = helper.add_list(shell_code, call(address.CzSyCallAddr))
@@ -210,10 +210,10 @@ def area_call(map_num):
     shell_code = helper.add_list(shell_code, helper.add_list([72, 184], helper.int_to_bytes(tmp_region_call, 8)))
     shell_code = helper.add_list(shell_code, [255, 208, 72, 131, 196, 48])
     compile_call(shell_code)
-    max_region = mem.ReadInt(region_addr + address.QyPyAddr + 0)
-    min_region = mem.ReadInt(region_addr + address.QyPyAddr + 4)
-    town_x = mem.ReadInt(region_addr + address.QyPyAddr + 8)
-    town_y = mem.ReadInt(region_addr + address.QyPyAddr + 12)
+    max_region = mem.read_int(region_addr + address.QyPyAddr + 0)
+    min_region = mem.read_int(region_addr + address.QyPyAddr + 4)
+    town_x = mem.read_int(region_addr + address.QyPyAddr + 8)
+    town_y = mem.read_int(region_addr + address.QyPyAddr + 12)
     return move_call(max_region, min_region, town_x, town_y)
 
 

@@ -41,7 +41,7 @@ def hotkey():
             if msg.message == win32con.WM_HOTKEY:
                 if win32api.HIWORD(msg.lParam) == win32con.VK_F1:
                     print("VK_F1")
-                    init.traversal.screen_switch()
+                    # init.traversal.screen_switch()
                 if win32api.HIWORD(msg.lParam) == win32con.VK_F2:
                     print("VK_F2")
                 if win32api.HIWORD(msg.lParam) == win32con.VK_F3:
@@ -87,7 +87,11 @@ if __name__ == '__main__':
         logger.info("驱动加载成功")
         mem.set_process_id(process_id)
         init_empty_addr()
-        hotkey()
+        import game.init
+        game.init.pack.select_map()
+        data = game.init.game_map.map_data()
+        print(data)
+        # hotkey()
     except Exception as err:
         logger.error(err.args)
     except KeyboardInterrupt as err:
