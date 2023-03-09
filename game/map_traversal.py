@@ -43,12 +43,12 @@ def full_screen(code_config: list):
 
     data = init.globle.Traversal()
     data.rw_addr = call.person_ptr()
-    data.MapData = mem.read_long(mem.read_long(data.rw_addr + address.DtPyAddr) + 16)
-    data.Start = mem.read_long(data.MapData + address.DtKs2)
-    data.End = mem.read_long(data.MapData + address.DtJs2)
-    data.ObjNum = (data.End - data.Start) / 24
+    data.map_data = mem.read_long(mem.read_long(data.rw_addr + address.DtPyAddr) + 16)
+    data.start = mem.read_long(data.map_data + address.DtKs2)
+    data.end = mem.read_long(data.map_data + address.DtJs2)
+    data.obj_num = (data.end - data.start) / 24
     num = 0
-    for data.obj_tmp in range(data.ObjNum):
+    for data.obj_tmp in range(data.obj_num):
         data.obj_ptr = mem.read_long(data.start + data.obj_tmp * 24)
         data.obj_ptr = mem.read_long(data.obj_ptr + 16) - 32
         if data.obj_ptr > 0:
