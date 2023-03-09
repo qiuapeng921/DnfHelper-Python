@@ -1,7 +1,9 @@
 import ctypes.wintypes
 import os
+import sys
 import tempfile
 import time
+import traceback
 
 import win32api
 import win32con
@@ -92,8 +94,15 @@ if __name__ == '__main__':
         data = game.init.game_map.map_data()
         print(data)
         # hotkey()
+        i = 0
     except Exception as err:
-        logger.error(err.args)
+        except_type, _, except_traceback = sys.exc_info()
+        print(except_type)
+        print(err.args)
+        print(except_traceback)
+        print('-----------')
+        for i in traceback.extract_tb(except_traceback):
+            print(i)
     except KeyboardInterrupt as err:
         hotkey_run = False
         logger.error(err)
