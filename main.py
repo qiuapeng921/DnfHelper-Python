@@ -88,7 +88,7 @@ if __name__ == '__main__':
         mem.set_process_id(process_id)
         init_empty_addr()
         import game.init
-        game.init.pack.select_map()
+        # game.init.pack.select_map()
         data = game.init.game_map.map_data()
         print(data)
         # hotkey()
