@@ -207,7 +207,7 @@ class GameMap:
                 if map_arr[x][y].down:
                     map_label[(x + 1) * 3 - 2][(y + 1) * 3 - 1].background_color = 0xFFFFFF
 
-        return map_arr
+        return map_label
 
     @classmethod
     def route_calculate(cls, map_label, map_start, map_end, width, height):
