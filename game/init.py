@@ -3,7 +3,7 @@
 """
 
 from common import globle
-from game import auto, map_data, game_map, mem, map_traversal, pack, address, other
+from game import auto, map_data, game_map, mem, map_traversal, pack, address, other, task
 
 auto = auto.Auto()
 traversal = map_traversal.Screen(mem)
@@ -12,6 +12,7 @@ game_map = game_map.GameMap()
 global_data = globle.GlobalData()
 pack = pack.Pack()
 pick = other.Pickup(mem, pack, map_data)
+task = task.Task(mem)
 
 
 def init_empty_addr():
