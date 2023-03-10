@@ -31,7 +31,7 @@ class MapDataType:
     end_zb = CoordinateType()  # 终点坐标
     width = 0  # 宽
     height = 0  # 高
-    map_route = [CoordinateType()]  # 地图走法
+    map_route = []  # 地图走法
     consume_fatigue = 0  # 消耗疲劳
     channel_num = 0  # 通道数量
     tmp = 0  # 临时变量
@@ -39,12 +39,12 @@ class MapDataType:
     def __init__(self):
         self.map_name = ""
         self.map_um = 0
-        self.map_channel = [int]
+        self.map_channel = []
         self.start_zb = CoordinateType()
         self.end_zb = CoordinateType()
         self.width = 0
         self.height = 0
-        self.map_route = [CoordinateType()]
+        self.map_route = []
         self.consume_fatigue = 0
         self.channel_num = 0
         self.tmp = 0

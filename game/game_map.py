@@ -110,8 +110,8 @@ class GameMap:
             game_map[x] = [globle.GameMapType() for _ in range(height)]
 
         i = 0
-        for x in range(width):
-            for y in range(height):
+        for y in range(height):
+            for x in range(width):
                 game_map[x][y].map_coordinates.x = x
                 game_map[x][y].map_coordinates.y = y
                 game_map[x][y].map_channel = map_channel[i]
@@ -135,13 +135,13 @@ class GameMap:
         room_data = mem.read_long(mem.read_long(mem.read_long(address.FJBHAddr) + address.SJAddr) + address.MxPyAddr)
         room_index = map_obj.decode(room_data + address.SyPyAddr)
 
-        data.Width = mem.read_int(mem.read_long(room_data + address.KgPyAddr) + room_index * 8 + 0)
-        data.Height = mem.read_int(mem.read_long(room_data + address.KgPyAddr) + room_index * 8 + 4)
-        data.Tmp = mem.read_long(mem.read_long(room_data + address.SzPyAddr) + 32 * room_index + 8)
-        data.ChannelNum = data.Width * data.Height
+        data.width = mem.read_int(mem.read_long(room_data + address.KgPyAddr) + room_index * 8 + 0)
+        data.height = mem.read_int(mem.read_long(room_data + address.KgPyAddr) + room_index * 8 + 4)
+        data.tmp = mem.read_long(mem.read_long(room_data + address.SzPyAddr) + 32 * room_index + 8)
+        data.channel_num = data.width * data.height
 
-        for i in range(data.ChannelNum):
-            data.map_channel.insert(0 + i, mem.read_int(data.Tmp + i * 4))
+        for i in range(data.channel_num):
+            data.map_channel.insert(0 + i, mem.read_int(data.tmp + i * 4))
 
         data.start_zb.x = map_obj.get_cut_room().x + 1
         data.start_zb.y = map_obj.get_cut_room().y + 1
@@ -151,8 +151,7 @@ class GameMap:
         if data.start_zb.x == data.end_zb.x and data.start_zb.y == data.end_zb.y:
             return data
 
-        data.ConsumeFatigue = cls.get_route(data.map_channel, data.Width, data.Height, data.start_zb, data.end_zb,
-                                            data.map_route)
+        data.consume_fatigue = cls.get_route(data.map_channel, data.width, data.height, data.start_zb, data.end_zb, data.map_route)
         return data
 
     @classmethod
