@@ -43,11 +43,6 @@ if __name__ == '__main__':
         for i in traceback.extract_tb(except_traceback):
             print(i)
     except KeyboardInterrupt as err:
-        hotkey_run = False
         print(err)
     finally:
         pass
-        if int(driver.hService) > 0:
-            pass
-        # logger.info("卸载驱动{}".format(driver.un_load_driver()))
-        hotkey_run = False
