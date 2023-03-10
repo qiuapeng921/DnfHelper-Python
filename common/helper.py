@@ -4,6 +4,8 @@ from datetime import datetime
 import psutil
 import random
 
+import win32api
+
 
 def get_process_id_by_name(name: str) -> int:
     pid = 0
@@ -104,3 +106,7 @@ def get_empty_bytes(count: int) -> bytes:
         result.append(0)
 
     return bytes(result)
+
+
+def message_box(msg):
+    win32api.MessageBoxEx(0, msg, "Helper")

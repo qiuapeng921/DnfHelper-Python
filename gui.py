@@ -20,8 +20,8 @@ svgIcon = '<svg t="1674984352573" class="icon" viewBox="0 0 1024 1024" version="
           '4.479813 112.720637-29.182784 148.473814-72.530311 35.710512-43.176868 59.816174-103.377026 ' \
           '53.245781-163.36386z" fill="#1afa29" opacity=".65" p-id="10316"></path></svg>'
 
-
 version = '1.0.0'
+
 
 class DemoWindow(XWindow):
     def __init__(self):
@@ -79,6 +79,9 @@ class DemoWindow(XWindow):
             time.sleep(1)
             self.setTitle("情歌 √ 当前时间 {}".format(helper.get_now_date()))
             self.redraw()
+
+    def edit_content(self) -> XEdit:
+        return self.edit_content
 
 
 def main():
