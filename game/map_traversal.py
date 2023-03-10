@@ -67,3 +67,31 @@ class Screen:
                         num = num + 1
                         if num >= code_config[4]:
                             break
+
+    def follow_monster(self):
+        """跟随怪物"""
+        mem = self.mem
+        map_obj = init.map_data.MapData(mem)
+        if map_obj.get_stat() != 3:
+            return
+
+        data = init.globle.Traversal()
+        data.rw_addr = call.person_ptr()
+        data.map_data = mem.read_long(mem.read_long(data.rw_addr + address.DtPyAddr) + 16)
+        data.start = mem.read_long(data.map_data + address.DtKs2)
+        data.end = mem.read_long(data.map_data + address.DtJs2)
+        data.obj_num = (data.end - data.start) / 24
+        for data.obj_tmp in range(data.obj_num):
+            data.obj_ptr = mem.read_long(data.start + data.obj_tmp * 24)
+            data.obj_ptr = mem.read_long(data.obj_ptr + 16) - 32
+            if data.obj_ptr > 0:
+                data.obj_type_a = mem.read_int(data.obj_ptr + address.LxPyAddr)
+                if data.obj_type_a == 529 or data.obj_type_a == 545 or data.obj_type_a == 273 or data.obj_type_a == 61440:
+                    data.obj_camp = mem.read_int(data.obj_ptr + address.ZyPyAddr)
+                    data.obj_code = mem.read_int(data.obj_ptr + address.DmPyAddr)
+                    data.obj_blood = mem.read_long(data.obj_ptr + address.GwXlAddr)
+                    if data.obj_camp > 0 and data.obj_ptr != data.rw_addr:
+                        monster = map_obj.read_coordinate(data.obj_ptr)
+                        if data.obj_blood > 0:
+                            call.drift_call(data.rw_addr, monster.x, monster.y, 0, 2)
+                            time.sleep(0.3)

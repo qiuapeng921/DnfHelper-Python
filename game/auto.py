@@ -68,20 +68,25 @@ class Auto:
 
                 # 跟随怪物
                 if conf.getint("自动配置", "跟随打怪") == 1:
-                    # todo FollowMonster()
-                    pass
+                    init.traversal.follow_monster()
 
                 # 过图
                 if init.map_data.is_open_door() is True and init.map_data.is_boss_room() is False:
+                    # 捡物品
+                    init.pick.pack()
+                    # 过图
                     cls.pass_map()
                     continue
 
                 # 通关
                 if init.map_data.is_boss_room() is False:
                     if init.map_data.is_boss_room():
-                        # PackPickup()
+                        # 捡物品
+                        init.pick.pack()
+                        # 关闭功能
                         cls.start_func()
                         time.sleep(0.2)
+                        # 退出副本
                         cls.quit_map()
                         cls.firstEnterMap = False
 
