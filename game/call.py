@@ -89,7 +89,7 @@ def get_per_ptr_call(addr: int):
     shell_code = helper.add_list(shell_code, helper.int_to_bytes(addr, 8))
     shell_code = helper.add_list(shell_code, add_rsp(100))
     compile_call(shell_code)
-    return mem.read_int(addr)
+    return mem.read_long(addr)
 
 
 def person_ptr():
@@ -97,7 +97,7 @@ def person_ptr():
     return get_per_ptr_call(address.RwKbAddr)
 
 
-def skill_call(addr, code, harm, x, y, z, size):
+def skill_call(addr:int, code:int, harm:int, x:int, y:int, z:int, size:float):
     """
     技能call
     :param addr:int 触发地址

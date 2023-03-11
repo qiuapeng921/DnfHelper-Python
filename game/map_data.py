@@ -27,15 +27,15 @@ class MapData:
 
     def is_town(self) -> bool:
         """是否城镇"""
-        person_ptr = call.get_per_ptr_call(addr.RwKbAddr)
+        person_ptr = call.person_ptr()
         if self.mem.read_int(person_ptr + addr.DtPyAddr) == 0:
             return True
         return False
 
     def is_open_door(self) -> bool:
         """是否开门"""
-        person_ptr = call.get_per_ptr_call(addr.RwKbAddr)
-        encode_data = self.mem.read_int(self.mem.read_int(person_ptr + addr.DtPyAddr) + 16)
+        person_ptr = call.person_ptr()
+        encode_data = self.mem.read_long(self.mem.read_long(person_ptr + addr.DtPyAddr) + 16)
         if self.decode(encode_data + addr.SfKmAddr) == 0:
             return True
         return False
@@ -91,16 +91,16 @@ class MapData:
     def read_coordinate(self, param: int) -> globle.CoordinateType:
         """读取坐标"""
         coordinate = globle.CoordinateType()
-        if self.mem.ReadInt(param + addr.LxPyAddr) == 273:
+        if self.mem.read_int(param + addr.LxPyAddr) == 273:
             ptr = self.mem.read_long(param + addr.DqZbAddr)
-            coordinate.x = self.mem.read_float(ptr + 0)
-            coordinate.y = self.mem.read_float(ptr + 4)
-            coordinate.z = self.mem.read_float(ptr + 8)
+            coordinate.x = int(self.mem.read_float(ptr + 0))
+            coordinate.y = int(self.mem.read_float(ptr + 4))
+            coordinate.z = int(self.mem.read_float(ptr + 8))
         else:
             ptr = self.mem.read_long(param + addr.FxPyAddr)
-            coordinate.x = self.mem.read_float(ptr + 32)
-            coordinate.y = self.mem.read_float(ptr + 36)
-            coordinate.z = self.mem.read_float(ptr + 40)
+            coordinate.x = int(self.mem.read_float(ptr + 32))
+            coordinate.y = int(self.mem.read_float(ptr + 36))
+            coordinate.z = int(self.mem.read_float(ptr + 40))
 
         return coordinate
 

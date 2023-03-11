@@ -21,12 +21,12 @@ class Screen:
 
     def screen_thread(self):
         while self._switch:
-            code_config = conf.getint("自动配置", "全屏配置").split(",")
+            code_config = list(map(int, conf.get("自动配置", "全屏配置").split(",")))
             if len(code_config) != 5:
                 logger.info("全屏配置错误")
                 break
             rate = code_config[0]
-            time.sleep(rate / 100)
+            time.sleep(rate / 1000)
             self.full_screen(code_config)
 
     @classmethod
@@ -38,7 +38,7 @@ class Screen:
     def full_screen(self, code_config):
         """全屏遍历"""
         mem = self.mem
-        map_obj = init.map_data.MapData(mem)
+        map_obj = init.map_data
         if map_obj.get_stat() != 3:
             return
 
@@ -47,7 +47,7 @@ class Screen:
         data.map_data = mem.read_long(mem.read_long(data.rw_addr + address.DtPyAddr) + 16)
         data.start = mem.read_long(data.map_data + address.DtKs2)
         data.end = mem.read_long(data.map_data + address.DtJs2)
-        data.obj_num = (data.end - data.start) / 24
+        data.obj_num = int((data.end - data.start) / 24)
         num = 0
         for data.obj_tmp in range(data.obj_num):
             data.obj_ptr = mem.read_long(data.start + data.obj_tmp * 24)
@@ -63,7 +63,7 @@ class Screen:
                         code = code_config[1]
                         harm = code_config[2]
                         size = code_config[3]
-                        call.skill_call(data.rw_addr, code, harm, monster_coordinate.x, monster_coordinate.y, 0, size)
+                        call.skill_call(data.rw_addr, code, harm, monster_coordinate.x, monster_coordinate.y, 0, float(size))
                         num = num + 1
                         if num >= code_config[4]:
                             break
@@ -71,7 +71,7 @@ class Screen:
     def follow_monster(self):
         """跟随怪物"""
         mem = self.mem
-        map_obj = init.map_data.MapData(mem)
+        map_obj = init.map_data
         if map_obj.get_stat() != 3:
             return
 
@@ -80,7 +80,7 @@ class Screen:
         data.map_data = mem.read_long(mem.read_long(data.rw_addr + address.DtPyAddr) + 16)
         data.start = mem.read_long(data.map_data + address.DtKs2)
         data.end = mem.read_long(data.map_data + address.DtJs2)
-        data.obj_num = (data.end - data.start) / 24
+        data.obj_num = int((data.end - data.start) / 24)
         for data.obj_tmp in range(data.obj_num):
             data.obj_ptr = mem.read_long(data.start + data.obj_tmp * 24)
             data.obj_ptr = mem.read_long(data.obj_ptr + 16) - 32

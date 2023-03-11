@@ -26,11 +26,13 @@ class Auto:
     def switch(cls):
         """自动开关"""
         init.global_data.auto_switch = not init.global_data.auto_switch
+        cls.thread_switch = init.global_data.auto_switch
         if init.global_data.auto_switch:
             _thread.start_new_thread(cls.auto_thread, ())
             logger.info("自动刷图 [ √ ]")
         else:
             init.global_data.auto_switch = False
+            cls.thread_switch = False
             logger.info("自动刷图 [ x ]")
 
     @classmethod
@@ -73,9 +75,9 @@ class Auto:
                 # 过图
                 if init.map_data.is_open_door() is True and init.map_data.is_boss_room() is False:
                     # 捡物品
-                    init.pick.pack()
+                    # init.pick.pack()
                     # 过图
-                    cls.pass_map()
+                    # cls.pass_map()
                     continue
 
                 # 通关
@@ -134,13 +136,13 @@ class Auto:
             init.global_data.map_id = 0
 
         if auto_model == 2 and init.map_data.get_role_level() == 110:
-            map_ids = conf.get("自动配置", "地图编号").split(",")
+            map_ids = list(map(int, conf.get("自动配置", "地图编号").split(",")))
             random_number = random.randint(0, len(map_ids) - 1)
             init.global_data.map_id = map_ids[random_number]
-            init.global_data.map_id = conf.getint("自动配置", "地图难度")
+            init.global_data.map_level = conf.getint("自动配置", "地图难度")
 
         time.sleep(0.2)
-        call.area_call(init.globle.GlobalData.map_id)
+        call.area_call(init.global_data.map_id)
 
         time.sleep(0.2)
         cls.select_map()

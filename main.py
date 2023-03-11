@@ -1,6 +1,6 @@
 import tempfile
 
-from common import helper
+from common import helper, conf
 from driver import driver
 from game import mem, init
 
@@ -27,9 +27,7 @@ if __name__ == '__main__':
         print("驱动加载成功")
         mem.set_process_id(process_id)
         init.init_empty_addr()
-        data = init.game_map.map_data()
-        print(data)
-        # hotkey()
+        init.hotkey()
         i = 0
     except Exception as err:
         import sys
