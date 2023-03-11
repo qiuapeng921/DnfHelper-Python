@@ -15,7 +15,7 @@ class Pickup:
         组包捡物
         :return:
         """
-        item_config = conf.getint("自动配置", "过滤物品").split(",")
+        item_config = conf.get("自动配置", "过滤物品").split(",")
         goods = list()
         mem = self.mem
         data = init.globle.Traversal()
