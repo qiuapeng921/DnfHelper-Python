@@ -23,7 +23,7 @@ class Pickup:
         data.map_data = mem.read_long(mem.read_long(data.rw_addr + address.DtPyAddr) + 16)
         data.start = mem.read_long(data.map_data + address.DtKs2)
         data.end = mem.read_long(data.map_data + address.DtJs2)
-        data.obj_num = (data.end - data.start) / 24
+        data.obj_num = int((data.end - data.start) / 24)
         for data.obj_tmp in range(data.obj_num):
             data.obj_ptr = mem.read_long(data.start + data.obj_tmp * 24)
             data.obj_ptr = mem.read_long(data.obj_ptr + 16) - 32
@@ -33,7 +33,7 @@ class Pickup:
             if (data.obj_type_a == 289 or data.obj_type_b == 289) and data.obj_camp == 200:
                 goods_name = mem.read_bytes(
                     mem.read_long(mem.read_long(data.obj_ptr + address.DmWpAddr) + address.WpMcAddr), 100)
-                print(goods_name)
+                print(list(goods_name))
                 data.ObjNameB = ""  # common.UnicodeToString(goodsNameByte)
             if data.obj_type_b in item_config:
                 continue

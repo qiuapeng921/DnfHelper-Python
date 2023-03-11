@@ -75,7 +75,7 @@ class Auto:
                 # 过图
                 if init.map_data.is_open_door() is True and init.map_data.is_boss_room() is False:
                     # 捡物品
-                    # init.pick.pack()
+                    init.pick.pack()
                     # 过图
                     # cls.pass_map()
                     continue
@@ -94,7 +94,15 @@ class Auto:
 
     @classmethod
     def start_func(cls):
-        pass
+        func_mod = conf.getint("自动配置", "角色数量")
+        if func_mod == 1:
+            init.traversal.screen_switch()
+        if func_mod == 2:
+            pass
+        if func_mod == 3:
+            pass
+        if func_mod == 4:
+            pass
 
     @classmethod
     def enter_town(cls):
