@@ -75,16 +75,16 @@ class Auto:
                 # 过图
                 if init.map_data.is_open_door() is True and init.map_data.is_boss_room() is False:
                     # 捡物品
-                    init.pick.pack()
+                    # init.pick.pack()
                     # 过图
                     # cls.pass_map()
                     continue
 
                 # 通关
-                if init.map_data.is_boss_room() is False:
-                    if init.map_data.is_boss_room():
+                if init.map_data.is_boss_room():
+                    if init.map_data.is_pass():
                         # 捡物品
-                        init.pick.pack()
+                        # init.pick.pack()
                         # 关闭功能
                         cls.start_func()
                         time.sleep(0.2)
@@ -217,11 +217,10 @@ class Auto:
     def quit_map(cls):
         """出图"""
         cls.completedNum = cls.completedNum + 1
-        logger.info("副本名称 [ {} ]".format("格蓝迪发电站"))
         logger.info("自动刷图 [ {} ] 剩余疲劳 [ {} ]".format(cls.completedNum, init.map_data.get_pl()))
         time.sleep(0.2)
         # 翻牌
-        init.pack.get_income()
+        init.pack.get_income(0, random.randint(0, 3))
 
         while True:
             time.sleep(0.2)

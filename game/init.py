@@ -56,7 +56,7 @@ def hotkey():
     # 以下为检测热键是否被按下，并在最后释放快捷键
     msg = ctypes.wintypes.MSG()
     while hotkey_run:
-        time.sleep(0.5)
+        time.sleep(0.1)
         if user32.GetMessageA(ctypes.byref(msg), None, 0, 0) > 0:
             if msg.message == win32con.WM_HOTKEY:
                 if win32api.HIWORD(msg.lParam) == win32con.VK_F1:

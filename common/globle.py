@@ -1,3 +1,8 @@
+cmd = "cmd"
+
+win_app = None
+
+
 # 全局数据
 class GlobalData:
     # 自动开关

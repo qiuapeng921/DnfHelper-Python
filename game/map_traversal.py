@@ -14,10 +14,10 @@ class Screen:
         self._switch = not self._switch
         if self._switch:
             _thread.start_new_thread(self.screen_thread, ())
-            logger.info("技能全屏开启")
+            logger.info("技能全屏 [ √ ]")
         else:
             self._switch = False
-            logger.info("技能全屏关闭")
+            logger.info("技能全屏 [ x ]")
 
     def screen_thread(self):
         while self._switch:
@@ -27,7 +27,10 @@ class Screen:
                 break
             rate = code_config[0]
             time.sleep(rate / 1000)
-            self.full_screen(code_config)
+            try:
+                self.full_screen(code_config)
+            except Exception as e:
+                print(e.args)
 
     @classmethod
     def screen_kill(cls):
@@ -63,7 +66,8 @@ class Screen:
                         code = code_config[1]
                         harm = code_config[2]
                         size = code_config[3]
-                        call.skill_call(data.rw_addr, code, harm, monster_coordinate.x, monster_coordinate.y, 0, float(size))
+                        call.skill_call(data.rw_addr, code, harm, monster_coordinate.x, monster_coordinate.y, 0,
+                                        float(size))
                         num = num + 1
                         if num >= code_config[4]:
                             break

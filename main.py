@@ -1,34 +1,20 @@
-import tempfile
-
-from common import helper, conf
-from driver import driver
+from common import helper, globle, logger
+from driver import init_driver
 from game import mem, init
 
-driver_name = "3swg"
-
 if __name__ == '__main__':
-    driver_path = "{}\\{}.sys".format(tempfile.gettempdir(), driver_name)
-    import os
-
-    if os.path.exists(driver_path) is False:
-        print("驱动不存在")
-        exit()
-
-    process_id = helper.get_process_id_by_name("DNF.exe")
-    if process_id == 0:
-        helper.message_box("请打开dnf后运行")
-        exit()
-
     try:
-        if not driver.load_driver(driver_path, driver_name, driver_name):
-            print("驱动加载失败")
+        globle.cmd = "cmd"
+        init_driver()
+        logger.info("驱动加载成功")
+        process_id = helper.get_process_id_by_name("DNF.exe")
+        if process_id == 0:
+            helper.message_box("请打开dnf后运行")
             exit()
 
-        print("驱动加载成功")
         mem.set_process_id(process_id)
         init.init_empty_addr()
         init.hotkey()
-        i = 0
     except Exception as err:
         import sys
         import traceback

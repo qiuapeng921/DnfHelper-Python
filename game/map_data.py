@@ -50,9 +50,10 @@ class MapData:
         return False
 
     def is_pass(self):
+        """是否通关"""
         rw = self.mem
         room_data = rw.read_long(rw.read_long(rw.read_long(addr.FJBHAddr) + addr.SJAddr) + addr.MxPyAddr)
-        data_val = rw.ReadInt(room_data + addr.GouHuoAddr)
+        data_val = rw.read_int(room_data + addr.GouHuoAddr)
         if data_val == 2 or data_val == 0:
             return True
 

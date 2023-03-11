@@ -97,8 +97,8 @@ class Pack:
         cls.fb_call()
 
     @classmethod
-    def get_income(cls, h, l):
-        """组包翻拍"""
+    def get_income(cls, h: int, l: int):
+        """组包翻牌"""
         cls.hc_call(69)
         cls.fb_call()
         cls.hc_call(70)

@@ -2,9 +2,13 @@ import _thread
 import time
 
 import xcgui._xcgui as gui
-from xcgui import XApp, XWindow, XButton, XEdit, XShapeText
+from xcgui import XApp
+from xcgui import XWindow, XButton, XEdit, XShapeText
 
-from common import logger, helper
+from common import globle, logger
+from common import helper
+from driver import init_driver
+from game import mem, init
 
 svgIcon = '<svg t="1674984352573" class="icon" viewBox="0 0 1024 1024" version="1.1" ' \
           'xmlns="http://www.w3.org/2000/svg" p-id="10315" width="16" height="16"><path d="M901.957085 ' \
@@ -23,10 +27,10 @@ svgIcon = '<svg t="1674984352573" class="icon" viewBox="0 0 1024 1024" version="
 version = '1.0.0'
 
 
-class DemoWindow(XWindow):
+class AppWindow(XWindow):
     def __init__(self):
-        super(DemoWindow, self).__init__(0, 0, 300, 400, "情歌 √ 当前时间 {}".format(helper.get_now_date()), 0,
-                                         gui.window_style_modal)
+        super(AppWindow, self).__init__(0, 0, 300, 400, "情歌 √ 当前时间 {}".format(helper.get_now_date()), 0,
+                                        gui.window_style_modal)
         _thread.start_new_thread(self.title_time, ())
 
         # 设置窗口图标
@@ -60,19 +64,28 @@ class DemoWindow(XWindow):
         self.version_label = XShapeText(220, 375, 60, 30, "版本号:", self)
         self.version_value = XShapeText(260, 375, 60, 30, version, self)
 
-    def activation(self, event, userdata):
+    def activation(self, event, userdata) -> bool:
+        process_id = helper.get_process_id_by_name("DNF.exe")
+        if process_id == 0:
+            helper.message_box("请打开dnf后运行")
+            return False
         card_edit_val = self.card_edit.getText()
-        logger.info(card_edit_val)
-        if card_edit_val == "":
-            return 1
+        if card_edit_val != "19930921":
+            helper.message_box("卡密错误")
+        self.activation_but.enable(False)
+        mem.set_process_id(process_id)
+        init.init_empty_addr()
+        init.hotkey()
+        self.add_content("加载成功-欢迎使用")
+        self.add_content("当前时间：".format(helper.get_now_date()))
+
+        return True
 
     def app_run_time(self):
         while 1:
             time.sleep(1)
             self.run_time_value.setText(helper.get_app_run_time())
             self.run_time_value.redraw()
-            self.edit_content.addTextUser("{}\n".format(helper.get_now_date()))
-            self.edit_content.redraw()
 
     def title_time(self):
         while 1:
@@ -80,17 +93,30 @@ class DemoWindow(XWindow):
             self.setTitle("情歌 √ 当前时间 {}".format(helper.get_now_date()))
             self.redraw()
 
-    def edit_content(self) -> XEdit:
-        return self.edit_content
-
-
-def main():
-    app = XApp()
-    window = DemoWindow()
-    window.showWindow()
-    app.run()
-    app.exit()
+    def add_content(self, msg):
+        self.edit_content.addTextUser("{}\n".format(msg))
+        self.redraw()
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        init_driver()
+        globle.cmd = "gui"
+        app = XApp()
+        win = AppWindow()
+        globle.win_app = win
+        logger.info("驱动加载成功")
+        win.showWindow()
+        app.run()
+        app.exit()
+    except Exception as err:
+        import sys
+        import traceback
+
+        except_type, _, except_traceback = sys.exc_info()
+        print(except_type)
+        print(err.args)
+        print(except_traceback)
+        print('-----------')
+        for i in traceback.extract_tb(except_traceback):
+            print(i)

@@ -40,10 +40,10 @@ def compile_call(byte_arr: list):
                                        [144, 144, 144, 144, 144])
 
     mem.write_bytes(hook_shell, bytes(hook_shell_value))
-    mem.write_int(jump_address, 1)
 
+    mem.write_int(jump_address, 1)
     while mem.read_int(jump_address) == 1:
-        time.sleep(0.2)
+        time.sleep(0.1)
 
     mem.write_bytes(hook_shell, hook_old_data)
     mem.write_bytes(blank_address, helper.get_empty_bytes(len(byte_arr) + 16))
@@ -97,7 +97,7 @@ def person_ptr():
     return get_per_ptr_call(address.RwKbAddr)
 
 
-def skill_call(addr:int, code:int, harm:int, x:int, y:int, z:int, size:float):
+def skill_call(addr: int, code: int, harm: int, x: int, y: int, z: int, size: float):
     """
     技能call
     :param addr:int 触发地址
