@@ -7,7 +7,7 @@ class Pack:
 
     @classmethod
     def __init__(cls):
-        pass
+        cls.data = []
 
     @classmethod
     def hc_call(cls, params):

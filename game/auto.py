@@ -134,8 +134,8 @@ class Auto:
         time.sleep(0.2)
         init.pack.select_role(1)
         time.sleep(0.5)
-        logger.info("进入角色 {} ".format(1))
-        logger.info("开始第 {} 个角色,剩余疲劳 [ %d ]".format(1 + 1), init.map_data.get_pl())
+        logger.info("进入角色 {} ".format(cls.completedRoleNum))
+        logger.info("开始第 {} 个角色,剩余疲劳 [ %d ]".format(cls.completedRoleNum + 1, init.map_data.get_pl()))
         while cls.thread_switch:
             time.sleep(0.2)
             # 进入城镇跳出循环
@@ -150,7 +150,8 @@ class Auto:
             return
 
         time.sleep(0.2)
-        # TODO 分解装备
+        # 分解装备
+        init.equip.handle_equip()
 
         # 1 剧情 2 搬砖
         auto_model = conf.getint("自动配置", "自动模式")

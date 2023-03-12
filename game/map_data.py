@@ -1,5 +1,5 @@
 from common import globle
-from game import address as addr, call
+from game import address as addr, call, address
 
 
 class MapData:
@@ -113,3 +113,12 @@ class MapData:
 
     def is_dialog_esc(self):
         return self.mem.read_int(addr.EscDHAddr) == 1
+
+    def back_pack_weight(self) -> int:
+        """取背包负重"""
+        rw_addr = call.person_ptr()
+        back_pack_ptr = self.mem.read_long(rw_addr + address.WplAddr)  # 物品栏
+        cut_weigh = self.decode(back_pack_ptr + address.DqFzAddr)  # 当前负重
+        max_weigh = self.decode(rw_addr + address.ZdFzAddr)  # 最大负重
+        result = float(cut_weigh) / float(max_weigh) * 100
+        return int(result)

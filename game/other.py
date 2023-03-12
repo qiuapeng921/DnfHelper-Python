@@ -1,6 +1,6 @@
 import time
 
-from common import conf
+from common import conf, logger
 from game import address, init, call
 
 
@@ -44,17 +44,34 @@ class Pickup:
 
         if len(goods) > 0:
             for i in range(len(goods)):
-                self.pack.ZbSq(goods[i])
+                self.pack.pick_up(goods[i])
                 time.sleep(0.1)
 
 
 class Equip:
-    """
-    装备
-    """
+    def __init__(self, mem, pack, map_data):
+        self.mem = mem
+        self.pack = pack
+        self.map_data = map_data
 
-    def __init__(self):
-        pass
+    def handle_equip(self, mem):
+        """处理装备"""
+        if self.map_data.back_pack_weight() < 50:
+            return
 
-    def handle(self):
-        pass
+        num = 0
+        mem = self.mem
+        addr = mem.read_long(mem.read_long(address.BbJzAddr) + address.WplPyAddr) + 0x48  # 装备栏偏移
+        for i in range(56):
+            equip = mem.read_long(mem.read_long(addr + i * 8) - 72 + 16)
+            if equip > 0:
+                equip_level = mem.ReadInt(equip + address.ZbPjAddr)
+                # name_addr = mem.ReadInt64(equip + address.WpMcAddr)  # 装备名称
+                # equipName := helpers.UnicodeToString(rw.ReadByteArr(nameAddr, 100))
+                if equip_level in [0, 1, 2]:
+                    self.pack.decomposition(i + 9)
+                    time.sleep(0.2)
+                    num += 1
+                    continue
+        self.pack.tidy_backpack()
+        logger.info("处理装备 {} 件".format(num))

@@ -73,8 +73,8 @@ class Screen:
                     data.obj_blood = mem.read_long(data.obj_ptr + address.GwXlAddr)
                     if data.obj_camp > 0 and data.obj_code > 0 and data.obj_blood > 0 and data.obj_ptr != data.rw_addr:
                         monster = map_obj.read_coordinate(data.obj_ptr)
-                        code = code_config[1]
-                        harm = code_config[2]
+                        code = int(code_config[1])
+                        harm = int(code_config[2])
                         size = float(code_config[3])
                         call.skill_call(data.rw_addr, code, harm, monster.x, monster.y, 0, size)
                         num = num + 1
@@ -113,8 +113,8 @@ class Screen:
         """无视建筑"""
         rd_addr = call.person_ptr()
         if ok:
-            self.mem.WriteInt(rd_addr + address.JzCtAddr, 0)
-            self.mem.WriteInt(rd_addr + address.DtCtAddr, 0)
+            self.mem.write_int(rd_addr + address.JzCtAddr, 0)
+            self.mem.write_int(rd_addr + address.DtCtAddr, 0)
         else:
-            self.mem.WriteInt(rd_addr + address.JzCtAddr, 40)
-            self.mem.WriteInt(rd_addr + address.DtCtAddr, 10)
+            self.mem.write_int(rd_addr + address.JzCtAddr, 40)
+            self.mem.write_int(rd_addr + address.DtCtAddr, 10)
