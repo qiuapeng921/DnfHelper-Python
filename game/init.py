@@ -13,7 +13,7 @@ global_data = globle.GlobalData()
 pack = pack.Pack()
 pick = other.Pickup(mem, pack, map_data)
 task = task.Task(mem)
-equip = other.Equip(mem, pack)
+equip = other.Equip(mem, pack, map_data)
 
 
 def init_empty_addr():
