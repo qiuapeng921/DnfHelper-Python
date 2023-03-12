@@ -31,7 +31,7 @@ class AppWindow(XWindow):
     def __init__(self):
         super(AppWindow, self).__init__(0, 0, 300, 400, "情歌 √ 当前时间 {}".format(helper.get_now_date()), 0,
                                         gui.window_style_modal)
-        _thread.start_new_thread(self.title_time, ())
+        # _thread.start_new_thread(self.title_time, ())
 
         # 设置窗口图标
         self.setIcon(gui.XImage.loadSvgString(svgIcon))
@@ -72,13 +72,13 @@ class AppWindow(XWindow):
         card_edit_val = self.card_edit.getText()
         if card_edit_val != "19930921":
             helper.message_box("卡密错误")
-        self.activation_but.enable(False)
+
         mem.set_process_id(process_id)
         init.init_empty_addr()
-        init.hotkey()
         self.add_content("加载成功-欢迎使用")
-        self.add_content("当前时间：".format(helper.get_now_date()))
-
+        self.add_content("当前时间：{}".format(helper.get_now_date()))
+        self.activation_but.enable(False)
+        init.hotkey()
         return True
 
     def app_run_time(self):

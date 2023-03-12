@@ -3,7 +3,9 @@
 """
 import _thread
 import random
+import sys
 import time
+import traceback
 
 from common import logger, conf
 from game import init, call, mem, address
@@ -39,58 +41,71 @@ class Auto:
     def auto_thread(cls):
         """自动线程"""
         while init.global_data.auto_switch:
-            time.sleep(0.2)
-
-            # 进入城镇
-            if init.map_data.get_stat() == 0:
+            try:
                 time.sleep(0.2)
-                cls.enter_town()
-                continue
 
-            # 城镇处理
-            if init.map_data.get_stat() == 1 and init.map_data.is_town() is True:
-                cls.town_handle()
-                continue
-
-            # 进入副本
-            if init.map_data.get_stat() == 2:
-                cls.enter_map(init.global_data.map_id, init.global_data.map_level)
-                continue
-
-            # 在地图内
-            if init.map_data.get_stat() == 3:
-                if cls.firstEnterMap is False and init.map_data.is_town() is False:
-                    # 透明call
-                    call.hide_call(call.person_ptr())
-                    time.sleep(0.1)
-                    # sss评分
-                    mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, 999999)
-                    cls.start_func()
-                    cls.firstEnterMap = True
-
-                # 跟随怪物
-                if conf.getint("自动配置", "跟随打怪") == 1:
-                    init.traversal.follow_monster()
-
-                # 过图
-                if init.map_data.is_open_door() is True and init.map_data.is_boss_room() is False:
-                    # 捡物品
-                    # init.pick.pack()
-                    # 过图
-                    # cls.pass_map()
+                # 进入城镇
+                if init.map_data.get_stat() == 0:
+                    time.sleep(0.2)
+                    cls.enter_town()
                     continue
 
-                # 通关
-                if init.map_data.is_boss_room():
-                    if init.map_data.is_pass():
-                        # 捡物品
-                        # init.pick.pack()
-                        # 关闭功能
+                # 城镇处理
+                if init.map_data.get_stat() == 1 and init.map_data.is_town() is True:
+                    cls.town_handle()
+                    continue
+
+                # 进入副本
+                if init.map_data.get_stat() == 2:
+                    cls.enter_map(init.global_data.map_id, init.global_data.map_level)
+                    continue
+
+                # 在地图内
+                if init.map_data.get_stat() == 3:
+                    if cls.firstEnterMap is False and init.map_data.is_town() is False:
+                        # 透明call
+                        call.hide_call(call.person_ptr())
+                        time.sleep(0.1)
+                        # sss评分
+                        mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, 999999)
+                        init.traversal.ignore_building(True)
                         cls.start_func()
-                        time.sleep(0.2)
-                        # 退出副本
-                        cls.quit_map()
-                        cls.firstEnterMap = False
+                        cls.firstEnterMap = True
+
+                    # 跟随怪物
+                    if conf.getint("自动配置", "跟随打怪") == 1:
+                        init.traversal.follow_monster()
+
+                    # 过图
+                    if init.map_data.is_open_door() is True and init.map_data.is_boss_room() is False:
+                        # 捡物品
+                        init.pick.pickup()
+                        # 过图
+                        # cls.pass_map()
+                        continue
+
+                    # 通关
+                    if init.map_data.is_boss_room():
+                        if init.map_data.is_pass():
+                            # 捡物品
+                            init.pick.pickup()
+                            # 关闭功能
+                            cls.start_func()
+                            time.sleep(0.2)
+                            # 退出副本
+                            cls.quit_map()
+                            init.traversal.ignore_building(False)
+                            cls.firstEnterMap = False
+            except Exception as err:
+                print("-----------自动线程错误开始-----------")
+                except_type, _, except_traceback = sys.exc_info()
+                print(except_type)
+                print(err.args)
+                print(except_traceback)
+                print('-----------')
+                for i in traceback.extract_tb(except_traceback):
+                    print(i)
+                print("-----------自动线程错误结束-----------")
 
     @classmethod
     def start_func(cls):

@@ -1,5 +1,7 @@
 import _thread
+import sys
 import time
+import traceback
 
 from common import logger, conf
 from game import init, call, address
@@ -29,8 +31,16 @@ class Screen:
             time.sleep(rate / 1000)
             try:
                 self.full_screen(code_config)
-            except Exception as e:
-                print(e.args)
+            except Exception as err:
+                print("-----------全屏配置错误开始-----------")
+                except_type, _, except_traceback = sys.exc_info()
+                print(except_type)
+                print(err.args)
+                print(except_traceback)
+                print('-----------')
+                for i in traceback.extract_tb(except_traceback):
+                    print(i)
+                print("-----------全屏配置错误结束-----------")
 
     @classmethod
     def screen_kill(cls):
@@ -62,12 +72,11 @@ class Screen:
                 if data.obj_type_a == 529 or data.obj_type_a == 545 or data.obj_type_a == 273 or data.obj_type_a == 61440:
                     data.obj_blood = mem.read_long(data.obj_ptr + address.GwXlAddr)
                     if data.obj_camp > 0 and data.obj_code > 0 and data.obj_blood > 0 and data.obj_ptr != data.rw_addr:
-                        monster_coordinate = map_obj.read_coordinate(data.obj_ptr)
+                        monster = map_obj.read_coordinate(data.obj_ptr)
                         code = code_config[1]
                         harm = code_config[2]
-                        size = code_config[3]
-                        call.skill_call(data.rw_addr, code, harm, monster_coordinate.x, monster_coordinate.y, 0,
-                                        float(size))
+                        size = float(code_config[3])
+                        call.skill_call(data.rw_addr, code, harm, monster.x, monster.y, 0, size)
                         num = num + 1
                         if num >= code_config[4]:
                             break
@@ -99,3 +108,13 @@ class Screen:
                         if data.obj_blood > 0:
                             call.drift_call(data.rw_addr, monster.x, monster.y, 0, 2)
                             time.sleep(0.3)
+
+    def ignore_building(self, ok: bool):
+        """无视建筑"""
+        rd_addr = call.person_ptr()
+        if ok:
+            self.mem.WriteInt(rd_addr + address.JzCtAddr, 0)
+            self.mem.WriteInt(rd_addr + address.DtCtAddr, 0)
+        else:
+            self.mem.WriteInt(rd_addr + address.JzCtAddr, 40)
+            self.mem.WriteInt(rd_addr + address.DtCtAddr, 10)

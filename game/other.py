@@ -10,7 +10,7 @@ class Pickup:
         self.pack = pack
         self.map_data = map_data
 
-    def pack(self):
+    def pickup(self):
         """
         组包捡物
         :return:
