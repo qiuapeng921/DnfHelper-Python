@@ -3,17 +3,19 @@
 """
 
 from common import globle
-from game import auto, map_data, game_map, mem, map_traversal, pack, address, other, task, call
+from game import auto as a, address, other as o, task as t, call
+from game import map_data as md, game_map as gm, map_traversal as mt, pack as p
+from game import mem
 
-auto = auto.Auto()
-traversal = map_traversal.Screen(mem)
-map_data = map_data.MapData(mem)
-game_map = game_map.GameMap()
+auto = a.Auto()
+traversal = mt.Screen(mem)
+map_data = md.MapData(mem)
+game_map = gm.GameMap()
 global_data = globle.GlobalData()
-pack = pack.Pack()
-pick = other.Pickup(mem, pack, map_data)
-task = task.Task(mem)
-equip = other.Equip(mem, pack, map_data)
+pack = p.Pack()
+task = t.Task(mem)
+pick = o.Pickup(mem, pack, map_data)
+equip = o.Equip(mem, pack, map_data)
 
 
 def init_empty_addr():

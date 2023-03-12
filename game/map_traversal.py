@@ -55,28 +55,27 @@ class Screen:
         if map_obj.get_stat() != 3:
             return
 
-        data = init.globle.Traversal()
-        data.rw_addr = call.person_ptr()
-        data.map_data = mem.read_long(mem.read_long(data.rw_addr + address.DtPyAddr) + 16)
-        data.start = mem.read_long(data.map_data + address.DtKs2)
-        data.end = mem.read_long(data.map_data + address.DtJs2)
-        data.obj_num = int((data.end - data.start) / 24)
+        rw_addr = call.person_ptr()
+        map_data = mem.read_long(mem.read_long(rw_addr + address.DtPyAddr) + 16)
+        start = mem.read_long(map_data + address.DtKs2)
+        end = mem.read_long(map_data + address.DtJs2)
+        obj_num = int((end - start) / 24)
         num = 0
-        for data.obj_tmp in range(data.obj_num):
-            data.obj_ptr = mem.read_long(data.start + data.obj_tmp * 24)
-            data.obj_ptr = mem.read_long(data.obj_ptr + 16) - 32
-            if data.obj_ptr > 0:
-                data.obj_type_a = mem.read_int(data.obj_ptr + address.LxPyAddr)
-                data.obj_camp = mem.read_int(data.obj_ptr + address.ZyPyAddr)
-                data.obj_code = mem.read_int(data.obj_ptr + address.DmPyAddr)
-                if data.obj_type_a == 529 or data.obj_type_a == 545 or data.obj_type_a == 273 or data.obj_type_a == 61440:
-                    data.obj_blood = mem.read_long(data.obj_ptr + address.GwXlAddr)
-                    if data.obj_camp > 0 and data.obj_code > 0 and data.obj_blood > 0 and data.obj_ptr != data.rw_addr:
-                        monster = map_obj.read_coordinate(data.obj_ptr)
+        for obj_tmp in range(obj_num):
+            obj_ptr = mem.read_long(start + obj_tmp * 24)
+            obj_ptr = mem.read_long(obj_ptr + 16) - 32
+            if obj_ptr > 0:
+                obj_type_a = mem.read_int(obj_ptr + address.LxPyAddr)
+                obj_camp = mem.read_int(obj_ptr + address.ZyPyAddr)
+                obj_code = mem.read_int(obj_ptr + address.DmPyAddr)
+                if obj_type_a == 529 or obj_type_a == 545 or obj_type_a == 273 or obj_type_a == 61440:
+                    obj_blood = mem.read_long(obj_ptr + address.GwXlAddr)
+                    if obj_camp > 0 and obj_code > 0 and obj_blood > 0 and obj_ptr != rw_addr:
+                        monster = map_obj.read_coordinate(obj_ptr)
                         code = int(code_config[1])
                         harm = int(code_config[2])
                         size = float(code_config[3])
-                        call.skill_call(data.rw_addr, code, harm, monster.x, monster.y, 0, size)
+                        call.skill_call(rw_addr, code, harm, monster.x, monster.y, 0, size)
                         num = num + 1
                         if num >= code_config[4]:
                             break
@@ -88,26 +87,25 @@ class Screen:
         if map_obj.get_stat() != 3:
             return
 
-        data = init.globle.Traversal()
-        data.rw_addr = call.person_ptr()
-        data.map_data = mem.read_long(mem.read_long(data.rw_addr + address.DtPyAddr) + 16)
-        data.start = mem.read_long(data.map_data + address.DtKs2)
-        data.end = mem.read_long(data.map_data + address.DtJs2)
-        data.obj_num = int((data.end - data.start) / 24)
-        for data.obj_tmp in range(data.obj_num):
-            data.obj_ptr = mem.read_long(data.start + data.obj_tmp * 24)
-            data.obj_ptr = mem.read_long(data.obj_ptr + 16) - 32
-            if data.obj_ptr > 0:
-                data.obj_type_a = mem.read_int(data.obj_ptr + address.LxPyAddr)
-                if data.obj_type_a == 529 or data.obj_type_a == 545 or data.obj_type_a == 273 or data.obj_type_a == 61440:
-                    data.obj_camp = mem.read_int(data.obj_ptr + address.ZyPyAddr)
-                    data.obj_code = mem.read_int(data.obj_ptr + address.DmPyAddr)
-                    data.obj_blood = mem.read_long(data.obj_ptr + address.GwXlAddr)
-                    if data.obj_camp > 0 and data.obj_ptr != data.rw_addr:
-                        monster = map_obj.read_coordinate(data.obj_ptr)
-                        if data.obj_blood > 0:
-                            call.drift_call(data.rw_addr, monster.x, monster.y, 0, 2)
-                            time.sleep(0.3)
+        rw_addr = call.person_ptr()
+        map_data = mem.read_long(mem.read_long(rw_addr + address.DtPyAddr) + 16)
+        start = mem.read_long(map_data + address.DtKs2)
+        end = mem.read_long(map_data + address.DtJs2)
+        obj_num = int((end - start) / 24)
+        for obj_tmp in range(obj_num):
+            obj_ptr = mem.read_long(start + obj_tmp * 24)
+            obj_ptr = mem.read_long(obj_ptr + 16) - 32
+            if obj_ptr > 0:
+                obj_type_a = mem.read_int(obj_ptr + address.LxPyAddr)
+                if obj_type_a == 529 or obj_type_a == 545 or obj_type_a == 273 or obj_type_a == 61440:
+                    obj_camp = mem.read_int(obj_ptr + address.ZyPyAddr)
+                    obj_code = mem.read_int(obj_ptr + address.DmPyAddr)
+                    obj_blood = mem.read_long(obj_ptr + address.GwXlAddr)
+                    if obj_camp > 0 and obj_ptr != rw_addr:
+                        monster = map_obj.read_coordinate(obj_ptr)
+                        if obj_blood > 0:
+                            call.drift_call(rw_addr, monster.x, monster.y, 0, 2)
+                            time.sleep(0.2)
 
     def ignore_building(self, ok: bool):
         """无视建筑"""

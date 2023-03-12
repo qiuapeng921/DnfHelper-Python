@@ -43,7 +43,6 @@ def compile_call(byte_arr: list):
 
     mem.write_int(jump_address, 1)
     while mem.read_int(jump_address) == 1:
-        print("卡住了....")
         time.sleep(0.1)
 
     mem.write_bytes(hook_shell, hook_old_data)

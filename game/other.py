@@ -1,7 +1,7 @@
 import time
 
 from common import conf, logger
-from game import address, init, call
+from game import address, call
 
 
 class Pickup:
@@ -18,28 +18,27 @@ class Pickup:
         item_config = conf.get("自动配置", "过滤物品").split(",")
         goods = list()
         mem = self.mem
-        data = init.globle.Traversal()
-        data.rw_addr = call.person_ptr()
-        data.map_data = mem.read_long(mem.read_long(data.rw_addr + address.DtPyAddr) + 16)
-        data.start = mem.read_long(data.map_data + address.DtKs2)
-        data.end = mem.read_long(data.map_data + address.DtJs2)
-        data.obj_num = int((data.end - data.start) / 24)
-        for data.obj_tmp in range(data.obj_num):
-            data.obj_ptr = mem.read_long(data.start + data.obj_tmp * 24)
-            data.obj_ptr = mem.read_long(data.obj_ptr + 16) - 32
-            data.obj_type_a = mem.read_int(data.obj_ptr + address.LxPyAddr)
-            data.obj_type_b = mem.read_int(data.obj_ptr + address.LxPyAddr + 4)
-            data.obj_camp = mem.read_int(data.obj_ptr + address.ZyPyAddr)
-            if (data.obj_type_a == 289 or data.obj_type_b == 289) and data.obj_camp == 200:
+        rw_addr = call.person_ptr()
+        map_data = mem.read_long(mem.read_long(rw_addr + address.DtPyAddr) + 16)
+        start = mem.read_long(map_data + address.DtKs2)
+        end = mem.read_long(map_data + address.DtJs2)
+        obj_num = int((end - start) / 24)
+        for obj_tmp in range(obj_num):
+            obj_ptr = mem.read_long(start + obj_tmp * 24)
+            obj_ptr = mem.read_long(obj_ptr + 16) - 32
+            obj_type_a = mem.read_int(obj_ptr + address.LxPyAddr)
+            obj_type_b = mem.read_int(obj_ptr + address.LxPyAddr + 4)
+            obj_camp = mem.read_int(obj_ptr + address.ZyPyAddr)
+            if (obj_type_a == 289 or obj_type_b == 289) and obj_camp == 200:
                 goods_name = mem.read_bytes(
-                    mem.read_long(mem.read_long(data.obj_ptr + address.DmWpAddr) + address.WpMcAddr), 100)
+                    mem.read_long(mem.read_long(obj_ptr + address.DmWpAddr) + address.WpMcAddr), 100)
                 print(list(goods_name))
-                data.ObjNameB = ""  # common.UnicodeToString(goodsNameByte)
-            if data.obj_type_b in item_config:
+                ObjNameB = ""  # common.UnicodeToString(goodsNameByte)
+            if obj_type_b in item_config:
                 continue
 
-            if data.obj_ptr != data.rw_addr:
-                res_addr = self.map_data.decode(data.obj_ptr + address.FbSqAddr)
+            if obj_ptr != rw_addr:
+                res_addr = self.map_data.decode(obj_ptr + address.FbSqAddr)
                 goods.append(res_addr)
 
         if len(goods) > 0:
@@ -73,5 +72,5 @@ class Equip:
                     time.sleep(0.2)
                     num += 1
                     continue
-        self.pack.tidy_backpack()
+        self.pack.tidy_backpack(1, 0)
         logger.info("处理装备 {} 件".format(num))

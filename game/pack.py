@@ -170,11 +170,11 @@ class Pack:
         cls.hc_call(20)
         cls.jm_call(6, 4)
         cls.jm_call(16, 1)
-        cls.jm_call(pack_type, 1)
+        cls.jm_call(pack_type, 1)  # 1 装备 2消耗品 3材料 4任务 10副职业
         cls.jm_call(24, 1)
-        cls.jm_call(pack_addr, 1)
+        cls.jm_call(pack_addr, 1)  # 0 背包 2个人仓库 12账号金库
         cls.jm_call(32, 1)
-        cls.jm_call(0, 1)
+        cls.jm_call(0, 1)  # 0 栏位排序 1品级排序 2Lv排序 3部位排序
         cls.fb_call()
 
     @classmethod
