@@ -32,7 +32,7 @@ class Screen:
             try:
                 self.full_screen(code_config)
             except Exception as err:
-                print("-----------全屏配置错误开始-----------")
+                print("-----------全屏开始-----------")
                 except_type, _, except_traceback = sys.exc_info()
                 print(except_type)
                 print(err.args)
@@ -40,7 +40,7 @@ class Screen:
                 print('-----------')
                 for i in traceback.extract_tb(except_traceback):
                     print(i)
-                print("-----------全屏配置错误结束-----------")
+                print("-----------全屏结束-----------")
 
     @classmethod
     def screen_kill(cls):

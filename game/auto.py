@@ -91,13 +91,13 @@ class Auto:
                             init.pick.pickup()
                             # 关闭功能
                             cls.start_func()
-                            time.sleep(0.2)
+                            # 关闭穿透
+                            init.traversal.ignore_building(False)
                             # 退出副本
                             cls.quit_map()
-                            init.traversal.ignore_building(False)
                             cls.firstEnterMap = False
             except Exception as err:
-                print("-----------自动线程错误开始-----------")
+                print("-----------自动线程开始-----------")
                 except_type, _, except_traceback = sys.exc_info()
                 print(except_type)
                 print(err.args)
@@ -105,7 +105,7 @@ class Auto:
                 print('-----------')
                 for i in traceback.extract_tb(except_traceback):
                     print(i)
-                print("-----------自动线程错误结束-----------")
+                print("-----------自动线程结束-----------")
 
     @classmethod
     def start_func(cls):
