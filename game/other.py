@@ -65,7 +65,7 @@ class Equip:
         for i in range(56):
             equip = mem.read_long(mem.read_long(addr + i * 8) - 72 + 16)
             if equip > 0:
-                equip_level = mem.ReadInt(equip + address.ZbPjAddr)
+                equip_level = mem.read_int(equip + address.ZbPjAddr)
                 # name_addr = mem.ReadInt64(equip + address.WpMcAddr)  # 装备名称
                 # equipName := helpers.UnicodeToString(rw.ReadByteArr(nameAddr, 100))
                 if equip_level in [0, 1, 2]:

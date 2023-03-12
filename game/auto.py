@@ -238,7 +238,7 @@ class Auto:
         # 翻牌
         init.pack.get_income(0, random.randint(0, 3))
 
-        while True:
+        while cls.thread_switch:
             time.sleep(0.2)
             # 出图
             init.pack.leave_map()

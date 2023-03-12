@@ -3,7 +3,7 @@
 """
 
 from common import globle
-from game import auto, map_data, game_map, mem, map_traversal, pack, address, other, task
+from game import auto, map_data, game_map, mem, map_traversal, pack, address, other, task, call
 
 auto = auto.Auto()
 traversal = map_traversal.Screen(mem)
@@ -45,10 +45,10 @@ def hotkey():
     user32.RegisterHotKey(None, 0, 0, win32con.VK_END)
     user32.RegisterHotKey(None, 0, 0, 192)  # 波浪
 
-    # user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_UP)
-    # user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_DOWN)
-    # user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_LEFT)
-    # user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_RIGHT)
+    user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_UP)
+    user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_DOWN)
+    user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_LEFT)
+    user32.RegisterHotKey(None, 0, win32con.MOD_CONTROL, win32con.VK_RIGHT)
     # user32.RegisterHotKey(None, 0, win32con.MOD_ALT, win32con.VK_UP)
     # user32.RegisterHotKey(None, 0, win32con.MOD_ALT, win32con.VK_DOWN)
     # user32.RegisterHotKey(None, 0, win32con.MOD_ALT, win32con.VK_LEFT)
@@ -66,13 +66,13 @@ def hotkey():
                     auto.switch()
                 if win32api.HIWORD(msg.lParam) == 192:
                     traversal.screen_kill()
-                # if win32api.HIWORD(msg.lParam) == win32con.VK_UP:
-                #     print("上")
-                # if win32api.HIWORD(msg.lParam) == win32con.VK_DOWN:
-                #     print("下")
-                # if win32api.HIWORD(msg.lParam) == win32con.VK_LEFT:
-                #     print("左")
-                # if win32api.HIWORD(msg.lParam) == win32con.VK_RIGHT:
-                #     print("右")
+                if win32api.HIWORD(msg.lParam) == win32con.VK_UP:
+                    call.over_map_call(2)
+                if win32api.HIWORD(msg.lParam) == win32con.VK_DOWN:
+                    call.over_map_call(3)
+                if win32api.HIWORD(msg.lParam) == win32con.VK_LEFT:
+                    call.over_map_call(0)
+                if win32api.HIWORD(msg.lParam) == win32con.VK_RIGHT:
+                    call.over_map_call(1)
             user32.TranslateMessage(ctypes.byref(msg))
             user32.DispatchMessageA(ctypes.byref(msg))
