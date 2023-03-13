@@ -18,6 +18,23 @@ def get_process_id_by_name(name: str) -> int:
     return pid
 
 
+def get_module_handle(pid: int, name: str) -> int:
+    """
+    获取模块句柄
+    :param pid: 进程id
+    :param name: 模块名称
+    :return:
+    """
+    process = psutil.Process(pid)
+    # 获取进程的所有模块句柄
+    modules = process.memory_maps()
+    # 遍历所有模块句柄并打印
+    for module in modules:
+        module_name = module.path.split("\\")
+        if module_name[3] == name:
+            return module.rss
+
+
 hr_t, min_t, sec_t = (0, 0, 0)
 
 
