@@ -14,7 +14,9 @@ if __name__ == '__main__':
 
         mem.set_process_id(process_id)
         init.init_empty_addr()
-        init.hotkey()
+        init.hotkey2()
+    except KeyboardInterrupt as e:
+        pass
     except Exception as err:
         import sys
         import traceback
@@ -26,7 +28,3 @@ if __name__ == '__main__':
         print('-----------')
         for i in traceback.extract_tb(except_traceback):
             print(i)
-    except KeyboardInterrupt as err:
-        print(err)
-    finally:
-        pass
