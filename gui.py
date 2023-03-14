@@ -109,6 +109,8 @@ if __name__ == '__main__':
         win.showWindow()
         app.run()
         app.exit()
+    except KeyboardInterrupt as e:
+        pass
     except Exception as err:
         import sys
         import traceback
