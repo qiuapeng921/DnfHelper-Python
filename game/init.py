@@ -13,7 +13,7 @@ map_data = md.MapData(mem)
 game_map = gm.GameMap()
 global_data = globle.GlobalData()
 pack = p.Pack()
-task = t.Task(mem)
+task = t.Task(mem,pack,map_data)
 pick = o.Pickup(mem, pack, map_data)
 equip = o.Equip(mem, pack, map_data)
 
