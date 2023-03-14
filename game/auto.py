@@ -21,8 +21,8 @@ class Auto:
     # 线程开关
     thread_switch = False
 
-    def __init__(self):
-        pass
+    def __init__(self, task):
+        self.task = task
 
     @classmethod
     def switch(cls):
@@ -142,11 +142,10 @@ class Auto:
             if init.map_data.get_stat() == 1:
                 break
 
-    @classmethod
-    def town_handle(cls):
+    def town_handle(self):
         """城镇处理"""
         if init.map_data.get_pl() <= 8:
-            cls.return_role()
+            self.return_role()
             return
 
         time.sleep(0.2)
@@ -156,9 +155,8 @@ class Auto:
         # 1 剧情 2 搬砖
         auto_model = conf.getint("自动配置", "自动模式")
         if auto_model == 1 and init.map_data.get_role_level() < 110:
-            init.global_data.map_id = 104
-            init.global_data.map_id = 0
-
+            init.global_data.map_id = self.task.HandleMainLine()
+            init.global_data.map_level = 0
         if auto_model == 2 and init.map_data.get_role_level() == 110:
             map_ids = list(map(int, conf.get("自动配置", "地图编号").split(",")))
             random_number = random.randint(0, len(map_ids) - 1)
@@ -169,7 +167,7 @@ class Auto:
         call.area_call(init.global_data.map_id)
 
         time.sleep(0.2)
-        cls.select_map()
+        self.select_map()
 
     @classmethod
     def select_map(cls):

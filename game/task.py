@@ -4,7 +4,6 @@ from game import address, init
 
 
 class Task:
-
     def __init__(self, mem, pack, map_data):
         #  无任务刷新角色
         self.refreshTask = False
