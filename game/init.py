@@ -1,6 +1,7 @@
 """
 初始化全局变量
 """
+import keyboard
 
 from common import globle
 from game import auto as a, address, other as o, task as t, call
@@ -31,6 +32,14 @@ def init_empty_addr():
 
 
 hotkey_run = True
+
+
+def hotkey2():
+    keyboard.add_hotkey('f1', traversal.screen_switch())
+    keyboard.add_hotkey('`', traversal.screen_kill())
+    keyboard.add_hotkey('end', auto.switch())
+    # 保持程序运行
+    keyboard.wait()
 
 
 def hotkey():
