@@ -7,14 +7,13 @@ import time
 import traceback
 
 from common import logger, config, thread
-from game import call, mem, address
+from game import call, mem, address, init
 
 
 class Auto:
     # 首次进图
     firstEnterMap = False
-    # 已完成角色数量
-    completedRoleNum = 0
+
     # 已完成刷图次数
     completedNum = 0
     # 线程开关
@@ -25,8 +24,6 @@ class Auto:
     task = None
 
     traversal = None
-
-    global_data = None
 
     map_data = None
 
@@ -39,10 +36,9 @@ class Auto:
     game_map = None
 
     @classmethod
-    def __init__(cls, task, traversal, global_data, map_data, pack, pick, equip, game_map):
+    def __init__(cls, task, traversal,map_data, pack, pick, equip, game_map):
         cls.task = task
         cls.traversal = traversal
-        cls.global_data = global_data
         cls.map_data = map_data
         cls.pack = pack
         cls.pick = pick
@@ -52,14 +48,14 @@ class Auto:
     @classmethod
     def switch(cls):
         """自动开关"""
-        cls.global_data.auto_switch = not cls.global_data.auto_switch
-        cls.thread_switch = cls.global_data.auto_switch
-        if cls.global_data.auto_switch:
+        init.global_data.auto_switch = not init.global_data.auto_switch
+        cls.thread_switch = init.global_data.auto_switch
+        if init.global_data.auto_switch:
             cls.threadHande = thread.MyThreadFunc(cls.auto_thread, ())
             cls.threadHande.start()
             logger.info("自动刷图 [ √ ]")
         else:
-            cls.global_data.auto_switch = False
+            init.global_data.auto_switch = False
             cls.thread_switch = False
             cls.threadHande.stop()
             logger.info("自动刷图 [ x ]")
@@ -67,7 +63,7 @@ class Auto:
     @classmethod
     def auto_thread(cls):
         """自动线程"""
-        while cls.global_data.auto_switch:
+        while init.global_data.auto_switch:
             try:
                 time.sleep(0.2)
 
@@ -84,7 +80,7 @@ class Auto:
 
                 # 进入副本
                 if cls.map_data.get_stat() == 2:
-                    cls.enter_map(cls.global_data.map_id, cls.global_data.map_level)
+                    cls.enter_map(init.global_data.map_id, init.global_data.map_level)
                     continue
 
                 # 在地图内
@@ -150,19 +146,19 @@ class Auto:
     def enter_town(cls):
         """进入城镇"""
         role_num = config().getint("自动配置", "角色数量")
-        cls.completedRoleNum = cls.completedRoleNum + 1
-        if cls.completedRoleNum > role_num:
+        init.global_data.completed_role = init.global_data.completed_role + 1
+        if init.global_data.completed_role > role_num:
             logger.info("指定角色完成所有角色")
             logger.info("自动刷图 [ x ]")
             cls.thread_switch = False
-            cls.global_data.auto_switch = False
+            init.global_data.auto_switch = False
             return
 
         time.sleep(0.2)
         cls.pack.select_role(1)
         time.sleep(0.5)
-        logger.info("进入角色 {} ".format(cls.completedRoleNum))
-        logger.info("开始第 {} 个角色,剩余疲劳 [ %d ]".format(cls.completedRoleNum + 1, cls.map_data.get_pl()))
+        logger.info("进入角色 {} ".format(init.global_data.completed_role))
+        logger.info("开始第 {} 个角色,剩余疲劳 [ %d ]".format(init.global_data.completed_role + 1, cls.map_data.get_pl()))
         while cls.thread_switch:
             time.sleep(0.2)
             # 进入城镇跳出循环
@@ -183,16 +179,16 @@ class Auto:
         # 1 剧情 2 搬砖
         auto_model = config().getint("自动配置", "自动模式")
         if auto_model == 1 and cls.map_data.get_role_level() < 110:
-            cls.global_data.map_id = cls.task.HandleMainLine()
-            cls.global_data.map_level = 0
+            init.global_data.map_id = cls.task.HandleMainLine()
+            init.global_data.map_level = 0
         if auto_model == 2 and cls.map_data.get_role_level() == 110:
             map_ids = list(map(int, config().get("自动配置", "地图编号").split(",")))
             random_number = random.randint(0, len(map_ids) - 1)
-            cls.global_data.map_id = map_ids[random_number]
-            cls.global_data.map_level = config().getint("自动配置", "地图难度")
+            init.global_data.map_id = map_ids[random_number]
+            init.global_data.map_level = config().getint("自动配置", "地图难度")
 
         time.sleep(0.2)
-        call.area_call(cls.global_data.map_id)
+        call.area_call(init.global_data.map_id)
 
         time.sleep(0.2)
         cls.select_map()

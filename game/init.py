@@ -8,15 +8,15 @@ from game import auto as a, address, other as o, task as t, call
 from game import map_data as md, game_map as gm, map_traversal as mt, pack as p
 from game import mem
 
-traversal = mt.Screen(mem)
 map_data = md.MapData(mem)
 game_map = gm.GameMap()
 global_data = globle.GlobalData()
 pack = p.Pack()
-task = t.Task(mem, pack, map_data)
+task = t.Task(mem, pack, map_data, )
 pick = o.Pickup(mem, pack, map_data)
 equip = o.Equip(mem, pack, map_data)
-auto = a.Auto(task, traversal, global_data, map_data, pack, pick,equip,game_map)
+traversal = mt.Screen(mem)
+auto = a.Auto(task, traversal, map_data, pack, pick, equip, game_map)
 
 
 def init_empty_addr():

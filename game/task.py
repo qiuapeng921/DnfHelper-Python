@@ -1,5 +1,6 @@
 import time
 
+from common import logger
 from game import address, init
 
 
@@ -27,31 +28,34 @@ class Task:
             # 处理相同任务输出
             if task_id != next_task_id:
                 next_task_id = task_id
-                # logging.Console.Printf("主线任务 -> 任务名称[%s],任务条件[%s],任务ID[%d] \n", taskName, taskCondition, taskId)
+                logger.info("主线任务->任务名称 {},任务条件 {},任务ID {}".format(task_name, task_condition, task_id))
 
             # 无任务,刷新角色
             if task_id == 0:
                 if not self.refreshTask:
                     time.sleep(0.2)
-                    # logging.Console.Println("暂无任务或卡任务,重新选择角色")
-                    # ZbFhJs()
+                    logger.info("暂无任务或卡任务,重新选择角色")
+                    self.map_data.refresh_role()
+                    self.pack.return_role()
                     time.sleep(2)
-                    # ZbXzJs(completedRoleNum)
+                    self.pack.select_role(init.global_data.completed_role)
                     time.sleep(0.5)
                     self.refreshTask = True
                     continue
                 else:
-                    map_id = 104
-                    # logging.Console.Println("暂无任务,执行适应等级地图")
+                    map_id = self.highest_map()
+                    logger.info("暂无任务,执行适应等级地图")
                     break
 
             self.refreshTask = False
-            #  是否可以跳过任务 // 86级寂静城任务无法跳过 任务id{3850, 3851, 3858, 3859, 3860, 3861, 3864, 3865, 3866, 3867, 3868}
-            # ok, taskLevel := u.CanSkip(taskId)
-            # if ok && !common.InArray[uint32](taskLevel, []uint32{85, 86}) {
-            #     JumpOverTaskCall(taskId)
-            #     continue
-            # }
+            #  是否可以跳过任务
+            #  86级寂静城任务无法跳过 任务id{3850, 3851, 3858, 3859, 3860, 3861, 3864, 3865, 3866, 3867, 3868}
+            ok, task_level = self.can_skip(task_id)
+            if ok and task_level not in [85, 86]:
+                # 跳过任务
+                print("跳过任务")
+                # self.pack.jm_call(task_id)
+                continue
 
             # 任务未接，执行接取任务
             if self.finish_status(task_id) == -1:
@@ -62,8 +66,8 @@ class Task:
             # 任务名称[黑市的商人],任务条件[[seek n meet npc]],任务ID[5943] 蛇肉任务
             task_ids = [3509, 5943]
             if task_id in task_ids:
-                map_id = 104  # u.HighestMap()
-                # logging.Console.Println("无法完成任务,执行适应等级地图")
+                map_id = self.highest_map()
+                logger.info("无法完成任务,执行适应等级地图")
                 break
 
             #  任务完成，执行提交任务
@@ -82,8 +86,7 @@ class Task:
                     break
 
             if self.conditional_judgment(task_condition) == 3:
-                pass
-                # logging.Console.Println("材料任务无法自动完成,执行最高等级地图")
+                logger.info("材料任务无法自动完成,执行最高等级地图")
 
         return map_id
 
@@ -111,6 +114,23 @@ class Task:
                 # 任务编号
                 task_id = mem.read_int(task_ptr)
                 return task_name, task_conditional, task_id
+
+    def can_skip(self, task_id) -> [bool, int]:
+        """是否跳过"""
+        mem = self.mem
+        task_addr = mem.read_long(address.TaskAddr)
+        start = mem.read_long(task_addr + address.YjRwStartAddr)
+        end = mem.read_long(task_addr + address.YjRwEndAddr)
+        num = int((end - start) / 16)
+
+        for i in range(num):
+            task_ptr = mem.read_long(start + i * 16)
+            if mem.read_int(task_ptr) == task_id:
+                task_level = mem.read_int(task_ptr + address.RwDjAddr)
+                if task_level < self.map_data.get_role_level():
+                    return True, task_level
+
+        return False, 0
 
     def conditional_judgment(self, conditional) -> int:
         """
@@ -206,3 +226,222 @@ class Task:
                 else:
                     return cnum
         return -1
+
+    def highest_map(self):
+        """最高等级"""
+        role_level = self.map_data.get_role_level()
+        if role_level <= 17:
+            if role_level <= 3:
+                return 3  # 雷鸣废墟
+            if role_level <= 5:
+                return 5  # 雷鸣废墟
+            if role_level <= 8:
+                return 6  # 猛毒雷鸣废墟
+            if role_level <= 11:
+                return 9  # 冰霜幽暗密林
+            if role_level <= 13:
+                return 7  # 格拉卡
+            if role_level <= 15:
+                return 8  # 烈焰格拉卡
+            if role_level <= 17:
+                return 1000  # 暗黑雷鸣废墟
+            return 0
+
+        # 天空之城
+        if role_level <= 23:
+            if role_level <= 18:
+                return 1000  # 10 龙人之塔
+            if role_level <= 19:
+                return 12  # 人偶玄关
+            if role_level <= 20:
+                return 13  # 石巨人塔
+            if role_level <= 21:
+                return 14  # 黑暗玄廊
+            if role_level <= 22:
+                return 17  # 悬空城
+            if role_level <= 23:
+                return 15  # 城主宫殿
+            return 0
+
+        # 神殿脊椎
+        if role_level <= 29:
+            if role_level <= 24:
+                return 15  # 21 神殿外围
+            if role_level <= 25:
+                return 22  # 树精丛林
+            if role_level <= 26:
+                return 23  # 炼狱
+            if role_level <= 27:
+                return 24  # 极昼
+            if role_level <= 28:
+                return 25  # 第一脊椎
+            if role_level <= 29:
+                return 26  # 第二脊椎
+            return 0
+
+        # 暗精灵地区
+        if role_level <= 35:
+            if role_level <= 30:
+                return 26  # 31  浅栖之地
+            if role_level <= 31:
+                return 32  # 蜘蛛洞穴
+            if role_level <= 32:
+                return 150  # 蜘蛛王国
+            if role_level <= 33:
+                return 151  # 英雄冢
+            if role_level <= 34:
+                return 35  # 暗精灵墓地
+            if role_level <= 35:
+                return 34  # 熔岩穴
+            return 0
+
+        # 祭坛
+        if role_level <= 39:
+            if role_level <= 36:
+                return 34  # 152 暴君的祭坛
+            if role_level <= 37:
+                return 153  # 黄金矿洞
+            if role_level <= 38:
+                return 154  # 远古墓穴深处
+            if role_level <= 39:
+                return 154  # 远古墓穴深处
+            return 0
+
+        # 雪山
+        if role_level <= 45:
+            if role_level <= 40:
+                return 154  # 40 山脊
+            if role_level <= 41:
+                return 41  # 冰心少年
+            if role_level <= 42:
+                return 42  # 利库天井
+            if role_level <= 44:
+                return 141  # 布万加的修炼场
+            if role_level <= 45:
+                return 141  # 布万加的修炼场
+            return 0
+
+        # 绿都
+        if role_level <= 49:
+            if role_level <= 46:
+                return 141  # 61  绿都格罗兹尼
+            if role_level <= 47:
+                return 50  # 堕落的盗贼
+            if role_level <= 48:
+                return 51  # 迷乱之村哈穆林
+            if role_level <= 49:
+                return 53  # 疑惑之村
+            return 0
+
+        if role_level <= 53:
+            if role_level <= 50:
+                return 53  # 144  炽晶森林
+            if role_level <= 51:
+                return 145  # 冰晶森林
+            if role_level <= 52:
+                return 146  # 水晶矿脉
+            if role_level <= 53:
+                return 148  # 幽冥监狱
+            return 0
+
+        if role_level <= 58:
+            if role_level <= 54:
+                return 148  # 156 蘑菇庄园
+            if role_level <= 55:
+                return 157  # 蚁后的巢穴
+            if role_level <= 56:
+                return 158  # 腐烂之地
+            if role_level <= 57:
+                return 159  # 赫顿玛尔旧街区
+            if role_level <= 58:
+                return 160  # 鲨鱼栖息地
+            return 0
+
+        if role_level <= 62:
+            if role_level <= 59:
+                return 160  # 162  '人鱼国度
+            if role_level <= 60:
+                return 163  # GBL女神殿
+            if role_level <= 61:
+                return 164  # 树精繁殖地
+            if role_level <= 62:
+                return 164  # 树精繁殖地
+            return 0
+
+        if role_level <= 70:
+            if role_level <= 63:
+                return 164  # 80  '根特外围
+            if role_level <= 64:
+                return 81  # 根特东门
+            if role_level <= 65:
+                return 82  # 根特南门
+            if role_level <= 66:
+                return 88  # 根特北门
+            if role_level <= 67:
+                return 88  # 根特北门
+            if role_level <= 68:
+                return 83  # 夜间袭击战
+            if role_level <= 69:
+                return 84  # 补给阻断站
+            if role_level <= 70:
+                return 85  # 追击歼灭战
+            return 0
+
+        # 海上列车
+        if role_level <= 74:
+            if role_level <= 71:
+                return 85  # 86 列车上的海贼
+            if role_level <= 71:
+                return 87  # 夺回西部线
+            if role_level <= 73:
+                return 92  # 雾都赫伊斯
+            if role_level <= 74:
+                return 93  # 阿登高地
+            return 0
+
+        if role_level <= 80:
+            if role_level <= 75:
+                return 93  # 70 格兰之火
+            if role_level <= 76:
+                return 71  # 瘟疫之源
+            if role_level <= 77:
+                return 72  # 卡勒特之刃
+            if role_level <= 78:
+                return 74  # 绝密区域
+            if role_level <= 79:
+                return 75  # 昔日悲鸣
+            if role_level <= 80:
+                return 76  # 凛冬
+            return 0
+
+        if role_level <= 85:
+            if role_level <= 81:
+                return 76  # 102 普鲁兹发电站
+            if role_level <= 82:
+                return 103  # 特伦斯发电站
+            if role_level <= 85:
+                return 104  # 格蓝迪发电站
+            return 0
+
+        if role_level <= 86:
+            return 192  # 钢铁之臂
+        if role_level <= 90:
+            if role_level <= 87:
+                return 310  # 时间广场
+            if role_level <= 88:
+                return 312  # 恐怖的栖息地
+            if role_level <= 89:
+                return 314  # 红色魔女之森
+            if role_level <= 90:
+                return 314  # 红色魔女之森
+            return 0
+
+        if role_level <= 95:
+            return 291100293  # 全蚀市场
+        if role_level <= 100:
+            return 100000002  # 根特皇宫
+        if role_level <= 105:
+            return 100000176  # 无底坑道
+        if role_level <= 110:
+            return 100000176  # 无底坑道
+        return 0
