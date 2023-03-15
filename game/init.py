@@ -18,6 +18,7 @@ pick = o.Pickup(mem, pack, map_data)
 equip = o.Equip(mem, pack, map_data)
 auto = a.Auto(task)
 
+
 def init_empty_addr():
     """
     初始化全局空白
@@ -34,9 +35,9 @@ hotkey_run = True
 
 
 def hotkey2():
-    keyboard.add_hotkey('f1', traversal.screen_switch())
-    keyboard.add_hotkey('`', traversal.screen_kill())
-    keyboard.add_hotkey('end', auto.switch())
+    keyboard.add_hotkey('f1', traversal.screen_switch)
+    keyboard.add_hotkey('`', traversal.screen_kill)
+    keyboard.add_hotkey('end', auto.switch)
     # 保持程序运行
     keyboard.wait()
 

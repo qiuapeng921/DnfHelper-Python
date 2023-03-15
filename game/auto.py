@@ -1,7 +1,6 @@
 """
 自动刷图主线程
 """
-import _thread
 import random
 import sys
 import time
@@ -22,6 +21,8 @@ class Auto:
     thread_switch = False
     # 线程句柄
     threadHande = None
+    # 任务对象
+    task = None
 
     @classmethod
     def __init__(cls, task):
@@ -147,10 +148,11 @@ class Auto:
             if init.map_data.get_stat() == 1:
                 break
 
-    def town_handle(self):
+    @classmethod
+    def town_handle(cls):
         """城镇处理"""
         if init.map_data.get_pl() <= 8:
-            self.return_role()
+            cls.return_role()
             return
 
         time.sleep(0.2)
@@ -160,7 +162,7 @@ class Auto:
         # 1 剧情 2 搬砖
         auto_model = conf.getint("自动配置", "自动模式")
         if auto_model == 1 and init.map_data.get_role_level() < 110:
-            init.global_data.map_id = self.task.HandleMainLine()
+            init.global_data.map_id = cls.task.HandleMainLine()
             init.global_data.map_level = 0
         if auto_model == 2 and init.map_data.get_role_level() == 110:
             map_ids = list(map(int, conf.get("自动配置", "地图编号").split(",")))
@@ -172,7 +174,7 @@ class Auto:
         call.area_call(init.global_data.map_id)
 
         time.sleep(0.2)
-        self.select_map()
+        cls.select_map()
 
     @classmethod
     def select_map(cls):
