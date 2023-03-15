@@ -1,24 +1,26 @@
-import _thread
 import sys
 import time
 import traceback
 
-from common import logger, conf
+from common import logger, conf, thread
 from game import init, call, address
 
 
 class Screen:
     def __init__(self, mem):
+        self.thread = None
         self._switch = False
         self.mem = mem
 
     def screen_switch(self):
         self._switch = not self._switch
         if self._switch:
-            _thread.start_new_thread(self.screen_thread, ())
+            self.thread = thread.MyThreadFunc(self.screen_thread, ())
+            self.thread.start()
             logger.info("技能全屏 [ √ ]")
         else:
             self._switch = False
+            self.thread.stop()
             logger.info("技能全屏 [ x ]")
 
     def screen_thread(self):

@@ -7,7 +7,7 @@ import sys
 import time
 import traceback
 
-from common import logger, conf
+from common import logger, conf, thread
 from game import init, call, mem, address
 
 
@@ -20,9 +20,12 @@ class Auto:
     completedNum = 0
     # 线程开关
     thread_switch = False
+    # 线程句柄
+    threadHande = None
 
-    def __init__(self, task):
-        self.task = task
+    @classmethod
+    def __init__(cls, task):
+        cls.task = task
 
     @classmethod
     def switch(cls):
@@ -30,11 +33,13 @@ class Auto:
         init.global_data.auto_switch = not init.global_data.auto_switch
         cls.thread_switch = init.global_data.auto_switch
         if init.global_data.auto_switch:
-            _thread.start_new_thread(cls.auto_thread, ())
+            cls.threadHande = thread.MyThreadFunc(cls.auto_thread, ())
+            cls.threadHande.start()
             logger.info("自动刷图 [ √ ]")
         else:
             init.global_data.auto_switch = False
             cls.thread_switch = False
+            cls.threadHande.stop()
             logger.info("自动刷图 [ x ]")
 
     @classmethod

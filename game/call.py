@@ -43,7 +43,7 @@ def compile_call(byte_arr: list):
 
     mem.write_int(jump_address, 1)
     while mem.read_int(jump_address) == 1:
-        time.sleep(0.1)
+        time.sleep(0.02)
 
     mem.write_bytes(hook_shell, hook_old_data)
     mem.write_bytes(blank_address, helper.get_empty_bytes(len(byte_arr) + 16))

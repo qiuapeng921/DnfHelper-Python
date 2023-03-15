@@ -6,19 +6,18 @@ import time
 
 class MyThreadFunc(object):
     """手动终止线程的方法"""
+
     def __init__(self, func, args_tup):
         self.myThread = threading.Thread(target=func, args=args_tup)
 
     def start(self):
-        print('线程启动')
         self.myThread.start()
 
     def stop(self):
-        print('线程终止')
         try:
             for i in range(5):
                 self.async_raise(self.myThread.ident, SystemExit)
-                time.sleep(1)
+                time.sleep(0.01)
         except Exception as e:
             print(e)
 
@@ -45,6 +44,7 @@ if __name__ == '__main__':
             i += 1
             print("{}-{}: {}".format(arg1, arg2, i))
             time.sleep(1)
+
 
     # 声明一个线程类
     mythread = MyThreadFunc(second_count, ("好耶", "haoye"))
