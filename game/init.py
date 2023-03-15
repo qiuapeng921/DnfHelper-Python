@@ -16,7 +16,7 @@ pack = p.Pack()
 task = t.Task(mem, pack, map_data)
 pick = o.Pickup(mem, pack, map_data)
 equip = o.Equip(mem, pack, map_data)
-auto = a.Auto(task)
+auto = a.Auto(task, traversal, global_data, map_data, pack, pick,equip,game_map)
 
 
 def init_empty_addr():

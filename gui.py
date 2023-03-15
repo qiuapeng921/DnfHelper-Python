@@ -78,7 +78,7 @@ class AppWindow(XWindow):
         self.add_content("加载成功-欢迎使用")
         self.add_content("当前时间：{}".format(helper.get_now_date()))
         self.activation_but.enable(False)
-        init.hotkey2()
+        init.hotkey()
         return True
 
     def app_run_time(self):

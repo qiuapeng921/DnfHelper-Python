@@ -1,6 +1,6 @@
 import time
 
-from common import conf, logger
+from common import config, logger
 from game import address, call
 
 
@@ -15,7 +15,7 @@ class Pickup:
         组包捡物
         :return:
         """
-        item_config = conf.get("自动配置", "过滤物品").split(",")
+        item_config = config().get("自动配置", "过滤物品").split(",")
         goods = list()
         mem = self.mem
         rw_addr = call.person_ptr()
