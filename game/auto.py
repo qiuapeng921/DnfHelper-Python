@@ -132,7 +132,7 @@ class Auto:
 
     @classmethod
     def start_func(cls):
-        func_mod = config().getint("自动配置", "角色数量")
+        func_mod = config().getint("自动配置", "开启功能")
         if func_mod == 1:
             cls.traversal.screen_switch()
         if func_mod == 2:

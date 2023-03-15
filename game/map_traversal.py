@@ -1,6 +1,4 @@
-import sys
 import time
-import traceback
 
 from common import logger, config, thread
 from game import init, call, address
@@ -31,18 +29,7 @@ class Screen:
                 break
             rate = code_config[0]
             time.sleep(rate / 1000)
-            try:
-                self.full_screen(code_config)
-            except Exception as err:
-                print("-----------全屏开始-----------")
-                except_type, _, except_traceback = sys.exc_info()
-                print(except_type)
-                print(err.args)
-                print(except_traceback)
-                print('-----------')
-                for i in traceback.extract_tb(except_traceback):
-                    print(i)
-                print("-----------全屏结束-----------")
+            self.full_screen(code_config)
 
     @classmethod
     def screen_kill(cls):

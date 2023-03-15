@@ -35,7 +35,6 @@ class Task:
                 if not self.refreshTask:
                     time.sleep(0.2)
                     logger.info("暂无任务或卡任务,重新选择角色")
-                    self.map_data.refresh_role()
                     self.pack.return_role()
                     time.sleep(2)
                     self.pack.select_role(init.global_data.completed_role)
