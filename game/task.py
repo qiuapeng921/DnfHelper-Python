@@ -86,7 +86,9 @@ class Task:
                     break
 
             if self.conditional_judgment(task_condition) == 3:
+                map_id = self.highest_map()
                 logger.info("材料任务无法自动完成,执行最高等级地图")
+                break
 
         return map_id
 
