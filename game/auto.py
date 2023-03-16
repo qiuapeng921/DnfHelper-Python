@@ -36,7 +36,7 @@ class Auto:
     game_map = None
 
     @classmethod
-    def __init__(cls, task, traversal,map_data, pack, pick, equip, game_map):
+    def __init__(cls, task, traversal, map_data, pack, pick, equip, game_map):
         cls.task = task
         cls.traversal = traversal
         cls.map_data = map_data
@@ -158,7 +158,8 @@ class Auto:
         cls.pack.select_role(1)
         time.sleep(0.5)
         logger.info("进入角色 {} ".format(init.global_data.completed_role))
-        logger.info("开始第 {} 个角色,剩余疲劳 [ %d ]".format(init.global_data.completed_role + 1, cls.map_data.get_pl()))
+        logger.info(
+            "开始第 {} 个角色,剩余疲劳 [ %d ]".format(init.global_data.completed_role + 1, cls.map_data.get_pl()))
         while cls.thread_switch:
             time.sleep(0.2)
             # 进入城镇跳出循环
@@ -179,7 +180,7 @@ class Auto:
         # 1 剧情 2 搬砖
         auto_model = config().getint("自动配置", "自动模式")
         if auto_model == 1 and cls.map_data.get_role_level() < 110:
-            init.global_data.map_id = cls.task.HandleMainLine()
+            init.global_data.map_id = cls.task.handle_main()
             init.global_data.map_level = 0
         if auto_model == 2 and cls.map_data.get_role_level() == 110:
             map_ids = list(map(int, config().get("自动配置", "地图编号").split(",")))
