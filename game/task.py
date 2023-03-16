@@ -1,5 +1,6 @@
 import time
 
+from common import helper
 from game import address, init
 
 
@@ -100,14 +101,12 @@ class Task:
             if task_type == 0:
                 task_length = mem.read_int(task_ptr + address.RwDxAddr)
                 if task_length == 7:
-                    # todo taskName = common.UnicodeToString(common.ReadByteArr(common.ReadInt64(taskPtr+16), 100))
-                    task_name = mem.read_bytes(mem.read_long(task_ptr + 16), 100)
+                    task_name = helper.unicode_to_ascii(list(mem.read_bytes(mem.read_long(task_ptr + 16), 100)))
                 else:
-                    # todo taskName = common.UnicodeToString(common.ReadByteArr(taskPtr+16, 100))
-                    task_name = mem.read_bytes(task_ptr + 16, 100)
-                # todo common.UnicodeToString(common.ReadByteArr(common.ReadInt64(taskPtr+RwTjAddr), 100))
+                    task_name = helper.unicode_to_ascii(list(mem.read_bytes(task_ptr + 16, 100)))
                 # 任务条件
-                task_conditional = mem.read_bytes(mem.read_long(task_ptr + address.RwTjAddr), 100)
+                task_conditional = helper.unicode_to_ascii(
+                    list(mem.read_bytes(mem.read_long(task_ptr + address.RwTjAddr), 100)))
                 # 任务编号
                 task_id = mem.read_int(task_ptr)
                 return task_name, task_conditional, task_id

@@ -127,3 +127,23 @@ def get_empty_bytes(count: int) -> bytes:
 
 def message_box(msg):
     win32api.MessageBoxEx(0, msg, "Helper")
+
+
+def ascii_to_unicode(string: str) -> list:
+    bytes_arr = bytes()
+    for c in string:
+        hex_int = ord(c)
+        bytes_arr = bytes_arr + hex_int.to_bytes(2, byteorder='little')
+
+    return list(bytes_arr)
+
+
+def unicode_to_ascii(ls: list) -> str:
+    text = ""
+    for i in range(len(ls)):
+        if i * 2 < len(ls):
+            a = ls[i * 2 + 1] << 8
+            b = ls[i * 2]
+            text += chr(a + b)
+
+    return text
