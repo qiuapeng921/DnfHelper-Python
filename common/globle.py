@@ -15,6 +15,8 @@ class GlobalData:
     map_level = 0
     # 角色总数
     role_count = 0
+    # 完成角色
+    completed_role = 0
 
 
 # 坐标结构
