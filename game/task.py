@@ -96,9 +96,9 @@ class Task:
 
     def main_line_task(self) -> tuple[str, str, int]:
         mem = self.mem
-        task_addr = mem.read_int(address.TaskAddr)
-        start = mem.read_int(task_addr + address.QbRwStartAddr)
-        end = mem.read_int(task_addr + address.QbRwEndAddr)
+        task_addr = mem.read_long(address.TaskAddr)
+        start = mem.read_long(task_addr + address.QbRwStartAddr)
+        end = mem.read_long(task_addr + address.QbRwEndAddr)
         num = int((end - start) / 8)
 
         for i in range(num):
@@ -106,10 +106,13 @@ class Task:
             task_type = mem.read_int(task_ptr + address.RwLxAddr)
             if task_type == 0:
                 task_length = mem.read_int(task_ptr + address.RwDxAddr)
-                if task_length == 7:
-                    task_name = helper.unicode_to_ascii(list(mem.read_bytes(mem.read_long(task_ptr + 16), 100)))
+                if task_length > 7:
+                    tmp = mem.read_long(task_ptr + 16)
+                    task_name_byte = list(mem.read_bytes(tmp, 100))
+                    task_name = helper.unicode_to_ascii(task_name_byte)
                 else:
-                    task_name = helper.unicode_to_ascii(list(mem.read_bytes(task_ptr + 16, 100)))
+                    task_name_byte = list(mem.read_bytes(task_ptr + 16, 100))
+                    task_name = helper.unicode_to_ascii(task_name_byte)
                 # 任务条件
                 task_conditional = helper.unicode_to_ascii(
                     list(mem.read_bytes(mem.read_long(task_ptr + address.RwTjAddr), 100)))
@@ -209,7 +212,7 @@ class Task:
         -1 任务未接  0 任务完成 1 已接任务
         """
         mem = self.mem
-        task_addr = mem.read_long(address.RwFbAddr)
+        task_addr = mem.read_long(address.TaskAddr)
         start = mem.read_long(task_addr + address.YjRwStartAddr)
         end = mem.read_long(task_addr + address.YjRwEndAddr)
         num = int((end - start) / 16)

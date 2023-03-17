@@ -39,7 +39,7 @@ class AppWindow(XWindow):
         # 线程开关
         self.run = True
         # 定时设置标题
-        _thread.start_new_thread(self.title_time, ())
+        # _thread.start_new_thread(self.title_time, ())
         # 设置窗口图标
         self.setIcon(gui.XImage.loadSvgString(svgIcon))
         # 禁止改变大小
@@ -74,7 +74,7 @@ class AppWindow(XWindow):
 
         self.run_time_label = XShapeText(1, 375, 60, 30, "运行时间:", self)
         self.run_time_value = XShapeText(56, 375, 60, 30, "00:00:00", self)
-        _thread.start_new_thread(self.app_run_time, ())
+        # _thread.start_new_thread(self.app_run_time, ())
 
         self.version_label = XShapeText(220, 375, 60, 30, "版本号:", self)
         self.version_value = XShapeText(260, 375, 60, 30, version, self)
@@ -89,8 +89,6 @@ class AppWindow(XWindow):
         return False
 
     def activation(self, event, userdata) -> bool:
-        logger.info("驱动加载成功", 1)
-        logger.info("驱动加载成功", 2)
         process_id = helper.get_process_id_by_name("DNF.exe")
         if process_id == 0:
             helper.message_box("请打开dnf后运行")
@@ -131,7 +129,7 @@ class AppWindow(XWindow):
 
 if __name__ == '__main__':
     try:
-        # init_driver()
+        init_driver()
         globle.cmd = "gui"
         app = XApp()
         win = AppWindow()

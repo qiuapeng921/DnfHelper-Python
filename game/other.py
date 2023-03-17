@@ -1,6 +1,6 @@
 import time
 
-from common import config, logger
+from common import config, logger, helper
 from game import address, call
 
 
@@ -30,21 +30,18 @@ class Pickup:
             obj_type_b = mem.read_int(obj_ptr + address.LxPyAddr + 4)
             obj_camp = mem.read_int(obj_ptr + address.ZyPyAddr)
             if (obj_type_a == 289 or obj_type_b == 289) and obj_camp == 200:
-                goods_name = mem.read_bytes(
-                    mem.read_long(mem.read_long(obj_ptr + address.DmWpAddr) + address.WpMcAddr), 100)
-                print(list(goods_name))
-                ObjNameB = ""  # common.UnicodeToString(goodsNameByte)
-            if obj_type_b in item_config:
-                continue
-
-            if obj_ptr != rw_addr:
-                res_addr = self.map_data.decode(obj_ptr + address.FbSqAddr)
-                goods.append(res_addr)
+                goods_name_byte = mem.read_bytes(mem.read_long(mem.read_long(obj_ptr + address.DmWpAddr) + address.WpMcAddr), 100)
+                obj_type_b_name = helper.unicode_to_ascii(goods_name_byte)
+                if obj_type_b_name in item_config:
+                    continue
+                if obj_ptr != rw_addr:
+                    res_addr = self.map_data.decode(obj_ptr + address.FbSqAddr)
+                    goods.append(res_addr)
 
         if len(goods) > 0:
             for i in range(len(goods)):
                 self.pack.pick_up(goods[i])
-                time.sleep(0.1)
+                time.sleep(0.01)
 
 
 class Equip:
@@ -65,9 +62,10 @@ class Equip:
             equip = mem.read_long(mem.read_long(addr + i * 8) - 72 + 16)
             if equip > 0:
                 equip_level = mem.read_int(equip + address.ZbPjAddr)
-                # name_addr = mem.ReadInt64(equip + address.WpMcAddr)  # 装备名称
-                # equipName := helpers.UnicodeToString(rw.ReadByteArr(nameAddr, 100))
+                name_addr = mem.ReadInt64(equip + address.WpMcAddr)  # 装备名称
+                equip_name = helper.unicode_to_ascii(mem.ReadByteArr(name_addr, 100))
                 if equip_level in [0, 1, 2]:
+                    logger.info("处理装备 {}".format(equip_name), 1)
                     self.pack.decomposition(i + 9)
                     time.sleep(0.2)
                     num += 1
