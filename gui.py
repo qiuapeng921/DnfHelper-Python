@@ -1,6 +1,8 @@
 import _thread
+import ctypes
 import time
 
+import xcgui
 import xcgui._xcgui as gui
 from xcgui import XApp
 from xcgui import XWindow, XButton, XEdit, XShapeText
@@ -28,10 +30,16 @@ version = '1.0.0'
 
 
 class AppWindow(XWindow):
-    def __init__(self):
-        super(AppWindow, self).__init__(0, 0, 302, 400, "情歌 √ Lang [ Python ]", 0, gui.window_style_modal)
-        # _thread.start_new_thread(self.title_time, ())
 
+    def __init__(self):
+        super(AppWindow, self).__init__(0, 0, 302, 400, "", 0, gui.window_style_modal)
+        self.setTitle("情歌 √ Lang [ Python ]")
+        # 关闭窗口事件
+        self.regEvent(16, self.close_win)
+        # 线程开关
+        self.run = True
+        # 定时设置标题
+        _thread.start_new_thread(self.title_time, ())
         # 设置窗口图标
         self.setIcon(gui.XImage.loadSvgString(svgIcon))
         # 禁止改变大小
@@ -71,6 +79,15 @@ class AppWindow(XWindow):
         self.version_label = XShapeText(220, 375, 60, 30, "版本号:", self)
         self.version_value = XShapeText(260, 375, 60, 30, version, self)
 
+    def test(self) -> int:
+        print(1111)
+        return 1
+
+    def close_win(self, event, userdata) -> bool:
+        self.run = False
+        self.closeWindow()
+        return False
+
     def activation(self, event, userdata) -> bool:
         logger.info("驱动加载成功", 1)
         logger.info("驱动加载成功", 2)
@@ -92,13 +109,13 @@ class AppWindow(XWindow):
         return True
 
     def app_run_time(self):
-        while 1:
+        while self.run:
             time.sleep(1)
             self.run_time_value.setText(helper.get_app_run_time())
             self.run_time_value.redraw()
 
     def title_time(self):
-        while 1:
+        while self.run:
             time.sleep(1)
             self.setTitle("情歌 √ 当前时间 {}".format(helper.get_now_date()))
             self.redraw()
@@ -121,6 +138,9 @@ if __name__ == '__main__':
         globle.win_app = win
         logger.info("驱动加载成功", 1)
         win.showWindow()
+
+        hwnd = win.getHWND()
+        ctypes.windll.user32.SetWindowPos(hwnd, -1, 0, 0, 0, 0, 3)
         app.run()
         app.exit()
     except KeyboardInterrupt as e:
