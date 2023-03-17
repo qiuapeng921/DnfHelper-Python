@@ -15,17 +15,17 @@ class Screen:
         if self._switch:
             self.thread = thread.MyThreadFunc(self.screen_thread, ())
             self.thread.start()
-            logger.info("技能全屏 [ √ ]")
+            logger.info("技能全屏 [ √ ]", 1)
         else:
             self._switch = False
             self.thread.stop()
-            logger.info("技能全屏 [ x ]")
+            logger.info("技能全屏 [ x ]", 1)
 
     def screen_thread(self):
         while self._switch:
             code_config = list(map(int, config().get("自动配置", "全屏配置").split(",")))
             if len(code_config) != 5:
-                logger.info("全屏配置错误")
+                logger.info("全屏配置错误", 2)
                 break
             rate = code_config[0]
             time.sleep(rate / 1000)
@@ -35,7 +35,7 @@ class Screen:
     def screen_kill(cls):
         """秒杀完毕"""
         call.skill_call(0, 54141, 0, 0, 0, 0, 1.0)
-        logger.info("秒杀完毕 [ √ ]")
+        logger.info("秒杀完毕 [ √ ]", 1)
 
     def full_screen(self, code_config):
         """全屏遍历"""

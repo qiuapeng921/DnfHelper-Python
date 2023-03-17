@@ -29,8 +29,7 @@ version = '1.0.0'
 
 class AppWindow(XWindow):
     def __init__(self):
-        super(AppWindow, self).__init__(0, 0, 300, 400, "情歌 √ 当前时间 {}".format(helper.get_now_date()), 0,
-                                        gui.window_style_modal)
+        super(AppWindow, self).__init__(0, 0, 302, 400, "情歌 √ Lang [ Python ]", 0, gui.window_style_modal)
         # _thread.start_new_thread(self.title_time, ())
 
         # 设置窗口图标
@@ -49,7 +48,15 @@ class AppWindow(XWindow):
         self.activation_but = XButton(244, 35, 50, 30, "激活", self)
         self.activation_but.regEvent(gui.XE_BNCLICK, self.activation)
 
-        self.edit_content = XEdit(1, 70, 300, 310, self)
+        self.func_content = XEdit(1, 70, 300, 100, self)
+        self.func_content.enableMultiLine(True)
+        self.func_content.enableReadOnly(True)
+        self.func_content.autoScroll()
+        self.func_content.showSBarV(True)
+        self.func_content.showSBarH(True)
+        self.func_content.scrollBottom()
+
+        self.edit_content = XEdit(1, 175, 300, 200, self)
         self.edit_content.enableMultiLine(True)
         self.edit_content.enableReadOnly(True)
         self.edit_content.autoScroll()
@@ -65,6 +72,8 @@ class AppWindow(XWindow):
         self.version_value = XShapeText(260, 375, 60, 30, version, self)
 
     def activation(self, event, userdata) -> bool:
+        logger.info("驱动加载成功", 1)
+        logger.info("驱动加载成功", 2)
         process_id = helper.get_process_id_by_name("DNF.exe")
         if process_id == 0:
             helper.message_box("请打开dnf后运行")
@@ -75,8 +84,9 @@ class AppWindow(XWindow):
 
         mem.set_process_id(process_id)
         init.init_empty_addr()
-        self.add_content("加载成功-欢迎使用")
-        self.add_content("当前时间：{}".format(helper.get_now_date()))
+        self.add_edit_content("加载成功-欢迎使用")
+        self.add_edit_content("当前时间：{}".format(helper.get_now_date()))
+
         self.activation_but.enable(False)
         init.hotkey()
         return True
@@ -93,19 +103,23 @@ class AppWindow(XWindow):
             self.setTitle("情歌 √ 当前时间 {}".format(helper.get_now_date()))
             self.redraw()
 
-    def add_content(self, msg):
+    def add_edit_content(self, msg):
         self.edit_content.addTextUser("{}\n".format(msg))
+        self.redraw()
+
+    def add_func_content(self, msg):
+        self.func_content.addTextUser("{}\n".format(msg))
         self.redraw()
 
 
 if __name__ == '__main__':
     try:
-        init_driver()
+        # init_driver()
         globle.cmd = "gui"
         app = XApp()
         win = AppWindow()
         globle.win_app = win
-        logger.info("驱动加载成功")
+        logger.info("驱动加载成功", 1)
         win.showWindow()
         app.run()
         app.exit()

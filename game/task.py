@@ -29,13 +29,15 @@ class Task:
             # 处理相同任务输出
             if task_id != next_task_id:
                 next_task_id = task_id
-                logger.info("主线任务->任务名称 {},任务条件 {},任务ID {}".format(task_name, task_condition, task_id))
+                logger.info("主线任务->任务名称 {}".format(task_name), 1)
+                logger.info("主线任务->任务条件 {}".format(task_condition), 1)
+                logger.info("主线任务->任务ID {}".format(task_id), 1)
 
             # 无任务,刷新角色
             if task_id == 0:
                 if not self.refreshTask:
                     time.sleep(0.2)
-                    logger.info("暂无任务或卡任务,重新选择角色")
+                    logger.info("暂无任务或卡任务,重新选择角色", 1)
                     self.pack.return_role()
                     time.sleep(2)
                     self.pack.select_role(init.global_data.completed_role)
@@ -44,7 +46,7 @@ class Task:
                     continue
                 else:
                     map_id = self.highest_map()
-                    logger.info("暂无任务,执行适应等级地图")
+                    logger.info("暂无任务,执行适应等级地图", 1)
                     break
 
             self.refreshTask = False
@@ -67,7 +69,7 @@ class Task:
             task_ids = [3509, 5943]
             if task_id in task_ids:
                 map_id = self.highest_map()
-                logger.info("无法完成任务,执行适应等级地图")
+                logger.info("无法完成任务,执行适应等级地图", 1)
                 break
 
             #  任务完成，执行提交任务
@@ -87,7 +89,7 @@ class Task:
 
             if self.conditional_judgment(task_condition) == 3:
                 map_id = self.highest_map()
-                logger.info("材料任务无法自动完成,执行最高等级地图")
+                logger.info("材料任务无法自动完成,执行最高等级地图", 1)
                 break
 
         return map_id

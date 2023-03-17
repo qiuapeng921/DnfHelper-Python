@@ -53,12 +53,12 @@ class Auto:
         if init.global_data.auto_switch:
             cls.threadHande = thread.MyThreadFunc(cls.auto_thread, ())
             cls.threadHande.start()
-            logger.info("自动刷图 [ √ ]")
+            logger.info("自动刷图 [ √ ]", 1)
         else:
             init.global_data.auto_switch = False
             cls.thread_switch = False
             cls.threadHande.stop()
-            logger.info("自动刷图 [ x ]")
+            logger.info("自动刷图 [ x ]", 1)
 
     @classmethod
     def auto_thread(cls):
@@ -148,8 +148,8 @@ class Auto:
         role_num = config().getint("自动配置", "角色数量")
         init.global_data.completed_role = init.global_data.completed_role + 1
         if init.global_data.completed_role > role_num:
-            logger.info("指定角色完成所有角色")
-            logger.info("自动刷图 [ x ]")
+            logger.info("指定角色完成所有角色", 2)
+            logger.info("自动刷图 [ x ]", 2)
             cls.thread_switch = False
             init.global_data.auto_switch = False
             return
@@ -157,9 +157,9 @@ class Auto:
         time.sleep(0.2)
         cls.pack.select_role(1)
         time.sleep(0.5)
-        logger.info("进入角色 {} ".format(init.global_data.completed_role))
+        logger.info("进入角色 {} ".format(init.global_data.completed_role), 2)
         logger.info(
-            "开始第 {} 个角色,剩余疲劳 [ %d ]".format(init.global_data.completed_role + 1, cls.map_data.get_pl()))
+            "开始第 {} 个角色,剩余疲劳 [ %d ]".format(init.global_data.completed_role + 1, cls.map_data.get_pl()), 2)
         while cls.thread_switch:
             time.sleep(0.2)
             # 进入城镇跳出循环
@@ -208,7 +208,7 @@ class Auto:
     @classmethod
     def return_role(cls):
         """返回角色"""
-        logger.info("疲劳值不足 · 即将切换角色")
+        logger.info("疲劳值不足 · 即将切换角色", 2)
         time.sleep(0.2)
         cls.pack.return_role()
         while cls.thread_switch:
@@ -256,7 +256,7 @@ class Auto:
     def quit_map(cls):
         """出图"""
         cls.completedNum = cls.completedNum + 1
-        logger.info("自动刷图 [ {} ] 剩余疲劳 [ {} ]".format(cls.completedNum, cls.map_data.get_pl()))
+        logger.info("自动刷图 [ {} ] 剩余疲劳 [ {} ]".format(cls.completedNum, cls.map_data.get_pl()), 2)
         time.sleep(0.2)
         # 翻牌
         cls.pack.get_income(0, random.randint(0, 3))
