@@ -140,10 +140,11 @@ def ascii_to_unicode(string: str) -> list:
 
 def unicode_to_ascii(ls: list) -> str:
     text = ""
-    for i in range(len(ls)):
-        if i * 2 < len(ls):
-            a = ls[i * 2 + 1] << 8
-            b = ls[i * 2]
-            text += chr(a + b)
+    for i in range(0, len(ls), 2):
+        if ls[i] == 0 and ls[i + 1] == 0:
+            break
+        a = ls[i + 1] << 8
+        b = ls[i]
+        text += chr(a + b)
 
     return text
