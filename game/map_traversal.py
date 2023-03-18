@@ -1,6 +1,7 @@
+import _thread
 import time
 
-from common import logger, config, thread
+from common import logger, config
 from game import init, call, address
 
 
@@ -13,12 +14,10 @@ class Screen:
     def screen_switch(self):
         self._switch = not self._switch
         if self._switch:
-            self.thread = thread.MyThreadFunc(self.screen_thread, ())
-            self.thread.start()
+            self.thread = _thread.start_new_thread(self.screen_thread, ())
             logger.info("技能全屏 [ √ ]", 1)
         else:
             self._switch = False
-            self.thread.stop()
             logger.info("技能全屏 [ x ]", 1)
 
     def screen_thread(self):

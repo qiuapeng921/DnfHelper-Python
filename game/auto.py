@@ -1,12 +1,13 @@
 """
 自动刷图主线程
 """
+import _thread
 import random
 import sys
 import time
 import traceback
 
-from common import logger, config, thread
+from common import logger, config
 from game import call, mem, address, init
 
 
@@ -50,20 +51,18 @@ class Auto:
         """自动开关"""
         init.global_data.auto_switch = not init.global_data.auto_switch
         cls.thread_switch = init.global_data.auto_switch
-        if init.global_data.auto_switch:
-            cls.threadHande = thread.MyThreadFunc(cls.auto_thread, ())
-            cls.threadHande.start()
+        if cls.thread_switch:
+            cls.threadHande = _thread.start_new_thread(cls.auto_thread, ())
             logger.info("自动刷图 [ √ ]", 1)
         else:
             init.global_data.auto_switch = False
             cls.thread_switch = False
-            cls.threadHande.stop()
             logger.info("自动刷图 [ x ]", 1)
 
     @classmethod
     def auto_thread(cls):
         """自动线程"""
-        while init.global_data.auto_switch:
+        while cls.thread_switch:
             try:
                 time.sleep(0.2)
 
@@ -87,12 +86,12 @@ class Auto:
                 if cls.map_data.get_stat() == 3:
                     if cls.firstEnterMap is False and cls.map_data.is_town() is False:
                         # 透明call
-                        call.hide_call(call.person_ptr())
+                        # call.hide_call(call.person_ptr())
                         time.sleep(0.1)
                         # sss评分
-                        mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, 999999)
-                        cls.traversal.ignore_building(True)
-                        cls.start_func()
+                        # mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, 999999)
+                        # cls.traversal.ignore_building(True)
+                        # cls.start_func()
                         cls.firstEnterMap = True
 
                     # 跟随怪物

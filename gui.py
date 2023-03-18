@@ -1,8 +1,6 @@
-import _thread
 import ctypes
 import time
 
-import xcgui
 import xcgui._xcgui as gui
 from xcgui import XApp
 from xcgui import XWindow, XButton, XEdit, XShapeText
@@ -79,12 +77,9 @@ class AppWindow(XWindow):
         self.version_label = XShapeText(220, 375, 60, 30, "版本号:", self)
         self.version_value = XShapeText(260, 375, 60, 30, version, self)
 
-    def test(self) -> int:
-        print(1111)
-        return 1
-
     def close_win(self, event, userdata) -> bool:
         self.run = False
+        print('推出')
         self.closeWindow()
         return False
 

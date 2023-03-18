@@ -194,8 +194,8 @@ class Pack:
         cls.fb_call()
 
     @classmethod
-    def submit_task(cls, task_id):
-        """提交任务"""
+    def finish_task(cls, task_id):
+        """完成任务"""
         cls.hc_call(33)
         cls.jm_call(33, 2)
         cls.jm_call(task_id, 2)
@@ -204,8 +204,8 @@ class Pack:
         cls.fb_call()
 
     @classmethod
-    def finish_task(cls, task_id):
-        """完成任务"""
+    def submit_task(cls, task_id):
+        """提交任务"""
         cls.hc_call(34)
         cls.jm_call(34, 2)
         cls.jm_call(task_id, 2)

@@ -1,5 +1,10 @@
 import logging
+
 from common import globle, helper
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+log.addHandler(logging.StreamHandler())
 
 
 def info(msg: str, t: int):
@@ -9,10 +14,7 @@ def info(msg: str, t: int):
     :return:
     """
     if globle.cmd == "cmd":
-        log = logging.getLogger(__name__)
-        log.setLevel(logging.DEBUG)
-        log.addHandler(logging.StreamHandler())
-        log.debug("{} {}\n".format(helper.get_now_date(), msg))
+        log.info("{} {}".format(helper.get_now_date(), msg))
     else:
         if t == 1:
             globle.win_app.add_func_content(msg)

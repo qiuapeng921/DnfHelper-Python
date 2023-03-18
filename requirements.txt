@@ -5,3 +5,4 @@ Pymem==1.10.0
 pywin32==305
 xcgui~=0.1.7
 keyboard==0.13.5
+multiprocess==0.70.14
