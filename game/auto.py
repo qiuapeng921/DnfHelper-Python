@@ -86,14 +86,13 @@ class Auto:
                 if cls.map_data.get_stat() == 3:
                     if cls.firstEnterMap is False and cls.map_data.is_town() is False:
                         # 透明call
-                        call.hide_call(call.person_ptr())
-                        time.sleep(0.1)
+                        # call.hide_call(call.person_ptr())
                         # sss评分
-                        mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, 999999)
-                        time.sleep(0.1)
-                        cls.traversal.ignore_building(True)
-                        time.sleep(0.1)
-                        cls.start_func()
+                        # mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, 999999)
+                        # 无视建筑
+                        # cls.traversal.ignore_building(True)
+                        # 进图开启功能
+                        # cls.start_func()
                         cls.firstEnterMap = True
 
                     # 跟随怪物
@@ -105,7 +104,7 @@ class Auto:
                         # 捡物品
                         cls.pick.pickup()
                         # 过图
-                        # cls.pass_map()
+                        cls.pass_map()
                         continue
 
                     # 通关
@@ -116,7 +115,7 @@ class Auto:
                             # 关闭功能
                             cls.start_func()
                             # 关闭穿透
-                            cls.traversal.ignore_building(False)
+                            # cls.traversal.ignore_building(False)
                             # 退出副本
                             cls.quit_map()
                             cls.firstEnterMap = False
@@ -154,11 +153,10 @@ class Auto:
             return
 
         time.sleep(0.2)
-        cls.pack.select_role(1)
+        cls.pack.select_role(init.global_data.completed_role)
         time.sleep(0.5)
         logger.info("进入角色 {} ".format(init.global_data.completed_role), 2)
-        logger.info(
-            "开始第 {} 个角色,剩余疲劳 [ %d ]".format(init.global_data.completed_role + 1, cls.map_data.get_pl()), 2)
+        logger.info("开始第 {} 个角色,剩余疲劳 {}".format(init.global_data.completed_role + 1, cls.map_data.get_pl()), 2)
         while cls.thread_switch:
             time.sleep(0.2)
             # 进入城镇跳出循环
@@ -190,7 +188,7 @@ class Auto:
         time.sleep(0.2)
         call.area_call(init.global_data.map_id)
 
-        time.sleep(0.3)
+        time.sleep(0.2)
         cls.select_map()
 
     @classmethod
@@ -243,13 +241,13 @@ class Auto:
             return
         # 寻路过图
         map_data = cls.game_map.map_data()
-        if len(map_data.map_route) > 2:
-            direction = cls.game_map.get_direction((map_data.map_route[0], map_data.map_route[1]))
-            over_map = config().getint("自动配置", "过图")
+        if len(map_data.map_route) >= 2:
+            direction = cls.game_map.get_direction(map_data.map_route[0], map_data.map_route[1])
+            over_map = config().getint("自动配置", "过图方式")
             if over_map == 1:
                 call.over_map_call(direction)
             if over_map == 2:
-                print("未实现")
+                call.drift_over_map(direction)
 
     @classmethod
     def quit_map(cls):
@@ -265,9 +263,9 @@ class Auto:
         while cls.thread_switch:
             time.sleep(0.2)
             if out_type == 0:
-                time.sleep(3)
+                time.sleep(5)
 
             # 出图
             cls.pack.leave_map()
-            if cls.map_data.get_stat() == 1 or cls.map_data.is_town() is True:
+            if cls.map_data.get_stat() == 1 or cls.map_data.is_town():
                 break

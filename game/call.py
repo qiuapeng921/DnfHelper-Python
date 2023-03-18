@@ -221,7 +221,6 @@ def over_map_call(fx):
     """
     过图call
     :param fx: 0左 1右 2上 3下
-    :return:
     """
     if init.map_data.is_town():
         return
@@ -236,3 +235,44 @@ def over_map_call(fx):
     shell_code = helper.add_list(shell_code, [72, 184], helper.int_to_bytes(address.GtCallAddr, 8))
     shell_code = helper.add_list(shell_code, [255, 208])
     compile_call(shell_code)
+
+
+def drift_over_map(fx):
+    """
+    漂移顺图
+    :param fx: 0左 1右 2上 3下
+    """
+    if init.map_data.is_town():
+        return
+    if not init.map_data.is_open_door():
+        return
+
+    addr = person_ptr()
+    map_offset = mem.read_long(addr + address.DtPyAddr)
+    if map_offset == 0:
+        return
+
+    room_data = mem.read_long(mem.read_long(mem.read_long(address.FJBHAddr) + address.SJAddr) + address.StPyAddr)
+    coordinate_structure = room_data + fx * address.FxIdAddr + address.ZbStPyAddr
+    start_x = mem.read_int(coordinate_structure + 0)
+    start_y = mem.read_int(coordinate_structure + 4)
+    end_x = mem.read_int(coordinate_structure + 8)
+    end_y = mem.read_int(coordinate_structure + 12)
+    x, y = (int(0), int(0))
+    if fx == 0:
+        x = int(start_x + end_x + 20)
+        y = int(start_y + end_y / 2)
+
+    if fx == 1:
+        x = int(start_x - 20)
+        y = int(start_y + end_y / 2)
+    if fx == 2:
+        x = int(start_x + end_x / 2)
+        y = int(start_y + end_y + 20)
+
+    if fx == 3:
+        x = int(start_x + end_x / 2)
+        y = int(start_y - 20)
+    drift_call(addr, x, y, 0, 50)
+    time.sleep(0.1)
+    drift_call(addr, start_x + end_x / 2, start_y, 0, 50)

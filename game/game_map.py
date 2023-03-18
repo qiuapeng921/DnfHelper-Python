@@ -13,8 +13,8 @@ class GameMap:
     def get_direction(cls, cut_room, next_room):
         """
         获取方向
-        :param cut_room: CoordinateType
-        :param next_room: CoordinateType
+        :param cut_room
+        :param next_room
         :return: int
         """
         direction = 0
@@ -84,13 +84,13 @@ class GameMap:
         :return: (int, [CoordinateType])
         """
         x, y, k = (0, 0, 0)
-        temp_coordinates = globle.CoordinateType()
         for i in range(len(simulation_route)):
+            temp_coordinates = globle.CoordinateType()
             x = (simulation_route[i].x + 2) % 3
             y = (simulation_route[i].y + 2) % 3
             if x == 0 and y == 0:
-                temp_coordinates.x = (simulation_route[i].x + 2) / 3 - 1
-                temp_coordinates.y = (simulation_route[i].y + 2) / 3 - 1
+                temp_coordinates.x = int((simulation_route[i].x + 2) / 3 - 1)
+                temp_coordinates.y = int((simulation_route[i].y + 2) / 3 - 1)
                 reality_route.insert(0 + k, temp_coordinates)
                 k = k + 1
 
@@ -151,8 +151,7 @@ class GameMap:
         if data.start_zb.x == data.end_zb.x and data.start_zb.y == data.end_zb.y:
             return data
 
-        data.consume_fatigue = cls.get_route(data.map_channel, data.width, data.height, data.start_zb, data.end_zb,
-                                             data.map_route)
+        data.consume_fatigue = cls.get_route(data.map_channel, data.width, data.height, data.start_zb, data.end_zb, data.map_route)
         return data
 
     @classmethod
@@ -220,8 +219,7 @@ class GameMap:
         :param height: int
         :return: [CoordinateType]
         """
-        wait_handle_coordinate = globle.CoordinateType()  # 待检测坐标
-        wait_handle_node, tmp_node = globle.MapNodeType(), globle.MapNodeType()  # 待检测节点, 临时节点
+        tmp_node = globle.MapNodeType()  # 待检测节点, 临时节点
         open_list = list()  # 开放列表
         close_list = list()  # 关闭列表
 
@@ -264,7 +262,6 @@ class GameMap:
                                     close_list[x].current_coordinates.y == wait_handle_node.final_coordinates.y:
                                 wait_handle_node = close_list[x]
                                 break
-
                         if wait_handle_node.current_coordinates.x != map_start.x or wait_handle_node.current_coordinates.y != map_start.y:
                             map_label[wait_handle_node.current_coordinates.x][
                                 wait_handle_node.current_coordinates.y].background_color = 0x00D8D8
@@ -272,12 +269,11 @@ class GameMap:
 
                         if wait_handle_node.current_coordinates.x == map_start.x and wait_handle_node.current_coordinates.y == map_start.y:
                             break
-
                     move_arr.insert(0, map_start)
                     move_arr.append(map_end)
                     return move_arr
-
             for y in range(4):
+                wait_handle_coordinate = globle.CoordinateType()  # 待检测坐标
                 if y == 0:
                     wait_handle_coordinate.x = tmp_node.current_coordinates.x
                     wait_handle_coordinate.y = tmp_node.current_coordinates.y - 1
@@ -290,28 +286,20 @@ class GameMap:
                 else:
                     wait_handle_coordinate.x = tmp_node.current_coordinates.x
                     wait_handle_coordinate.y = tmp_node.current_coordinates.y + 1
-
-                if wait_handle_coordinate.x < 0 or wait_handle_coordinate.x > (
-                        width - 1) or wait_handle_coordinate.y < 0 or wait_handle_coordinate.y > (height - 1):
+                if wait_handle_coordinate.x < 0 or wait_handle_coordinate.x > (width - 1) or wait_handle_coordinate.y < 0 or wait_handle_coordinate.y > (height - 1):
                     continue
-
                 if map_label[wait_handle_coordinate.x][wait_handle_coordinate.y].background_color == 0x000000:
                     continue
-
                 exist_close_list = False
                 for x in range(len(close_list)):
-                    if close_list[x].current_coordinates.x == wait_handle_coordinate.x and close_list[
-                        x].current_coordinates.y == wait_handle_coordinate.y:
+                    if close_list[x].current_coordinates.x == wait_handle_coordinate.x and close_list[x].current_coordinates.y == wait_handle_coordinate.y:
                         exist_close_list = True
                         break
-
                 if exist_close_list:
                     continue
-
                 exist_open_list = False
                 for x in range(len(open_list)):
-                    if open_list[x].current_coordinates.x == wait_handle_coordinate.x and open_list[
-                        x].current_coordinates.y == wait_handle_coordinate.y:
+                    if open_list[x].current_coordinates.x == wait_handle_coordinate.x and open_list[x].current_coordinates.y == wait_handle_coordinate.y:
                         if wait_handle_coordinate.x != tmp_node.current_coordinates.x or wait_handle_coordinate.y != tmp_node.current_coordinates.y:
                             guess_g = 14
                         else:
@@ -322,19 +310,17 @@ class GameMap:
 
                         exist_open_list = True
                         break
-
                 if not exist_open_list:
                     if wait_handle_coordinate.x == tmp_node.current_coordinates.x or wait_handle_coordinate.y == tmp_node.current_coordinates.y:
                         guess_g = 10
                     else:
                         guess_g = 14
-
+                    wait_handle_node = globle.MapNodeType()
                     wait_handle_node.g = tmp_node.g + guess_g
                     wait_handle_node.h = map_end.x - wait_handle_coordinate.x * 10 + map_end.y - wait_handle_coordinate.y * 10
                     wait_handle_node.f = wait_handle_node.g + wait_handle_node.h
                     wait_handle_node.current_coordinates = wait_handle_coordinate
                     wait_handle_node.final_coordinates = tmp_node.current_coordinates
                     open_list.insert(0, wait_handle_node)
-
             if len(open_list) == 0:
                 break

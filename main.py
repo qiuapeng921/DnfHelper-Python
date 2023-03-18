@@ -4,7 +4,6 @@ from game import mem, init
 
 if __name__ == '__main__':
     try:
-
         globle.cmd = "cmd"
         init_driver()
         logger.info("驱动加载成功", 1)
@@ -15,7 +14,6 @@ if __name__ == '__main__':
 
         mem.set_process_id(process_id)
         init.init_empty_addr()
-        init.game_map.map_data()
         logger.info("加载成功-欢迎使用", 1)
         logger.info("当前时间：{}".format(helper.get_now_date()), 1)
         init.hotkey2()

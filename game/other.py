@@ -31,7 +31,8 @@ class Pickup:
             obj_camp = mem.read_int(obj_ptr + address.ZyPyAddr)
             if (obj_type_a == 289 or obj_type_b == 289) and obj_camp == 200:
                 goods_name_byte = mem.read_bytes(mem.read_long(mem.read_long(obj_ptr + address.DmWpAddr) + address.WpMcAddr), 100)
-                obj_type_b_name = helper.unicode_to_ascii(goods_name_byte)
+                obj_type_b_name = helper.unicode_to_ascii(list(goods_name_byte))
+
                 if obj_type_b_name in item_config:
                     continue
                 if obj_ptr != rw_addr:
@@ -63,7 +64,7 @@ class Equip:
             if equip > 0:
                 equip_level = mem.read_int(equip + address.ZbPjAddr)
                 name_addr = mem.read_long(equip + address.WpMcAddr)  # 装备名称
-                equip_name = helper.unicode_to_ascii(mem.read_bytes(name_addr, 100))
+                equip_name = helper.unicode_to_ascii(list(mem.read_bytes(name_addr, 100)))
                 if equip_level in [0, 1, 2]:
                     logger.info("处理装备 {}".format(equip_name), 1)
                     self.pack.decomposition(i + 9)

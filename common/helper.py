@@ -2,8 +2,6 @@ import struct
 from datetime import datetime
 
 import psutil
-import random
-
 import win32api
 
 
@@ -139,6 +137,9 @@ def ascii_to_unicode(string: str) -> list:
 
 
 def unicode_to_ascii(ls: list) -> str:
+    if isinstance(ls, bytes):
+        ls = list(ls)
+
     text = ""
     for i in range(0, len(ls), 2):
         if ls[i] == 0 and ls[i + 1] == 0:

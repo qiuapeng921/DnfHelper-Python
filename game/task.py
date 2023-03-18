@@ -1,7 +1,7 @@
 import time
 
-from common import logger
 from common import helper
+from common import logger
 from game import address, init
 
 
@@ -24,7 +24,7 @@ class Task:
         # 提交主线
         self.submit_task()
         while init.global_data.auto_switch:
-            time.sleep(0.3)
+            time.sleep(0.2)
             task_name, task_condition, task_id = self.main_line_task()
             # 处理相同任务输出
             if task_id != next_task_id:
@@ -47,9 +47,19 @@ class Task:
                 else:
                     map_id = self.highest_map()
                     logger.info("暂无任务,执行适应等级地图", 1)
-                    break
+                    return map_id
 
             self.refreshTask = False
+
+            # 跳过部分无法完成任务，取最高等级执行
+            # 任务名称[返回赫顿玛尔],任务条件[[seek n meet npc]],任务ID[3509] 材料不足无法完成任务
+            # 任务名称[黑市的商人],任务条件[[seek n meet npc]],任务ID[5943] 蛇肉任务
+            task_ids = [3509, 5943]
+            if task_id in task_ids:
+                map_id = self.highest_map()
+                logger.info("无法完成任务,执行适应等级地图", 1)
+                return map_id
+
             #  是否可以跳过任务
             #  86级寂静城任务无法跳过 任务id{3850, 3851, 3858, 3859, 3860, 3861, 3864, 3865, 3866, 3867, 3868}
             ok, task_level = self.can_skip(task_id)
@@ -63,34 +73,27 @@ class Task:
             if self.finish_status(task_id) == -1:
                 self.pack.accept_task(task_id)
 
-            # 跳过部分无法完成任务，取最高等级执行
-            # 任务名称[返回赫顿玛尔],任务条件[[seek n meet npc]],任务ID[3509] 材料不足无法完成任务
-            # 任务名称[黑市的商人],任务条件[[seek n meet npc]],任务ID[5943] 蛇肉任务
-            task_ids = [3509, 5943]
-            if task_id in task_ids:
-                map_id = self.highest_map()
-                logger.info("无法完成任务,执行适应等级地图", 1)
-                break
-
             #  任务完成，执行提交任务
             if self.finish_status(task_id) == 0:
                 self.pack.submit_task(task_id)
                 continue
 
             # 剧情条件判断
-            if self.conditional_judgment(task_condition) == 1:
+            if self.conditional(task_condition) == 1:
                 self.pack.finish_task(task_id)
+                self.pack.submit_task(task_id)
 
             # 刷图任务
-            if self.conditional_judgment(task_condition) == 2:
+            if self.conditional(task_condition) == 2:
                 map_id = self.task_map(task_id)
                 if map_id > 0:
-                    break
+                    return map_id
 
-            if self.conditional_judgment(task_condition) == 3:
+            # 材料任务
+            if self.conditional(task_condition) == 3:
                 map_id = self.highest_map()
                 logger.info("材料任务无法自动完成,执行最高等级地图", 1)
-                break
+                return map_id
 
         return map_id
 
@@ -137,7 +140,7 @@ class Task:
 
         return False, 0
 
-    def conditional_judgment(self, conditional) -> int:
+    def conditional(self, conditional) -> int:
         """
             conditional_judgment 条件判断
             1=城镇完成 比如：对话任务   2=刷图任务，需要进图  3=材料任务
