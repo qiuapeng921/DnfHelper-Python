@@ -151,7 +151,8 @@ class GameMap:
         if data.start_zb.x == data.end_zb.x and data.start_zb.y == data.end_zb.y:
             return data
 
-        data.consume_fatigue = cls.get_route(data.map_channel, data.width, data.height, data.start_zb, data.end_zb, data.map_route)
+        data.consume_fatigue = cls.get_route(data.map_channel, data.width, data.height, data.start_zb, data.end_zb,
+                                             data.map_route)
         return data
 
     @classmethod
@@ -219,14 +220,12 @@ class GameMap:
         :param height: int
         :return: [CoordinateType]
         """
-        exist_open_list, exist_close_list = False, False  # 已存在开放列表, 已存在关闭列表
         wait_handle_coordinate = globle.CoordinateType()  # 待检测坐标
         wait_handle_node, tmp_node = globle.MapNodeType(), globle.MapNodeType()  # 待检测节点, 临时节点
         open_list = list()  # 开放列表
         close_list = list()  # 关闭列表
 
         short_est_num = 0  # 最短编号
-        min_f, guess_g = 0, 0  # 最小F值, 预测G值
 
         tmp_node.current_coordinates.x = map_start.x
         tmp_node.current_coordinates.y = map_start.y
@@ -235,7 +234,7 @@ class GameMap:
         map_label[map_start.x][map_start.y].background_color = 0x0000FF
         open_list.insert(0, tmp_node)
 
-        move_arr = list()
+        move_arr = []
 
         while True:
             min_f = 0
@@ -261,12 +260,14 @@ class GameMap:
                     wait_handle_node = close_list[y]
                     while True:
                         for x in range(len(close_list)):
-                            if close_list[x].current_coordinates.x == wait_handle_node.final_coordinates.x and close_list[x].current_coordinates.y == wait_handle_node.final_coordinates.y:
-                                    wait_handle_node = close_list[x]
-                                    break
+                            if close_list[x].current_coordinates.x == wait_handle_node.final_coordinates.x and \
+                                    close_list[x].current_coordinates.y == wait_handle_node.final_coordinates.y:
+                                wait_handle_node = close_list[x]
+                                break
 
                         if wait_handle_node.current_coordinates.x != map_start.x or wait_handle_node.current_coordinates.y != map_start.y:
-                            map_label[wait_handle_node.current_coordinates.x][wait_handle_node.current_coordinates.y].background_color = 0x00D8D8
+                            map_label[wait_handle_node.current_coordinates.x][
+                                wait_handle_node.current_coordinates.y].background_color = 0x00D8D8
                             move_arr.insert(0, wait_handle_node.current_coordinates)
 
                         if wait_handle_node.current_coordinates.x == map_start.x and wait_handle_node.current_coordinates.y == map_start.y:
@@ -290,7 +291,8 @@ class GameMap:
                     wait_handle_coordinate.x = tmp_node.current_coordinates.x
                     wait_handle_coordinate.y = tmp_node.current_coordinates.y + 1
 
-                if wait_handle_coordinate.x < 0 or wait_handle_coordinate.x > (width - 1) or wait_handle_coordinate.y < 0 or wait_handle_coordinate.y > (height - 1):
+                if wait_handle_coordinate.x < 0 or wait_handle_coordinate.x > (
+                        width - 1) or wait_handle_coordinate.y < 0 or wait_handle_coordinate.y > (height - 1):
                     continue
 
                 if map_label[wait_handle_coordinate.x][wait_handle_coordinate.y].background_color == 0x000000:
@@ -298,7 +300,8 @@ class GameMap:
 
                 exist_close_list = False
                 for x in range(len(close_list)):
-                    if close_list[x].current_coordinates.x == wait_handle_coordinate.x and close_list[x].current_coordinates.y == wait_handle_coordinate.y:
+                    if close_list[x].current_coordinates.x == wait_handle_coordinate.x and close_list[
+                        x].current_coordinates.y == wait_handle_coordinate.y:
                         exist_close_list = True
                         break
 
@@ -307,7 +310,8 @@ class GameMap:
 
                 exist_open_list = False
                 for x in range(len(open_list)):
-                    if open_list[x].current_coordinates.x == wait_handle_coordinate.x and open_list[x].current_coordinates.y == wait_handle_coordinate.y:
+                    if open_list[x].current_coordinates.x == wait_handle_coordinate.x and open_list[
+                        x].current_coordinates.y == wait_handle_coordinate.y:
                         if wait_handle_coordinate.x != tmp_node.current_coordinates.x or wait_handle_coordinate.y != tmp_node.current_coordinates.y:
                             guess_g = 14
                         else:

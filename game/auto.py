@@ -86,12 +86,14 @@ class Auto:
                 if cls.map_data.get_stat() == 3:
                     if cls.firstEnterMap is False and cls.map_data.is_town() is False:
                         # 透明call
-                        # call.hide_call(call.person_ptr())
+                        call.hide_call(call.person_ptr())
                         time.sleep(0.1)
                         # sss评分
-                        # mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, 999999)
-                        # cls.traversal.ignore_building(True)
-                        # cls.start_func()
+                        mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, 999999)
+                        time.sleep(0.1)
+                        cls.traversal.ignore_building(True)
+                        time.sleep(0.1)
+                        cls.start_func()
                         cls.firstEnterMap = True
 
                     # 跟随怪物
@@ -133,13 +135,11 @@ class Auto:
     def start_func(cls):
         func_mod = config().getint("自动配置", "开启功能")
         if func_mod == 1:
-            cls.traversal.screen_switch()
+            print("功能1为实现")
         if func_mod == 2:
-            pass
+            print("功能2为实现")
         if func_mod == 3:
-            pass
-        if func_mod == 4:
-            pass
+            print("功能3为实现")
 
     @classmethod
     def enter_town(cls):
@@ -190,7 +190,7 @@ class Auto:
         time.sleep(0.2)
         call.area_call(init.global_data.map_id)
 
-        time.sleep(0.2)
+        time.sleep(0.3)
         cls.select_map()
 
     @classmethod
@@ -260,8 +260,13 @@ class Auto:
         # 翻牌
         cls.pack.get_income(0, random.randint(0, 3))
 
+        out_type = config().getint("自动配置", "出图方式")
+
         while cls.thread_switch:
             time.sleep(0.2)
+            if out_type == 0:
+                time.sleep(3)
+
             # 出图
             cls.pack.leave_map()
             if cls.map_data.get_stat() == 1 or cls.map_data.is_town() is True:

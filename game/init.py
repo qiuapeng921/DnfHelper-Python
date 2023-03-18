@@ -38,6 +38,10 @@ def hotkey2():
     keyboard.add_hotkey('f1', traversal.screen_switch)
     keyboard.add_hotkey('`', traversal.screen_kill)
     keyboard.add_hotkey('end', auto.switch)
+    keyboard.add_hotkey('ctrl+up', call.over_map_call, args=(2,))
+    keyboard.add_hotkey('ctrl+down', call.over_map_call, args=(3,))
+    keyboard.add_hotkey('ctrl+left', call.over_map_call, args=(0,))
+    keyboard.add_hotkey('ctrl+right', call.over_map_call, args=(1,))
     # 保持程序运行
     keyboard.wait()
 
