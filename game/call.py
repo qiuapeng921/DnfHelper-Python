@@ -217,6 +217,19 @@ def area_call(map_num):
     return move_call(max_region, min_region, town_x, town_y)
 
 
+def jump_task():
+    """跳过任务Call"""
+    shell_code = sub_rsp(512)
+    shell_code = helper.add_list(shell_code, [65, 131, 201, 255])
+    shell_code = helper.add_list(shell_code, [69, 9, 200])
+    shell_code = helper.add_list(shell_code, [186, 1, 0, 0, 0])
+    shell_code = helper.add_list(shell_code, [72, 185], helper.int_to_bytes(address.TaskAddr, 8))
+    shell_code = helper.add_list(shell_code, [72, 139, 9])
+    shell_code = helper.add_list(shell_code, call(address.TgCallAddr))
+    shell_code = helper.add_list(shell_code, add_rsp(512))
+    compile_call(shell_code)
+
+
 def over_map_call(fx):
     """
     过图call
@@ -269,10 +282,10 @@ def drift_over_map(fx):
     if fx == 2:
         x = int(start_x + end_x / 2)
         y = int(start_y + end_y + 20)
-
     if fx == 3:
         x = int(start_x + end_x / 2)
         y = int(start_y - 20)
+
     drift_call(addr, x, y, 0, 50)
     time.sleep(0.1)
-    drift_call(addr, start_x + end_x / 2, start_y, 0, 50)
+    drift_call(addr, int(start_x + end_x / 2), start_y, 0, 50)

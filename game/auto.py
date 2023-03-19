@@ -7,8 +7,8 @@ import sys
 import time
 import traceback
 
-from common import logger, config
-from game import call, mem, address, init
+from common import logger, config, helper
+from game import call, init
 
 
 class Auto:
@@ -64,7 +64,15 @@ class Auto:
         """自动线程"""
         while cls.thread_switch:
             try:
-                time.sleep(0.2)
+                time.sleep(0.3)
+                if cls.map_data.is_dialog_esc():
+                    helper.key_press_release('esc')
+                    helper.key_press_release('space')
+                    continue
+                if cls.map_data.is_dialog_esc() and (cls.map_data.is_dialog_a() and cls.map_data.is_dialog_b()()):
+                    helper.key_press_release('esc')
+                    helper.key_press_release('space')
+                    continue
 
                 # 进入城镇
                 if cls.map_data.get_stat() == 0:
@@ -156,7 +164,8 @@ class Auto:
         cls.pack.select_role(init.global_data.completed_role)
         time.sleep(0.5)
         logger.info("进入角色 {} ".format(init.global_data.completed_role), 2)
-        logger.info("开始第 {} 个角色,剩余疲劳 {}".format(init.global_data.completed_role + 1, cls.map_data.get_pl()), 2)
+        logger.info("开始第 {} 个角色,剩余疲劳 {}".format(init.global_data.completed_role + 1, cls.map_data.get_pl()),
+                    2)
         while cls.thread_switch:
             time.sleep(0.2)
             # 进入城镇跳出循环
@@ -259,12 +268,11 @@ class Auto:
         cls.pack.get_income(0, random.randint(0, 3))
 
         out_type = config().getint("自动配置", "出图方式")
+        if out_type == 0:
+            time.sleep(5)
 
         while cls.thread_switch:
             time.sleep(0.2)
-            if out_type == 0:
-                time.sleep(5)
-
             # 出图
             cls.pack.leave_map()
             if cls.map_data.get_stat() == 1 or cls.map_data.is_town():

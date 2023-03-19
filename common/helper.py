@@ -1,6 +1,8 @@
 import struct
+import time
 from datetime import datetime
 
+import keyboard
 import psutil
 import win32api
 
@@ -149,3 +151,9 @@ def unicode_to_ascii(ls: list) -> str:
         text += chr(a + b)
 
     return text
+
+
+def key_press_release(key: str):
+    keyboard.press(key)
+    time.sleep(0.01)
+    keyboard.release(key)

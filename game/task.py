@@ -24,10 +24,10 @@ class Task:
         # 提交主线
         self.submit_task()
         while init.global_data.auto_switch:
-            time.sleep(0.2)
+            time.sleep(0.3)
             task_name, task_condition, task_id = self.main_line_task()
             # 处理相同任务输出
-            if task_id != next_task_id:
+            if task_id != next_task_id and task_id > 0:
                 next_task_id = task_id
                 logger.info("主线任务->任务名称 {}".format(task_name), 1)
                 logger.info("主线任务->任务条件 {}".format(task_condition), 1)
@@ -40,6 +40,7 @@ class Task:
                     logger.info("暂无任务或卡任务,重新选择角色", 1)
                     self.pack.return_role()
                     time.sleep(2)
+                    print(init.global_data.completed_role)
                     self.pack.select_role(init.global_data.completed_role)
                     time.sleep(0.5)
                     self.refreshTask = True
@@ -65,8 +66,7 @@ class Task:
             ok, task_level = self.can_skip(task_id)
             if ok and task_level not in [85, 86]:
                 # 跳过任务
-                print("跳过任务")
-                # self.pack.jm_call(task_id)
+                init.call.jump_task()
                 continue
 
             # 任务未接，执行接取任务
@@ -81,7 +81,6 @@ class Task:
             # 剧情条件判断
             if self.conditional(task_condition) == 1:
                 self.pack.finish_task(task_id)
-                self.pack.submit_task(task_id)
 
             # 刷图任务
             if self.conditional(task_condition) == 2:
@@ -121,7 +120,9 @@ class Task:
                     list(mem.read_bytes(mem.read_long(task_ptr + address.RwTjAddr), 100)))
                 # 任务编号
                 task_id = mem.read_int(task_ptr)
-                return task_name, task_conditional, task_id
+                return "", task_conditional, task_id
+
+        return "", "", 0
 
     def can_skip(self, task_id) -> [bool, int]:
         """是否跳过"""
@@ -220,19 +221,30 @@ class Task:
         end = mem.read_long(task_addr + address.YjRwEndAddr)
         num = int((end - start) / 16)
 
+        tmp_arr = []
         for i in range(num):
             pointer = mem.read_long(start + i * 16)
             if mem.read_int(pointer) == task_id:
-                number = self.map_data.decode(start + i * 16 + 8)
-                if number < 512:
-                    return number
-                elif number == 512:
+                frequency = self.map_data.decode(start + i * 16 + 8)
+                if frequency < 512:
+                    return frequency
+                elif frequency == 512:
                     return 1
-                cnum = number % 512
-                if cnum == 0:
-                    return 1
-                else:
-                    return cnum
+
+                tmp_arr[0] = int(frequency % 512)
+                the_rest = int(frequency) - tmp_arr[0]
+                if the_rest < 262144:
+                    tmp_arr[1] = int(the_rest / 512)
+                    tmp_arr[1] = int(the_rest % 262144 / 512)
+                the_rest = int(the_rest - tmp_arr[0] * 512)
+                if the_rest < 262144:
+                    tmp_arr[2] = 0
+                    tmp_arr[2] = int(the_rest % 262144)
+                # 数组排序 从大到小
+                tmp_arr.sort(reverse=True)
+                if tmp_arr[0] == 0:
+                    tmp_arr[0] = 1
+                return tmp_arr[0]
         return -1
 
     def highest_map(self):
