@@ -22,13 +22,16 @@ class Screen:
 
     def screen_thread(self):
         while self._switch:
-            code_config = list(map(int, config().get("自动配置", "全屏配置").split(",")))
-            if len(code_config) != 5:
-                logger.info("全屏配置错误", 2)
-                break
-            rate = code_config[0]
-            time.sleep(rate / 1000)
-            self.full_screen(code_config)
+            try:
+                code_config = list(map(int, config().get("自动配置", "全屏配置").split(",")))
+                if len(code_config) != 5:
+                    logger.info("全屏配置错误", 2)
+                    break
+                rate = code_config[0]
+                time.sleep(rate / 1000)
+                self.full_screen(code_config)
+            except Exception as e:
+                print(e)
 
     @classmethod
     def screen_kill(cls):

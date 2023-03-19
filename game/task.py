@@ -154,9 +154,8 @@ class Task:
             "[question]",
             "[quest clear]",
         ]
-        for i in range(len(brush_conditions)):
-            if brush_conditions[i] == conditional:
-                return 1
+        if conditional in brush_conditions:
+            return 1
 
         brush_conditions = [
             "[hunt monster]",
@@ -165,10 +164,10 @@ class Task:
             "[clear map]",
             "[question]",
             "[seeking]",
+            "[clear dungeon index]",
         ]
-        for i in range(len(brush_conditions)):
-            if brush_conditions[i] == conditional:
-                return 2
+        if conditional in brush_conditions:
+            return 2
 
         return 0
 
