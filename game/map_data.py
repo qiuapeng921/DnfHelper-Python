@@ -10,15 +10,15 @@ class MapData:
 
     def encode(self, data_ptr: int, value: int):
         """加密"""
-        data_ptr += 4
-        data_ptr = data_ptr ^ 0x1F2A025C
+        # data_ptr += 4
+        # data_ptr = data_ptr ^ 0x1F2A025C
         return self.mem.write_int(data_ptr, value)
 
     def decode(self, data_ptr: int) -> int:
         """解密"""
         value = self.mem.read_int(data_ptr)
-        value = value ^ 0x1F2A025C
-        value -= 4
+        # value = value ^ 0x1F2A025C
+        # value -= 4
         return value
 
     def get_stat(self) -> int:

@@ -53,8 +53,8 @@ class Equip:
 
     def handle_equip(self):
         """处理装备"""
-        if self.map_data.back_pack_weight() < 50:
-            return
+        # if self.map_data.back_pack_weight() < 50:
+        #     return
 
         num = 0
         mem = self.mem

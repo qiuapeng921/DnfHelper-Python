@@ -8,7 +8,7 @@ import time
 import traceback
 
 from common import logger, config, helper
-from game import call, init
+from game import call, init, mem, address
 
 
 class Auto:
@@ -94,9 +94,9 @@ class Auto:
                 if cls.map_data.get_stat() == 3:
                     if cls.firstEnterMap is False and cls.map_data.is_town() is False:
                         # 透明call
-                        # call.hide_call(call.person_ptr())
+                        call.hide_call(call.person_ptr())
                         # sss评分
-                        # mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, 999999)
+                        mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, 999999)
                         # 无视建筑
                         # cls.traversal.ignore_building(True)
                         # 进图开启功能
