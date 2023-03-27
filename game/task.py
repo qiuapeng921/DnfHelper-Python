@@ -66,21 +66,24 @@ class Task:
             ok, task_level = self.can_skip(task_id)
             if ok and task_level not in [85, 86]:
                 # 跳过任务
-                init.call.jump_task()
+                init.call.jump_over_task_call()
                 continue
 
             # 任务未接，执行接取任务
             if self.finish_status(task_id) == -1:
-                self.pack.accept_task(task_id)
+                # self.pack.accept_task(task_id)
+                init.call.accept_task_call(task_id)
 
             #  任务完成，执行提交任务
             if self.finish_status(task_id) == 0:
-                self.pack.submit_task(task_id)
+                # self.pack.submit_task(task_id)
+                init.call.submit_task_call(task_id)
                 continue
 
             # 剧情条件判断
             if self.conditional(task_condition) == 1:
-                self.pack.finish_task(task_id)
+                # self.pack.finish_task(task_id)
+                init.call.finish_task_call(task_id)
 
             # 刷图任务
             if self.conditional(task_condition) == 2:
@@ -120,7 +123,7 @@ class Task:
                     list(mem.read_bytes(mem.read_long(task_ptr + address.RwTjAddr), 100)))
                 # 任务编号
                 task_id = mem.read_int(task_ptr)
-                return "", task_conditional, task_id
+                return task_name, task_conditional, task_id
 
         return "", "", 0
 
@@ -198,7 +201,9 @@ class Task:
             task_ptr = mem.read_long(start + i * 8)
             task_type = mem.read_int(task_ptr + address.RwLxAddr)
             if task_type == 0:
-                self.pack.submit_task(mem.read_int(task_ptr))
+                task_id = mem.read_int(task_ptr)
+                # self.pack.submit_task(task_id)
+                init.call.submit_task_call(task_id)
 
         start = mem.read_long(task_addr + address.YjRwStartAddr)
         end = mem.read_long(task_addr + address.YjRwEndAddr)
@@ -207,7 +212,9 @@ class Task:
             task_ptr = mem.read_long(start + i * 16)
             task_type = mem.read_int(task_ptr + address.RwLxAddr)
             if task_type == 0:
-                self.pack.submit_task(mem.read_int(task_ptr))
+                task_id = mem.read_int(task_ptr)
+                # self.pack.submit_task(task_id)
+                init.call.submit_task_call(task_id)
 
     def finish_status(self, task_id: int):
         """

@@ -217,19 +217,6 @@ def area_call(map_num):
     return move_call(max_region, min_region, town_x, town_y)
 
 
-def jump_task():
-    """跳过任务Call"""
-    shell_code = sub_rsp(512)
-    shell_code = helper.add_list(shell_code, [65, 131, 201, 255])
-    shell_code = helper.add_list(shell_code, [69, 9, 200])
-    shell_code = helper.add_list(shell_code, [186, 1, 0, 0, 0])
-    shell_code = helper.add_list(shell_code, [72, 185], helper.int_to_bytes(address.TaskAddr, 8))
-    shell_code = helper.add_list(shell_code, [72, 139, 9])
-    shell_code = helper.add_list(shell_code, call(address.TgCallAddr))
-    shell_code = helper.add_list(shell_code, add_rsp(512))
-    compile_call(shell_code)
-
-
 def over_map_call(fx):
     """
     过图call
@@ -289,3 +276,52 @@ def drift_over_map(fx):
     drift_call(addr, x, y, 0, 50)
     time.sleep(0.1)
     drift_call(addr, int(start_x + end_x / 2), start_y, 0, 50)
+
+
+def jump_over_task_call():
+    # 跳过任务Call
+    shell_code = sub_rsp(512)
+    shell_code = helper.add_list(shell_code, [65, 131, 201, 255])
+    shell_code = helper.add_list(shell_code, [69, 9, 200])
+    shell_code = helper.add_list(shell_code, [186, 1, 0, 0, 0])
+    shell_code = helper.add_list(shell_code, [72, 185], helper.int_to_bytes(address.TaskAddr, 8))
+    shell_code = helper.add_list(shell_code, [72, 139, 9])
+    shell_code = helper.add_list(shell_code, call(address.TgCallAddr))
+    shell_code = helper.add_list(shell_code, add_rsp(512))
+    compile_call(shell_code)
+
+
+def accept_task_call(task_id):
+    # 接受任务Call
+    shell_code = sub_rsp(40)
+    helper.add_list(shell_code, [186], helper.int_to_bytes(task_id, 4))
+    helper.add_list(shell_code, call(address.JsCallAddr))
+    helper.add_list(shell_code, add_rsp(40))
+    compile_call(shell_code)
+
+
+def finish_task_call(task_id):
+    # 完成任务Call
+    shell_code = sub_rsp(512)
+    helper.add_list(shell_code, [179, 255])
+    helper.add_list(shell_code, [68, 15, 182, 203])
+    helper.add_list(shell_code, [65, 176, 255])
+    helper.add_list(shell_code, [186], helper.int_to_bytes(task_id, 4))
+    helper.add_list(shell_code, call(address.WcCallAddr))
+    helper.add_list(shell_code, add_rsp(512))
+    compile_call(shell_code)
+
+
+def submit_task_call(task_id):
+    # 提交任务Call
+    shell_code = sub_rsp(48)
+    helper.add_list(shell_code, [65, 189, 1, 0, 0, 0])
+    helper.add_list(shell_code, [65, 190, 255, 255, 255, 255])
+    helper.add_list(shell_code, [69, 139, 205])
+    helper.add_list(shell_code, [69, 139, 198])
+    helper.add_list(shell_code, [72, 185], helper.int_to_bytes(address.TaskAddr, 8))
+    helper.add_list(shell_code, [72, 139, 9])
+    helper.add_list(shell_code, [186], helper.int_to_bytes(task_id, 4))
+    helper.add_list(shell_code, call(address.TjCallAddr))
+    helper.add_list(shell_code, add_rsp(48))
+    compile_call(shell_code)
