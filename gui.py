@@ -1,13 +1,13 @@
 import ctypes
-import time
 
+import _thread
+import time
 import xcgui._xcgui as gui
 from xcgui import XApp
 from xcgui import XWindow, XButton, XEdit, XShapeText
 
 from common import globle, logger
 from common import helper
-from driver import init_driver
 from game import mem, init
 
 svgIcon = '<svg t="1674984352573" class="icon" viewBox="0 0 1024 1024" version="1.1" ' \
@@ -72,7 +72,7 @@ class AppWindow(XWindow):
 
         self.run_time_label = XShapeText(1, 375, 60, 30, "运行时间:", self)
         self.run_time_value = XShapeText(56, 375, 60, 30, "00:00:00", self)
-        # _thread.start_new_thread(self.app_run_time, ())
+        _thread.start_new_thread(self.app_run_time, ())
 
         self.version_label = XShapeText(220, 375, 60, 30, "版本号:", self)
         self.version_value = XShapeText(260, 375, 60, 30, version, self)
@@ -124,7 +124,7 @@ class AppWindow(XWindow):
 
 if __name__ == '__main__':
     try:
-        init_driver()
+        # init_driver()
         globle.cmd = "gui"
         app = XApp()
         win = AppWindow()

@@ -1,9 +1,9 @@
 import struct
-import time
 from datetime import datetime
 
 import keyboard
 import psutil
+import time
 import win32api
 
 
@@ -35,21 +35,20 @@ def get_module_handle(pid: int, name: str) -> int:
             return module.rss
 
 
-hr_t, min_t, sec_t = (0, 0, 0)
+start_time = datetime.now()  # 记录程序启动时间
 
 
 def get_app_run_time():
-    """获取app运行时间"""
-    global hr_t, min_t, sec_t
-    sec_t = sec_t + 1
-    if sec_t == 60:
-        sec_t = 0
-        min_t = min_t + 1
-    if min_t == 60:
-        min_t = 0
-        hr_t = hr_t + 1
-    string = "{}:{}:{}".format(hr_t, min_t, sec_t)
-    return string
+    """返回程序运行时间的格式化字符串"""
+    current_time = datetime.now()  # 获取当前时间
+    duration = current_time - start_time  # 计算时间差
+
+    hours, remainder = divmod(duration.total_seconds(), 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    # 格式化时间字符串
+    time_string = f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}"
+    return time_string
 
 
 def get_now_date():
