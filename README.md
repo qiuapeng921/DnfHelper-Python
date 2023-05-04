@@ -11,3 +11,5 @@ Python编写的dnf助手
 3. pip install -i https://mirrors.cloud.tencent.com/pypi/simple -r requirements.txt
 4. python main.py
 ```
+
+![交流群](https://github.com/qiuapeng921/DnfHelper-Python/blob/master/resource/qq.png)
