@@ -71,23 +71,22 @@ def hotkey():
 
     # 以下为检测热键是否被按下，并在最后释放快捷键
     msg = ctypes.wintypes.MSG()
-    while hotkey_run:
-        time.sleep(0.1)
-        if user32.GetMessageA(ctypes.byref(msg), None, 0, 0) > 0:
-            if msg.message == win32con.WM_HOTKEY:
-                if win32api.HIWORD(msg.lParam) == win32con.VK_F1:
-                    traversal.screen_switch()
-                if win32api.HIWORD(msg.lParam) == win32con.VK_END:
-                    auto.switch()
-                if win32api.HIWORD(msg.lParam) == 192:
-                    traversal.screen_kill()
-                if win32api.HIWORD(msg.lParam) == win32con.VK_UP:
-                    call.over_map_call(2)
-                if win32api.HIWORD(msg.lParam) == win32con.VK_DOWN:
-                    call.over_map_call(3)
-                if win32api.HIWORD(msg.lParam) == win32con.VK_LEFT:
-                    call.over_map_call(0)
-                if win32api.HIWORD(msg.lParam) == win32con.VK_RIGHT:
-                    call.over_map_call(1)
+    while user32.GetMessageA(ctypes.byref(msg), None, 0, 0) > 0:
+        if msg.message == win32con.WM_HOTKEY:
+            if win32api.HIWORD(msg.lParam) == win32con.VK_F1:
+                traversal.screen_switch()
+            if win32api.HIWORD(msg.lParam) == win32con.VK_END:
+                auto.switch()
+            if win32api.HIWORD(msg.lParam) == 192:
+                traversal.screen_kill()
+            if win32api.HIWORD(msg.lParam) == win32con.VK_UP:
+                call.over_map_call(2)
+            if win32api.HIWORD(msg.lParam) == win32con.VK_DOWN:
+                call.over_map_call(3)
+            if win32api.HIWORD(msg.lParam) == win32con.VK_LEFT:
+                call.over_map_call(0)
+            if win32api.HIWORD(msg.lParam) == win32con.VK_RIGHT:
+                call.over_map_call(1)
+        else:
             user32.TranslateMessage(ctypes.byref(msg))
             user32.DispatchMessageA(ctypes.byref(msg))
