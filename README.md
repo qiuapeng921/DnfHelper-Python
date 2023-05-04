@@ -12,4 +12,5 @@ Python编写的dnf助手
 4. python main.py
 ```
 
-![交流群](https://github.com/qiuapeng921/DnfHelper-Python/blob/master/resource/qq.png)
+###### 交流群
+<img src="https://ghproxy.com/https://raw.githubusercontent.com/qiuapeng921/DnfHelper-Python/master/resource/qq.png" alt="alt text" width="500" height="800">
