@@ -56,6 +56,10 @@ class Equip:
         # if self.map_data.back_pack_weight() < 50:
         #     return
 
+        handle_type = config().getint("自动配置", "处理装备")
+        if handle_type == 0:
+            return
+
         num = 0
         mem = self.mem
         addr = mem.read_long(mem.read_long(address.BbJzAddr) + address.WplPyAddr) + 0x48  # 装备栏偏移

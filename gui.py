@@ -6,6 +6,7 @@ import xcgui._xcgui as gui
 from xcgui import XApp
 from xcgui import XWindow, XButton, XEdit, XShapeText
 
+import driver
 from common import globle, logger
 from common import helper
 from game import mem, init
@@ -127,7 +128,7 @@ class AppWindow(XWindow):
 
 if __name__ == '__main__':
     try:
-        # init_driver()
+        driver.init_driver()
         globle.cmd = "gui"
         app = XApp()
         win = AppWindow()

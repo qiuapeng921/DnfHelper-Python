@@ -5,7 +5,7 @@ driver = MemoryRw()
 
 def init_driver():
     driver_name = "3swg"
-    driver_path = "C:\\Users\\{}.sys".format(driver_name)
+    driver_path = "C:\\{}.sys".format(driver_name)
     import os
     if os.path.exists(driver_path) is False:
         raise Exception("驱动不存在")
