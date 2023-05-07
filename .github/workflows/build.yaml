@@ -30,7 +30,8 @@ jobs:
           pip install -r requirements.txt
       - name: Build
         run: |
-          pyinstaller -F --icon=resource/WeGame.ico -n helper main.py
+          pyinstaller -F --icon=resource/WeGame.ico -n DnfHelper-Console main.py
+          pyinstaller -F --icon=resource/WeGame.ico -n DnfHelper-Gui main.py
       - name: Run UPX
         uses: crazy-max/ghaction-upx@v2
         with:
@@ -45,4 +46,5 @@ jobs:
         with:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           files: |
-            dist/*
+            dist/DnfHelper-*
+            helper.ini
