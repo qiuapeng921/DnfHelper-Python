@@ -31,7 +31,7 @@ jobs:
       - name: Build
         run: |
           pyinstaller -F --icon=resource/WeGame.ico -n DnfHelper-Console main.py
-          pyinstaller -F --icon=resource/WeGame.ico -n DnfHelper-Gui main.py
+          pyinstaller -F --noconsole --icon=resource/WeGame.ico -n DnfHelper-Gui gui.py
       - name: Run UPX
         uses: crazy-max/ghaction-upx@v2
         with:
