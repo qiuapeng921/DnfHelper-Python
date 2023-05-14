@@ -465,7 +465,6 @@ class Task:
         if role_level <= 100:
             if role_level <= 95:
                 return 291100293  # 全蚀市场
-
             if role_level <= 98:
                 return 291100293  # 搏击俱乐部
 
