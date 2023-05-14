@@ -462,18 +462,31 @@ class Task:
                 return 314  # 红色魔女之森
             return 0
 
-        if role_level <= 95:
-            return 291100293  # 全蚀市场
-
         if role_level <= 100:
-            return 100002975  # 圣域外围
-        if role_level <= 102:
-            return 100002976  # 圣域中心
-        if role_level <= 103:
-            return 100002977  # 泽尔峡谷
-        if role_level <= 104:
-            return 100002786  # 洛仑山
-        if role_level <= 110:
-            return 100002786  # 洛仑山
+            if role_level <= 95:
+                return 291100293  # 全蚀市场
+
+            if role_level <= 98:
+                return 291100293  # 搏击俱乐部
+
+        if role_level <= 109:
+            if role_level <= 100:
+                return 100002975  # 圣域外围
+            if role_level <= 102:
+                return 100002976  # 圣域中心
+            if role_level <= 103:
+                return 100002977  # 泽尔峡谷
+            if role_level <= 104:
+                return 100002978  # 洛仑山
+            if role_level <= 105:
+                return 100002979  # 白色雪原
+            if role_level <= 106:
+                return 100002980  # 贝奇的空间
+            if role_level <= 107:
+                return 100002981
+            if role_level <= 108:
+                return 100002982
+            if role_level <= 109:
+                return 100002983
 
         return 0
