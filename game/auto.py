@@ -194,17 +194,17 @@ class Auto:
             init.global_data.map_id = map_ids[random_number]
             init.global_data.map_level = config().getint("自动配置", "地图难度")
 
-        time.sleep(0.2)
+        time.sleep(0.5)
         call.area_call(init.global_data.map_id)
 
-        time.sleep(0.2)
+        time.sleep(0.5)
         cls.select_map()
 
     @classmethod
     def select_map(cls):
         """选图"""
         while cls.thread_switch:
-            time.sleep(0.2)
+            time.sleep(0.5)
             # 选图
             cls.pack.select_map()
             # 不在选图界面跳出循环
