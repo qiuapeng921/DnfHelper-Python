@@ -167,17 +167,16 @@ def drift_call(ptr, x, y, z, speed):
     shell_code = helper.add_list(shell_code, [72, 184], helper.int_to_bytes(address.PyCall2Addr, 8))
     shell_code = helper.add_list(shell_code, [255, 208])
     shell_code = helper.add_list(shell_code,
-                                 [72, 141, 84, 36, 112, 49, 219, 72, 137, 92, 36, 112, 72, 137, 92, 36, 120, 49, 210,
-                                  72, 141, 76, 36, 112])
+                                 [51, 219, 137, 95, 48, 199, 135, 224, 0, 0, 0, 2, 0, 0, 0, 72, 141, 69, 136, 72, 137,
+                                  68, 36, 96, 72, 137, 93, 136, 72, 137, 93, 144, 51, 210, 72, 141, 77, 136])
     shell_code = helper.add_list(shell_code, [72, 184], helper.int_to_bytes(address.XrNcCallAddr, 8))
-    shell_code = helper.add_list(shell_code, [255, 208])
     shell_code = helper.add_list(shell_code, [72, 139, 206, 72, 139, 1])
+    shell_code = helper.add_list(shell_code,
+                                 [72, 139, 6, 137, 92, 36, 64, 72, 137, 92, 36, 56, 72, 137, 92, 36, 48, 137, 92, 36,
+                                  40, 72, 141, 77, 136, 72, 137, 76, 36, 32, 69, 51, 201])
     shell_code = helper.add_list(shell_code, [72, 186], helper.int_to_bytes(ptr, 8))
-    shell_code = helper.add_list(shell_code, [72, 49, 219, 73, 189, 255, 255, 255, 255, 255, 255, 255, 255])
-    shell_code = helper.add_list(shell_code, [137, 92, 36, 64, 72, 137, 92, 36, 56, 68, 137, 108, 36, 48])
-    shell_code = helper.add_list(shell_code, [199, 68, 36, 40, 232, 2, 0, 0])
-    shell_code = helper.add_list(shell_code, [72, 141, 124, 36, 112, 72, 137, 124, 36, 32, 69, 51, 201])
     shell_code = helper.add_list(shell_code, [73, 184], helper.int_to_bytes(ptr, 8))
+    shell_code = helper.add_list(shell_code, [72, 139, 206])
     shell_code = helper.add_list(shell_code, [255, 144], helper.int_to_bytes(312, 4))
     shell_code = helper.add_list(shell_code, [72, 129, 196, 0, 8, 0, 0])
     compile_call(shell_code)
