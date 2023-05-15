@@ -52,4 +52,4 @@ jobs:
           files: |
             dist/*.exe
             resource/helper.ini
-            resource/*.sys
+            resource/sys/*.sys
