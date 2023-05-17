@@ -179,7 +179,7 @@ class Auto:
             cls.return_role()
             return
 
-        time.sleep(0.2)
+        time.sleep(0.5)
         # 分解装备
         cls.equip.handle_equip()
 
@@ -189,10 +189,18 @@ class Auto:
             init.global_data.map_id = cls.task.handle_main()
             init.global_data.map_level = 0
         if auto_model == 2 and cls.map_data.get_role_level() == 110:
-            map_ids = list(map(int, config().get("自动配置", "地图编号").split(",")))
+            if cls.map_data.get_fame() < 23330:
+                map_ids = list(map(int, config().get("自动配置", "普通地图").split(",")))
+            else:
+                map_ids = list(map(int, config().get("自动配置", "英豪地图").split(",")))
+
             random_number = random.randint(0, len(map_ids) - 1)
             init.global_data.map_id = map_ids[random_number]
             init.global_data.map_level = config().getint("自动配置", "地图难度")
+
+        if init.global_data.map_id == 0:
+            logger.info("地图编号为空,无法切换区域", 2)
+            return
 
         time.sleep(0.2)
         call.area_call(init.global_data.map_id)
@@ -226,18 +234,18 @@ class Auto:
     def enter_map(cls, map_id: int, map_level: int):
         """进图"""
         if map_level == 5:
-            if map_id < 10 or map_id == 1000:
-                cls.pack.go_map(map_id, 0, 0, 0)
-            else:
-                cls.pack.go_map(map_id, 4, 0, 0)
-                cls.pack.go_map(map_id, 3, 0, 0)
-                cls.pack.go_map(map_id, 2, 0, 0)
-                cls.pack.go_map(map_id, 1, 0, 0)
-                cls.pack.go_map(map_id, 0, 0, 0)
+            for i in range(4, -1, -1):
+                if cls.map_data.get_stat() == 3:
+                    break
+                if cls.map_data.get_stat() == 2:
+                    cls.pack.go_map(map_id, i, 0, 0)
+                    time.sleep(1)
+                if cls.map_data.get_stat() == 1:
+                    cls.select_map()
         else:
             cls.pack.go_map(map_id, map_level, 0, 0)
 
-        for i in range(0, 10):
+        while cls.thread_switch:
             time.sleep(0.2)
             # 进图副本跳出循环
             if cls.map_data.get_stat() == 3:

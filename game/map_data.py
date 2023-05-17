@@ -1,4 +1,4 @@
-from common import globle
+from common import globle, helper
 from game import address as addr, call, address
 
 
@@ -85,9 +85,11 @@ class MapData:
         """获取角色等级"""
         return self.mem.read_int(addr.JSDjAddr)
 
-    def get_map_name(self):
+    def get_map_name(self) -> str:
         """获取地图名称"""
-        pass
+        room_data = self.mem.read_long(self.mem.read_long(self.mem.read_long(address.FJBHAddr)+address.SJAddr) + address.MxPyAddr)
+        map_byte = self.mem.read_bytes(self.mem.read_long(room_data+address.DtMcAddr), 52)
+        return helper.unicode_to_ascii(map_byte)
 
     def read_coordinate(self, param: int) -> globle.CoordinateType:
         """读取坐标"""
@@ -122,3 +124,9 @@ class MapData:
         max_weigh = self.decode(rw_addr + address.ZdFzAddr)  # 最大负重
         result = float(cut_weigh) / float(max_weigh) * 100
         return int(result)
+
+    def get_fame(self) -> int:
+        """获取名望"""
+        rw_addr = call.person_ptr()
+        return self.mem.read_long(rw_addr + address.RwMwAddr)
+
