@@ -256,15 +256,17 @@ class Auto:
         """过图"""
         if cls.map_data.is_open_door() is False or cls.map_data.is_boss_room() is True:
             return
-        # 寻路过图
-        map_data = cls.game_map.map_data()
-        if len(map_data.map_route) >= 2:
-            direction = cls.game_map.get_direction(map_data.map_route[0], map_data.map_route[1])
-            over_map = config().getint("自动配置", "过图方式")
-            if over_map == 1:
-                call.over_map_call(direction)
-            if over_map == 2:
-                call.drift_over_map(direction)
+
+        over_map = config().getint("自动配置", "过图方式")
+        if over_map > 0:
+            # 寻路过图
+            map_data = cls.game_map.map_data()
+            if len(map_data.map_route) >= 2:
+                direction = cls.game_map.get_direction(map_data.map_route[0], map_data.map_route[1])
+                if over_map == 1:
+                    call.over_map_call(direction)
+                if over_map == 2:
+                    call.drift_over_map(direction)
 
     @classmethod
     def quit_map(cls):
