@@ -147,9 +147,9 @@ if __name__ == '__main__':
         import traceback
 
         except_type, _, except_traceback = sys.exc_info()
-        print(except_type)
-        print(err.args)
-        print(except_traceback)
-        print('-----------')
+        errArgs = ''.join(err.args)
+        logger.file(errArgs)
         for i in traceback.extract_tb(except_traceback):
-            print(i)
+            logger.file(i.name)
+            logger.file(i.filename)
+            logger.file(str(i.lineno))
