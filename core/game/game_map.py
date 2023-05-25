@@ -1,4 +1,4 @@
-from core.common import globle
+from common import globle
 from core.game import mem
 from core.game import address
 from core.game.map_data import MapData

@@ -1,4 +1,4 @@
-from core.driver.derive import MemoryRw
+from plugins.driver.derive import MemoryRw
 
 driver = MemoryRw()
 

@@ -3,7 +3,7 @@
 """
 import keyboard
 
-from core.common import globle
+from common import globle
 from core.game import auto as a
 from core.game import call, other as o, map_traversal as mt, game_map as gm, pack as p, task as t, address
 from core.game import map_data as md

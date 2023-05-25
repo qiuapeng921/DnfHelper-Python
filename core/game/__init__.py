@@ -1,3 +1,3 @@
-from core.common import memory
+from common import memory
 
 mem = memory.Memory()

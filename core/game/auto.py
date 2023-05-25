@@ -7,7 +7,8 @@ import sys
 import time
 import traceback
 
-from core.common import logger, config, helper
+from common import config
+from common import helper, logger
 from core.game import mem
 from core.game import call, init, address
 

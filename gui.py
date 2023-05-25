@@ -6,8 +6,8 @@ import xcgui._xcgui as gui
 from xcgui import XApp
 from xcgui import XWindow, XButton, XEdit, XShapeText
 
-from core.driver import init_driver
-from core.common import globle, logger, helper
+from plugins.driver import init_driver
+from common import helper, logger, globle
 from core.game import mem
 from core.game import init
 

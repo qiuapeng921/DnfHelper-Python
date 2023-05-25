@@ -1,4 +1,4 @@
-from core.common import helper
+from common import helper
 from core.game import call, address
 
 

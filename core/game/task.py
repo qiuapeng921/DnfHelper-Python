@@ -1,7 +1,6 @@
 import time
 
-from core.common import helper
-from core.common import logger
+from common import helper, logger
 from core.game import init, address
 
 

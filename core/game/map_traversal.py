@@ -1,7 +1,8 @@
 import _thread
 import time
 
-from core.common import logger, config
+from common import config
+from common import logger
 from core.game import call, init, address
 
 

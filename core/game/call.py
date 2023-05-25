@@ -1,6 +1,6 @@
 import time
 
-from core.common import helper
+from common import helper
 from core.game import mem
 from core.game import init, address
 
