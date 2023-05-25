@@ -1,11 +1,12 @@
-from common import helper, globle, logger
-from driver import init_driver
-from game import mem, init
+from core.common import helper, globle, logger
+from core.driver import init_driver
+from core.game import mem
+from core.game import init
 
 if __name__ == '__main__':
     try:
         globle.cmd = "cmd"
-        init_driver()
+        init_driver("3swg")
         logger.info("驱动加载成功", 1)
         process_id = helper.get_process_id_by_name("DNF.exe")
         if process_id == 0:

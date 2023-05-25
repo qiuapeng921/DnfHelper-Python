@@ -6,10 +6,10 @@ import xcgui._xcgui as gui
 from xcgui import XApp
 from xcgui import XWindow, XButton, XEdit, XShapeText
 
-import driver
-from common import globle, logger
-from common import helper
-from game import mem, init
+from core.driver import init_driver
+from core.common import globle, logger, helper
+from core.game import mem
+from core.game import init
 
 svgIcon = '<svg t="1674984352573" class="icon" viewBox="0 0 1024 1024" version="1.1" ' \
           'xmlns="http://www.w3.org/2000/svg" p-id="10315" width="16" height="16"><path d="M901.957085 ' \
@@ -128,8 +128,8 @@ class AppWindow(XWindow):
 
 if __name__ == '__main__':
     try:
-        driver.init_driver()
         globle.cmd = "gui"
+        init_driver("3swg")
         app = XApp()
         win = AppWindow()
         globle.win_app = win

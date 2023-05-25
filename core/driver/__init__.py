@@ -1,10 +1,9 @@
-from driver.derive import MemoryRw
+from core.driver.derive import MemoryRw
 
 driver = MemoryRw()
 
 
-def init_driver():
-    driver_name = "3swg"
+def init_driver(driver_name: str):
     driver_path = "C:\\{}.sys".format(driver_name)
     import os
     if os.path.exists(driver_path) is False:

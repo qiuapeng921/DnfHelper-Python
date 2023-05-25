@@ -1,6 +1,7 @@
-from common import globle
-from game import mem, address
-from game.map_data import MapData
+from core.common import globle
+from core.game import mem
+from core.game import address
+from core.game.map_data import MapData
 
 
 class GameMap:
@@ -151,7 +152,8 @@ class GameMap:
         if data.start_zb.x == data.end_zb.x and data.start_zb.y == data.end_zb.y:
             return data
 
-        data.consume_fatigue = cls.get_route(data.map_channel, data.width, data.height, data.start_zb, data.end_zb, data.map_route)
+        data.consume_fatigue = cls.get_route(data.map_channel, data.width, data.height, data.start_zb, data.end_zb,
+                                             data.map_route)
         return data
 
     @classmethod
@@ -254,7 +256,8 @@ class GameMap:
                         tmp_node.current_coordinates.y].background_color = 0x0080FF
 
             for y in range(len(close_list)):
-                if close_list[y].current_coordinates.x == map_end.x and close_list[y].current_coordinates.y == map_end.y:
+                if close_list[y].current_coordinates.x == map_end.x and close_list[
+                    y].current_coordinates.y == map_end.y:
                     wait_handle_node = close_list[y]
                     while True:
                         for x in range(len(close_list)):
@@ -286,20 +289,23 @@ class GameMap:
                 else:
                     wait_handle_coordinate.x = tmp_node.current_coordinates.x
                     wait_handle_coordinate.y = tmp_node.current_coordinates.y + 1
-                if wait_handle_coordinate.x < 0 or wait_handle_coordinate.x > (width - 1) or wait_handle_coordinate.y < 0 or wait_handle_coordinate.y > (height - 1):
+                if wait_handle_coordinate.x < 0 or wait_handle_coordinate.x > (
+                        width - 1) or wait_handle_coordinate.y < 0 or wait_handle_coordinate.y > (height - 1):
                     continue
                 if map_label[wait_handle_coordinate.x][wait_handle_coordinate.y].background_color == 0x000000:
                     continue
                 exist_close_list = False
                 for x in range(len(close_list)):
-                    if close_list[x].current_coordinates.x == wait_handle_coordinate.x and close_list[x].current_coordinates.y == wait_handle_coordinate.y:
+                    if close_list[x].current_coordinates.x == wait_handle_coordinate.x and close_list[
+                        x].current_coordinates.y == wait_handle_coordinate.y:
                         exist_close_list = True
                         break
                 if exist_close_list:
                     continue
                 exist_open_list = False
                 for x in range(len(open_list)):
-                    if open_list[x].current_coordinates.x == wait_handle_coordinate.x and open_list[x].current_coordinates.y == wait_handle_coordinate.y:
+                    if open_list[x].current_coordinates.x == wait_handle_coordinate.x and open_list[
+                        x].current_coordinates.y == wait_handle_coordinate.y:
                         if wait_handle_coordinate.x != tmp_node.current_coordinates.x or wait_handle_coordinate.y != tmp_node.current_coordinates.y:
                             guess_g = 14
                         else:

@@ -3,10 +3,11 @@
 """
 import keyboard
 
-from common import globle
-from game import auto as a, address, other as o, task as t, call
-from game import map_data as md, game_map as gm, map_traversal as mt, pack as p
-from game import mem
+from core.common import globle
+from core.game import auto as a
+from core.game import call, other as o, map_traversal as mt, game_map as gm, pack as p, task as t, address
+from core.game import map_data as md
+from core.game import mem
 
 map_data = md.MapData(mem)
 game_map = gm.GameMap()
@@ -51,7 +52,6 @@ def hotkey():
     import ctypes.wintypes
     import win32con
     import win32api
-    import time
     user32 = ctypes.windll.user32
     user32.RegisterHotKey(None, 0, 0, win32con.VK_F1)
     user32.RegisterHotKey(None, 0, 0, win32con.VK_F2)

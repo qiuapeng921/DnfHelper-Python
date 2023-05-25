@@ -1,5 +1,6 @@
-from common import globle, helper
-from game import address as addr, call, address
+from core.common import globle, helper
+from core.game import address as addr
+from core.game import call, address
 
 
 class MapData:
@@ -87,8 +88,9 @@ class MapData:
 
     def get_map_name(self) -> str:
         """获取地图名称"""
-        room_data = self.mem.read_long(self.mem.read_long(self.mem.read_long(address.FJBHAddr)+address.SJAddr) + address.MxPyAddr)
-        map_byte = self.mem.read_bytes(self.mem.read_long(room_data+address.DtMcAddr), 52)
+        room_data = self.mem.read_long(self.mem.read_long(self.mem.read_long(
+            address.FJBHAddr) + address.SJAddr) + address.MxPyAddr)
+        map_byte = self.mem.read_bytes(self.mem.read_long(room_data + address.DtMcAddr), 52)
         return helper.unicode_to_ascii(map_byte)
 
     def read_coordinate(self, param: int) -> globle.CoordinateType:
@@ -129,4 +131,3 @@ class MapData:
         """获取名望"""
         rw_addr = call.person_ptr()
         return self.mem.read_long(rw_addr + address.RwMwAddr)
-

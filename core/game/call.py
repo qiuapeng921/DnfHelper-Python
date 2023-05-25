@@ -1,7 +1,8 @@
 import time
 
-from common import helper
-from game import mem, address, init
+from core.common import helper
+from core.game import mem
+from core.game import init, address
 
 # 是否执行完成
 run_status = False

@@ -1,7 +1,7 @@
 import time
 
-from common import config, logger, helper
-from game import address, call
+from core.common import config, logger, helper
+from core.game import call, address
 
 
 class Pickup:
@@ -30,7 +30,8 @@ class Pickup:
             obj_type_b = mem.read_int(obj_ptr + address.LxPyAddr + 4)
             obj_camp = mem.read_int(obj_ptr + address.ZyPyAddr)
             if (obj_type_a == 289 or obj_type_b == 289) and obj_camp == 200:
-                goods_name_byte = mem.read_bytes(mem.read_long(mem.read_long(obj_ptr + address.DmWpAddr) + address.WpMcAddr), 100)
+                goods_name_byte = mem.read_bytes(
+                    mem.read_long(mem.read_long(obj_ptr + address.DmWpAddr) + address.WpMcAddr), 100)
                 obj_type_b_name = helper.unicode_to_ascii(list(goods_name_byte))
 
                 if obj_type_b_name in item_config:

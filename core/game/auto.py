@@ -7,8 +7,9 @@ import sys
 import time
 import traceback
 
-from common import logger, config, helper
-from game import call, init, mem, address
+from core.common import logger, config, helper
+from core.game import mem
+from core.game import call, init, address
 
 
 class Auto:
