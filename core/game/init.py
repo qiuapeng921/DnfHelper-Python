@@ -6,7 +6,7 @@ import keyboard
 from common import globle
 from core.game import auto as a
 from core.game import call, other as o, map_traversal as mt, game_map as gm, pack as p, task as t, address
-from core.game import map_data as md
+from core.game import map_data as md, fast as fs
 from core.game import mem
 
 map_data = md.MapData(mem)
@@ -17,6 +17,7 @@ task = t.Task(mem, pack, map_data, )
 pick = o.Pickup(mem, pack, map_data)
 equip = o.Equip(mem, pack, map_data)
 traversal = mt.Screen(mem)
+fast = fs.FastCall(mem)
 auto = a.Auto(task, traversal, map_data, pack, pick, equip, game_map)
 
 
