@@ -33,9 +33,6 @@ def init_empty_addr():
     address.GtKbAddr = mem.allocate(2048)
 
 
-hotkey_run = True
-
-
 def hotkey2():
     keyboard.add_hotkey('f1', traversal.screen_switch)
     keyboard.add_hotkey('`', traversal.screen_kill)
