@@ -4,8 +4,8 @@ import random
 
 # 重新构建strings和weights
 # 后续可以读技能名称处理
-strings = ['z', 'x', 'c', 'v', 'a', 's', 'd', 'f', 'g', 'h', 'q', 'w', 'e', 'r', 't', 'y']
-weights = [5, 5, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+strings = ['z', 'c', 'v', 'a', 's', 'd', 'f', 'g', 'h', 'q', 'w', 'e', 'r', 't', 'y']
+weights = [5, 1, 1, 3, 3, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1]
 
 
 def pick_strings(keys, num_picks, weights):

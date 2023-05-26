@@ -110,6 +110,12 @@ class Auto:
                     if config().getint("自动配置", "跟随打怪") == 1:
                         cls.traversal.follow_monster()
 
+                    if cls.map_data.is_boss_room():
+                        if cls.map_data.is_pass() is False:
+                            supper_skill = config().get("自动配置", "觉醒技能")
+                            helper.key_press_release(supper_skill, 0.3)
+
+
                     # 过图
                     if cls.map_data.is_open_door() is True and cls.map_data.is_boss_room() is False:
                         # 捡物品

@@ -4,7 +4,8 @@ import keyword
 from common import helper
 from core.game import mem
 from core.game import init, address
-import skill
+from core.game import skill, init, address
+
 import win32gui
 
 # 是否执行完成
@@ -104,10 +105,12 @@ def person_ptr():
 def skill_call_power():
     # 获取当前窗口的焦点
     title = helper.get_process_name()
-    if title == "DNF.exe":
+    if title == "地下城与勇士：创新世纪":
         """技能call"""
+        helper.key_press_always("x")
         keys = skill.pick_key()
         helper.key_press(keys, 0.3)
+        helper.key_release("x")
 
 
 def skill_call(addr: int, code: int, harm: int, x: int, y: int, z: int, size: float):

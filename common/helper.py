@@ -169,6 +169,14 @@ def key_press_release(key: str):
     keyboard.release(key)
 
 
+def key_press_always(key: str):
+    keyboard.press(key)
+
+
+def key_release(key: str):
+    keyboard.release(key)
+
+
 def key_press_release(key: str, delay: float):
     keyboard.press(key)
     time.sleep(delay)
@@ -181,3 +189,6 @@ def key_press(list_key: list, delay: float):
             key_press_release(key, delay)
             return
         keyboard.press(key)
+
+if __name__ == '__main__':
+    key_press_release("tab", 1)

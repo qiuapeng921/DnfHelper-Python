@@ -83,6 +83,7 @@ class Screen:
         if map_obj.get_stat() != 3:
             return
 
+        skill = config().getint("自动配置", "使用技能")
         rw_addr = call.person_ptr()
         map_data = mem.read_long(mem.read_long(rw_addr + address.DtPyAddr) + 16)
         start = mem.read_long(map_data + address.DtKs2)
@@ -101,8 +102,12 @@ class Screen:
                         monster = map_obj.read_coordinate(obj_ptr)
                         if obj_blood > 0:
                             call.drift_call(rw_addr, monster.x, monster.y, 0, 2)
-                            time.sleep(0.2)
-                            call.skill_call(rw_addr, 70231, 99999, monster.x, monster.y, 0, 1.0)
+                            if skill == 0:
+                                time.sleep(0.2)
+                                call.skill_call(rw_addr, 70231, 99999, monster.x, monster.y, 0, 1.0)
+                            elif skill == 1:
+                                call.skill_call_power()
+
 
     def ignore_building(self, ok: bool):
         """无视建筑"""
