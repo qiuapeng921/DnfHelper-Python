@@ -98,7 +98,8 @@ class Auto:
                         # 透明call
                         call.hide_call(call.person_ptr())
                         # sss评分
-                        mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, 999999)
+                        sss_score = config().getint("自动配置", "评分")
+                        mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, sss_score)
                         # 无视建筑
                         # cls.traversal.ignore_building(True)
                         # 进图开启功能
@@ -177,7 +178,8 @@ class Auto:
     @classmethod
     def town_handle(cls):
         """城镇处理"""
-        if cls.map_data.get_pl() <= 8:
+        check_fatigue = config().getint("自动配置", "预留疲劳")
+        if cls.map_data.get_pl() <= check_fatigue:
             cls.return_role()
             return
 
@@ -205,6 +207,7 @@ class Auto:
             return
 
         time.sleep(0.2)
+        # 区域发包
         call.area_call(init.global_data.map_id)
 
         time.sleep(0.2)
