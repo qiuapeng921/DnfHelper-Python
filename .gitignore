@@ -131,3 +131,4 @@ dmypy.json
 .idea
 output
 helper.ini
+test.*

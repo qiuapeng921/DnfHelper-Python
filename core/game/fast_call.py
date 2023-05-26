@@ -119,23 +119,23 @@ class FastCall:
                 break
             time.sleep(0.01)
 
-    def call_function_auto_find_stack(self, call_data: bytes, rsp: int = None) -> int:
+    def call_function_auto_find_stack(self, call_data: list, rsp: int = None) -> int:
         """调用函数_自动找堆栈"""
         if rsp is None:
             rsp = self.g_RSP
-        if call_data[len(call_data)] == 195:
-            call_data[len(call_data)] = 144
+        if call_data[-1] == 195:
+            call_data[-1] = 144
 
         call_data = [72, 129, 236]
         call_data = helper.add_list(call_data, helper.int_to_bytes(rsp, 4))
         call_data = helper.add_list(call_data, [72, 129, 196], helper.int_to_bytes(rsp, 4))
 
-        return self.memory_compilation(bytes(call_data))
+        return self.memory_compilation(call_data)
 
-    def memory_compilation(self, call_data: bytes) -> int:
+    def memory_compilation(self, call_data: list) -> int:
         """内存汇编"""
         self.call_wait()
-        call_data = helper.add_list(list(call_data), [195])
+        call_data = helper.add_list(call_data, [195])
         if len(call_data) > self.g_call_max_len:
             # 信息框(调用数过长)
             return 0
@@ -180,4 +180,4 @@ class FastCall:
 
         new_code = helper.add_list([], [72, 129, 236], helper.int_to_bytes(rsp, 4))
         new_code = helper.add_list(new_code, code, [72, 129, 196], helper.int_to_bytes(rsp, 4))
-        return self.memory_compilation(bytes(new_code))
+        return self.memory_compilation(new_code)
