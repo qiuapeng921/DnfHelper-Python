@@ -56,7 +56,7 @@ class FastCall:
         self.g_execute_func_result = self.allocate_space(8)
         self.g_execute_func_last_time = self.allocate_space(8)
 
-        self.mem.write_bytes(self.g_execute_func_code, code)
+        self.mem.write_bytes(self.g_execute_func_code, bytes(code))
         self.mem.write_long(self.g_execute_func_code + 0x10 + 2, self.mem.read_long(address.GameTimeGetTime))
         self.mem.write_long(self.g_execute_func_code + 0x1A + 2, self.g_execute_func_control)
         self.mem.write_long(self.g_execute_func_code + 0x24 + 2, self.g_execute_func_result)
@@ -68,7 +68,7 @@ class FastCall:
         code = helper.add_list(code, [72, 184], helper.int_to_bytes(self.g_execute_func_code, 8), [255, 208])
         code = helper.add_list(code, [72, 139, 92, 36, 48, 72, 139, 116, 36, 56, 72, 131, 196, 32, 95, 195])
         self.g_transit_framework_memory = self.allocate_space(len(code))
-        self.mem.write_bytes(self.g_transit_framework_memory, code)
+        self.mem.write_bytes(self.g_transit_framework_memory, bytes(code))
         self.init_hook_type(self.g_hook_interface)
 
         code = [80, 83, 81, 82, 87, 86, 85, 65, 80, 65, 81, 65, 82, 65, 83, 65]
@@ -79,7 +79,7 @@ class FastCall:
         code = helper.add_list(code, [255, 37, 0, 0, 0, 0], helper.int_to_bytes(self.g_old_data, 8))
 
         self.g_hook_framework = self.allocate_space(len(code))
-        self.mem.write_bytes(self.g_hook_framework, code)
+        self.mem.write_bytes(self.g_hook_framework, bytes(code))
         self.mem.write_long(self.g_old_data_save, self.g_old_data)
         self.mem.write_long(self.g_hook_address, self.g_hook_framework)
 
@@ -140,7 +140,7 @@ class FastCall:
             # 信息框(调用数过长)
             return 0
 
-        self.mem.write_bytes(self.g_execute_func_data, call_data)
+        self.mem.write_bytes(self.g_execute_func_data, bytes(call_data))
         self.mem.write_int(self.g_execute_func_control, 1)
         self.call_wait()
         self.mem.write_bytes(self.g_execute_func_data, helper.get_empty_bytes(len(call_data)))
