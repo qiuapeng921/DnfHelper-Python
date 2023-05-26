@@ -28,7 +28,7 @@ class FastCall:
     def __init__(self, mem):
         self.mem = mem
 
-    def init_codec(self):
+    def init_code(self):
         self.g_hook_interface = 1
         self.g_call_max_len = 6666
         self.g_RSP = 584
@@ -36,18 +36,12 @@ class FastCall:
         self.g_timeout_call_settings = 1000 * 60
         self.g_last_space = self.g_allocate_space
 
-        code = [72, 137, 116, 36, 8, 72, 137, 124, 36, 16, 65, 86, 72, 131, 236, 32, 72, 190, 0, 0, 0, 64, 1, 0, 0, 0]
-        code = helper.add_list(code, [72, 191, 118, 11, 204, 63, 1, 0, 0, 0, 73, 190, 126, 11, 204, 63, 1, 0, 0, 0])
-        code = helper.add_list(code, [255, 214])
-        code = helper.add_list(code, [72, 163, 142, 11, 204, 63, 1, 0, 0, 0])
-        code = helper.add_list(code, [131, 63, 1, 117, 57, 73, 199, 6, 0, 0, 0, 0])
-        code = helper.add_list(code, [72, 199, 7, 2, 0, 0, 0])
-        code = helper.add_list(code, [255, 214])
-        code = helper.add_list(code, [72, 163, 134, 11, 204, 63, 1, 0, 0, 0, 65, 86, 87, 83, 86])
-        code = helper.add_list(code, [72, 184, 0, 0, 0, 80, 1, 0, 0, 0])
-        code = helper.add_list(code, [255, 208])
-        code = helper.add_list(code, [94, 91, 95, 65, 94, 73, 137, 6, 199, 7, 0, 0, 0, 0])
-        code = helper.add_list(code, [72, 139, 116, 36, 48, 72, 139, 124, 36, 56, 72, 131, 196, 32, 65, 94, 195])
+        code = [72, 137, 116, 36, 8, 72, 137, 124, 36, 16, 65, 86, 72, 131, 236, 32, 72, 190, 0, 0, 0, 64, 1, 0, 0, 0,
+                72, 191, 118, 11, 204, 63, 1, 0, 0, 0, 73, 190, 126, 11, 204, 63, 1, 0, 0, 0, 255, 214, 72, 163, 142,
+                11, 204, 63, 1, 0, 0, 0, 131, 63, 1, 117, 57, 73, 199, 6, 0, 0, 0, 0, 72, 199, 7, 2, 0, 0, 0, 255, 214,
+                72, 163, 134, 11, 204, 63, 1, 0, 0, 0, 65, 86, 87, 83, 86, 72, 184, 0, 0, 0, 80, 1, 0, 0, 0, 255, 208,
+                94, 91, 95, 65, 94, 73, 137, 6, 199, 7, 0, 0, 0, 0, 72, 139, 116, 36, 48, 72, 139, 124, 36, 56, 72, 131,
+                196, 32, 65, 94, 195]
 
         self.g_execute_func_code = self.allocate_space(len(code))
         self.g_execute_func_data = self.allocate_space(self.g_call_max_len)
@@ -71,14 +65,16 @@ class FastCall:
         self.mem.write_bytes(self.g_transit_framework_memory, bytes(code))
         self.init_hook_type(self.g_hook_interface)
 
-        code = [80, 83, 81, 82, 87, 86, 85, 65, 80, 65, 81, 65, 82, 65, 83, 65]
-        code = helper.add_list(code, [84, 65, 85, 65, 86, 65, 87, 156, 72, 131, 236, 40])
+        code = [80, 83, 81, 82, 87, 86, 85, 65, 80, 65, 81, 65, 82, 65, 83, 65, 84, 65, 85, 65, 86, 65, 87, 156, 72,
+                131, 236, 40]
         code = helper.add_list(code, [72, 184], helper.int_to_bytes(self.g_transit_framework_memory, 8), [255, 208])
-        code = helper.add_list(code, [72, 131, 196, 40, 157, 65, 95, 65, 94, 65, 93, 65, 92, 65, 91, 65])
-        code = helper.add_list(code, [90, 65, 89, 65, 88, 93, 94, 95, 90, 89, 91, 88])
+        code = helper.add_list(code,
+                               [72, 131, 196, 40, 157, 65, 95, 65, 94, 65, 93, 65, 92, 65, 91, 65, 90, 65, 89, 65, 88,
+                                93, 94, 95, 90, 89, 91, 88])
         code = helper.add_list(code, [255, 37, 0, 0, 0, 0], helper.int_to_bytes(self.g_old_data, 8))
 
         self.g_hook_framework = self.allocate_space(len(code))
+
         self.mem.write_bytes(self.g_hook_framework, bytes(code))
         self.mem.write_long(self.g_old_data_save, self.g_old_data)
         self.mem.write_long(self.g_hook_address, self.g_hook_framework)
@@ -110,14 +106,14 @@ class FastCall:
     def call_wait(self):
         """调用等待"""
         while self.mem.read_int(self.g_execute_func_control) == 1:
-            time.sleep(0.01)
+            time.sleep(0.001)
 
         while self.mem.read_int(self.g_execute_func_control) == 2:
             refresh_time = self.mem.read_int(self.g_execute_func_refresh_time) - self.mem.read_int(
                 self.g_execute_func_last_time)
             if self.g_timeout_call_settings != 0 and refresh_time > self.g_timeout_call_settings:
                 break
-            time.sleep(0.01)
+            time.sleep(0.001)
 
     def call_function_auto_find_stack(self, call_data: list, rsp: int = None) -> int:
         """调用函数_自动找堆栈"""
@@ -126,9 +122,8 @@ class FastCall:
         if call_data[-1] == 195:
             call_data[-1] = 144
 
-        call_data = [72, 129, 236]
-        call_data = helper.add_list(call_data, helper.int_to_bytes(rsp, 4))
-        call_data = helper.add_list(call_data, [72, 129, 196], helper.int_to_bytes(rsp, 4))
+        call_data = helper.add_list([72, 129, 236], helper.int_to_bytes(rsp, 4), call_data, [72, 129, 196],
+                                    helper.int_to_bytes(rsp, 4))
 
         return self.memory_compilation(call_data)
 
@@ -137,7 +132,7 @@ class FastCall:
         self.call_wait()
         call_data = helper.add_list(call_data, [195])
         if len(call_data) > self.g_call_max_len:
-            # 信息框(调用数过长)
+            helper.message_box("调用数过长")
             return 0
 
         self.mem.write_bytes(self.g_execute_func_data, bytes(call_data))
@@ -147,7 +142,7 @@ class FastCall:
         result = self.mem.read_long(self.g_execute_func_result)
         return result
 
-    def fast_call(self, func, *args) -> int:
+    def call(self, func, *args) -> int:
         """远程调用call"""
         if len(args) > 16:
             return 0
@@ -161,12 +156,12 @@ class FastCall:
 
         code = list()
         for i in range(len(params_array)):
-            index = len(params_array) + 1
-            if index <= 4:
-                code = helper.add_list(code, helper.int_to_bytes(instruction_array[index], 8))
-                code = helper.add_list(code, helper.int_to_bytes(params_array[index], 8))
-            code = helper.add_list(code, [72, 184], helper.int_to_bytes(params_array[index], 8))
-            code = helper.add_list(code, [72, 137, 132, 36], helper.int_to_bytes((index - 1) * 8, 4))
+            if i < 4:
+                code = helper.add_list(code, helper.int_to_bytes(instruction_array[i], 2))
+                code = helper.add_list(code, helper.int_to_bytes(params_array[i], 8))
+            else:
+                code = helper.add_list(code, [72, 184], helper.int_to_bytes(params_array[i], 8))
+                code = helper.add_list(code, [72, 137, 132, 36], helper.int_to_bytes(i * 8, 4))
 
         code = helper.add_list(code, [72, 184], helper.int_to_bytes(func, 8), [255, 208])
 
@@ -178,6 +173,7 @@ class FastCall:
         if rsp / 8 % 2 == 0:
             rsp = rsp + 8
 
-        new_code = helper.add_list([], [72, 129, 236], helper.int_to_bytes(rsp, 4))
-        new_code = helper.add_list(new_code, code, [72, 129, 196], helper.int_to_bytes(rsp, 4))
-        return self.memory_compilation(new_code)
+        code = helper.add_list([72, 129, 236], helper.int_to_bytes(rsp, 4), code, [72, 129, 196],
+                               helper.int_to_bytes(rsp, 4))
+
+        return self.memory_compilation(code)

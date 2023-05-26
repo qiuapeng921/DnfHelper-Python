@@ -1,8 +1,17 @@
 import time
 
 from common import helper
-from core.game import mem
 from core.game import init, address
+from core.game import mem, fast_call as fc
+
+fast_call = fc.FastCall
+
+
+def init_call():
+    global fast_call
+    fast_call = fc.FastCall(mem)
+    fast_call.init_code()
+
 
 # 是否执行完成
 run_status = False
