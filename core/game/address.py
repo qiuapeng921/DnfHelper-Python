@@ -126,3 +126,5 @@ JnlPyAddr = 0x90  # 技能栏偏移
 JnMcAddr = 0xB0  # 技能名称
 JnDjAddr = 0x19BC  # 技能等级
 JnSxDj1Addr = 0x2AC  # 技能上限等级1
+TranslateMessage = 0x1467A6D00
+GameTimeGetTime = 0x1467A70B0
