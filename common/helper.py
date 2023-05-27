@@ -1,9 +1,9 @@
 import struct
+import time
 from datetime import datetime
 
 import keyboard
 import psutil
-import time
 import win32api
 import win32gui
 
@@ -80,11 +80,11 @@ def int_to_bytes(int_val, int_type):
         :return: bytes
     """
     if int_type == 2:
-        return struct.pack('<h', int_val)
+        return struct.pack('<H', int_val)
     if int_type == 4:
-        return struct.pack('<i', int_val)
+        return struct.pack('<I', int_val)
     if int_type == 8:
-        return struct.pack('<q', int_val)
+        return struct.pack('<Q', int_val)
 
 
 def float_to_bytes(float_val, float_type):
