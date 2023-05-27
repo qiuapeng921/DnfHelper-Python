@@ -1,10 +1,7 @@
 import time
 
-import keyword
 from common import helper
-from core.game import init, address
-import skill
-import win32gui
+from core.game import init, address, skill
 from core.game import mem, fast_call as fc
 
 fast_call = fc.FastCall

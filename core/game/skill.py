@@ -1,6 +1,5 @@
 import random
 import time
-import random
 
 # 重新构建strings和weights
 # 后续可以读技能名称处理
