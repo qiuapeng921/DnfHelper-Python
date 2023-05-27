@@ -6,6 +6,7 @@ import keyboard
 import psutil
 import win32api
 import win32gui
+import random
 
 
 def get_process_name():
@@ -148,6 +149,11 @@ def ascii_to_unicode(string: str) -> list:
     return list(bytes_arr)
 
 
+def bytes_to_str(address, mem) -> str:
+    name_bytes = mem.read_bytes(address, 200)
+    return unicode_to_ascii(name_bytes)
+
+
 def unicode_to_ascii(ls: list) -> str:
     if isinstance(ls, bytes):
         ls = list(ls)
@@ -163,12 +169,6 @@ def unicode_to_ascii(ls: list) -> str:
     return text
 
 
-def key_press_release(key: str):
-    keyboard.press(key)
-    time.sleep(0.01)
-    keyboard.release(key)
-
-
 def key_press_always(key: str):
     keyboard.press(key)
 
@@ -177,18 +177,31 @@ def key_release(key: str):
     keyboard.release(key)
 
 
-def key_press_release(key: str, delay: float):
+def key_press_release_with_delay(key: str, delay: float):
     keyboard.press(key)
     time.sleep(delay)
     keyboard.release(key)
 
 
+def key_press_release(key: str):
+    keyboard.press(key)
+    # 随机睡眠0.1-0.4
+    time.sleep(random.uniform(0.1, 0.4))
+    keyboard.release(key)
+
+
+def press_and_release(key: str):
+    keyboard.press_and_release(str)
+
+
 def key_press(list_key: list, delay: float):
     for key in list_key:
         if delay > 0:
-            key_press_release(key, delay)
+            key_press_release_with_delay(key, delay)
             return
-        keyboard.press(key)
+        key_press_release(key)
+
 
 if __name__ == '__main__':
-    key_press_release("tab", 1)
+    buff = "right,right,space"
+

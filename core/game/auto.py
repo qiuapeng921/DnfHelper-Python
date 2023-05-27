@@ -9,7 +9,7 @@ import traceback
 
 from common import config
 from common import helper, logger
-from core.game import mem
+from core.game import mem, skill, run_time
 from core.game import call, init, address
 
 
@@ -47,6 +47,25 @@ class Auto:
         cls.pick = pick
         cls.equip = equip
         cls.game_map = game_map
+
+    @classmethod
+    def test_func(cls):
+        role_name = cls.map_data.get_jn_name()
+        logger.info("技能名称 {}".format( role_name), 1)
+
+    @classmethod
+    def hide_body(cls):
+        if cls.map_data.get_stat() == 3:
+            # 透明call
+            logger.info("开启透明 {}", 2)
+            call.hide_call(call.person_ptr())
+
+    @classmethod
+    def un_hide_body(cls):
+        if cls.map_data.get_stat() == 3:
+            # 透明call
+            logger.info("关闭透明 {}", 2)
+            call.hide_call(call.person_ptr())
 
     @classmethod
     def switch(cls):
@@ -94,6 +113,11 @@ class Auto:
 
                 # 在地图内
                 if cls.map_data.get_stat() == 3:
+                    # 第一个房间 加buff
+                    if cls.firstEnterMap is True:
+                        buff = config().get("自动配置", "buff技能")
+                        skill.buff_key(buff)
+
                     if cls.firstEnterMap is False and cls.map_data.is_town() is False:
                         # 透明call
                         call.hide_call(call.person_ptr())
@@ -110,17 +134,21 @@ class Auto:
                     if config().getint("自动配置", "跟随打怪") == 1:
                         cls.traversal.follow_monster()
 
+                    # boss房间 使用觉醒
                     if cls.map_data.is_boss_room():
                         if cls.map_data.is_pass() is False:
                             supper_skill = config().get("自动配置", "觉醒技能")
-                            helper.key_press_release(supper_skill, 0.3)
-
+                            helper.key_press_release(supper_skill)
 
                     # 过图
                     if cls.map_data.is_open_door() is True and cls.map_data.is_boss_room() is False:
                         # 捡物品
                         cls.pick.pickup()
                         # 过图
+                        # 第一个房间 加buff
+                        if cls.firstEnterMap is True:
+                            buff = config().get("自动配置", "buff技能")
+                            skill.buff_key(buff)
                         cls.pass_map()
                         continue
 
@@ -171,6 +199,9 @@ class Auto:
 
         time.sleep(0.2)
         cls.pack.select_role(init.global_data.completed_role)
+
+        role_name = cls.map_data.get_role_name()
+        logger.info("进入角色 {} ".format(role_name), 2)
         time.sleep(0.5)
         logger.info("进入角色 {} ".format(init.global_data.completed_role), 2)
         logger.info("开始第 {} 个角色,剩余疲劳 {}".format(init.global_data.completed_role + 1, cls.map_data.get_pl()),
@@ -192,6 +223,10 @@ class Auto:
         time.sleep(0.5)
         # 分解装备
         cls.equip.handle_equip()
+
+        # 随机处理
+        breaks = config().getint("自动配置", "休息次数")
+        run_time.modulo_algorithm(cls.completedNum, breaks)
 
         # 1 剧情 2 搬砖
         auto_model = config().getint("自动配置", "自动模式")

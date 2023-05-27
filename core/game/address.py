@@ -4,12 +4,15 @@ NcBhKbAddr = 0  # 内存汇编
 PtGgKbAddr = 0  # 普通公告
 JnKbAddr = 0  # 技能Call
 GtKbAddr = 0  # 过图Call
+CoolDownKbAddr = 0 # 冷却Call
+
 
 RwAddr = 0x14A51F8E8  # 新人物基址
 RwAddr1 = 0x14A51F8D8  # 人物基址
 RwAddr2 = 0x149C9C558  # 人物基址B
 RWCallAddr = 0x144180270  # 人物CALL
 JSDjAddr = 0x149D09190  # 角色等级
+RwName = 0x149D09160  # 人物名称
 PFAddr = 0x149D21D40  # 评分基址
 GGCsAddr = 0x14A5205F0  # 公告参数
 GGCallAddr = 0x14423EE50  # 公告CALL
@@ -128,3 +131,18 @@ JnDjAddr = 0x19BC  # 技能等级
 JnSxDj1Addr = 0x2AC  # 技能上限等级1
 TranslateMessage = 0x1467A6D00
 GameTimeGetTime = 0x1467A70B0
+
+JnlAAddr = 0x0  # 技能A
+JnlSAddr = 0x18  # 技能S
+JnlDAddr = 0x30  # 技能D
+JnlFAddr = 0x48  # 技能F
+JnlGAddr = 0x60  # 技能G
+JnlHAddr = 0x78  # 技能H
+JnlAltAddr = 0x90  # 技能Alt
+JnlQAddr = 0xA8  # 技能Q
+JnlWAddr = 0xC0  # 技能W
+JnlEAddr = 0xD8  # 技能E
+JnlRAddr = 0xF0  # 技能R
+JnlTAddr = 0x108  # 技能T
+JnlYAddr = 0x120  # 技能Y
+JnlCtrlAddr = 0x138  # 技能Ctrl

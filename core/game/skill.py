@@ -1,11 +1,104 @@
 import random
 import time
 import random
+from enum import Enum
+
+from common import helper
+from core.game import address, call
+
+
+class KeyCode(Enum):
+    VK_A = 'a'
+    VK_S = 's'
+    VK_D = 'd'
+    VK_F = 'f'
+    VK_G = 'g'
+    VK_H = 'h'
+    VK_X = 'x'
+    VK_Q = 'q'
+    VK_W = 'w'
+    VK_E = 'e'
+    VK_R = 'r'
+    VK_T = 't'
+    VK_Y = 'y'
+
 
 # 重新构建strings和weights
 # 后续可以读技能名称处理
 strings = ['z', 'c', 'v', 'a', 's', 'd', 'f', 'g', 'h', 'q', 'w', 'e', 'r', 't', 'y']
 weights = [5, 1, 1, 3, 3, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1]
+
+
+def buff_key(buff):
+    helper.key_press_release(buff)
+
+
+def skill_name(mem) -> str:
+    rw_addr = call.person_ptr()
+    # 技能栏
+    jnl_address = mem.read_long(rw_addr + address.JnlAddr)
+    # 技能栏偏移
+    skill_ptr = mem.read_long(jnl_address + address.JnlPyAddr)
+
+    for i in range(13):
+        # 技能栏循环
+        skill_name_long = mem.read_long(skill_ptr + i * 16)
+        if skill_name_long == 0 or skill_name_long is None:
+            continue
+        # 技能栏名称
+        skill_name_addr = mem.read_long(skill_name_long + address.JnMcAddr)
+        if skill_name_addr == 0 or skill_name_addr is None:
+            continue
+        # 读字节
+        name_bytes = mem.read_bytes(skill_name_addr, 400)
+        if name_bytes is not None:
+            # 转unicode
+            skill_name = helper.unicode_to_ascii(name_bytes)
+            # print(skill_name)
+
+
+#  循环技能冷却
+def skill_cool_down(mem) -> str:
+    rw_addr = call.person_ptr()
+    # 技能栏
+    jnl_address = mem.read_long(rw_addr + address.JnlAddr)
+    # 技能栏偏移
+    skill_ptr = mem.read_long(jnl_address + address.JnlPyAddr)
+
+    code = KeyCode.VK_X
+    for i in range(13):
+        temp_skill_addr = mem.read_long(skill_ptr + i * 16)
+        if temp_skill_addr > 0 and call.cool_down_call(mem, temp_skill_addr):
+            if i == 0:
+                code = KeyCode.VK_A
+            elif i == 1:
+                code = KeyCode.VK_S
+            elif i == 2:
+                code = KeyCode.VK_D
+            elif i == 3:
+                code = KeyCode.VK_F
+            elif i == 4:
+                code = KeyCode.VK_G
+            elif i == 5:
+                code = KeyCode.VK_H
+            elif i == 6:
+                code = KeyCode.VK_X
+            elif i == 7:
+                code = KeyCode.VK_Q
+            elif i == 8:
+                code = KeyCode.VK_W
+            elif i == 9:
+                code = KeyCode.VK_E
+            elif i == 10:
+                code = KeyCode.VK_R
+            elif i == 11:
+                code = KeyCode.VK_T
+            elif i == 12:
+                code = KeyCode.VK_Y
+            elif i == 13:
+                code = KeyCode.VK_X
+            return code.value
+    return code.value
 
 
 def pick_strings(keys, num_picks, weights):

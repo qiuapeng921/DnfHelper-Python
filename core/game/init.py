@@ -30,11 +30,13 @@ def init_empty_addr():
     address.PtGgKbAddr = mem.allocate(2048)
     address.JnKbAddr = mem.allocate(2048)
     address.GtKbAddr = mem.allocate(2048)
-
+    address.CoolDownKbAddr = mem.allocate(2048)
 
 def hotkey2():
-    keyboard.add_hotkey('f1', traversal.screen_switch)
-    keyboard.add_hotkey('`', traversal.screen_kill)
+    keyboard.add_hotkey('f1', auto.test_func)
+    keyboard.add_hotkey('f2', auto.hide_body)
+    #keyboard.add_hotkey('f1', traversal.screen_switch)
+    #keyboard.add_hotkey('`', traversal.screen_kill)
     keyboard.add_hotkey('end', auto.switch)
     keyboard.add_hotkey('ctrl+up', call.over_map_call, args=(2,))
     keyboard.add_hotkey('ctrl+down', call.over_map_call, args=(3,))

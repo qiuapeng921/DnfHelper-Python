@@ -1,6 +1,9 @@
-from common import helper, globle
-from core.game import address as addr
+import logging
+
+from common import helper, globle, logger
+from core.game import address as addr, skill
 from core.game import call, address
+import random
 
 
 class MapData:
@@ -131,3 +134,23 @@ class MapData:
         """获取名望"""
         rw_addr = call.person_ptr()
         return self.mem.read_long(rw_addr + address.RwMwAddr)
+
+    def get_role_name(self) -> int:
+        """获取角色名字"""
+        name = self.mem.read_long(address.RwName)
+        name_bytes = self.mem.read_bytes(name, 100)
+        str_name = helper.bytes_to_str(name_bytes, self.mem)
+        return str_name
+
+    def get_jn_name(self) -> str:
+        """获取技能名字"""
+        rw_addr = call.person_ptr()
+        # self.mem.read_bytes(self.mem.read_long(skill_addr), 100)
+        #   helper.unicode_to_ascii(self.mem.read_bytes(self.mem.read_long(rw_addr + address.JnlAddr), 100))
+        try:
+            return skill.skill_cool_down(self.mem)
+        except Exception as e:
+            print(e)
+        return
+
+
