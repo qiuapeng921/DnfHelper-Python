@@ -33,8 +33,8 @@ jobs:
 
       - name: Build
         run: |
-          pyinstaller -F --icon=resource/WeGame.ico -n DnfHelper-Console main.py
-          pyinstaller -F --icon=resource/WeGame.ico -n DnfHelper-Gui gui.py
+          pyinstaller -F --icon=static/WeGame.ico -n DnfHelper-Console main.py
+          pyinstaller -F --icon=static/WeGame.ico -n DnfHelper-Gui gui.py
 
       - name: Run UPX
         uses: crazy-max/ghaction-upx@v2
@@ -51,5 +51,5 @@ jobs:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           files: |
             dist/*.exe
-            resource/helper.ini
-            resource/sys/*.sys
+            static/helper.ini
+            static/sys/*.sys
