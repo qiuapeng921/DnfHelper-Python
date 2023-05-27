@@ -27,4 +27,4 @@ def info(msg: str, t: int):
 
 
 def file(msg: str):
-    log.debug("{} {}".format(helper.get_now_date(), msg))
+    fileLog.debug("{} {}".format(helper.get_now_date(), msg))
