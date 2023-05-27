@@ -41,6 +41,7 @@ class Screen:
         logger.info("秒杀完毕 [ √ ]", 1)
 
     def full_screen(self, code_config):
+        skill = config().getint("自动配置", "使用技能")
         """全屏遍历"""
         mem = self.mem
         map_obj = init.map_data
@@ -64,13 +65,16 @@ class Screen:
                     obj_blood = mem.read_long(obj_ptr + address.GwXlAddr)
                     if obj_camp > 0 and obj_code > 0 and obj_blood > 0 and obj_ptr != rw_addr:
                         monster = map_obj.read_coordinate(obj_ptr)
-                        code = int(code_config[1])
-                        harm = int(code_config[2])
-                        size = float(code_config[3])
-                        call.skill_call(rw_addr, code, harm, monster.x, monster.y, 0, size)
-                        num = num + 1
-                        if num >= code_config[4]:
-                            break
+                        if skill == 0:
+                            code = int(code_config[1])
+                            harm = int(code_config[2])
+                            size = float(code_config[3])
+                            call.skill_call(rw_addr, code, harm, monster.x, monster.y, 0, size)
+                            num = num + 1
+                            if num >= code_config[4]:
+                                break
+                        elif skill == 1:
+                            call.skill_call_power()
 
     def follow_monster(self):
         """跟随怪物"""
