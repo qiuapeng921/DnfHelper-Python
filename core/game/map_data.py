@@ -138,8 +138,7 @@ class MapData:
     def get_role_name(self) -> int:
         """获取角色名字"""
         name = self.mem.read_long(address.RwName)
-        name_bytes = self.mem.read_bytes(name, 100)
-        str_name = helper.bytes_to_str(name_bytes, self.mem)
+        str_name = helper.bytes_to_str(name, self.mem)
         return str_name
 
     def get_jn_name(self) -> str:

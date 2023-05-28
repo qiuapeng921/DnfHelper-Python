@@ -25,13 +25,24 @@ class KeyCode(Enum):
 
 # 重新构建strings和weights
 # 后续可以读技能名称处理
-strings = ['z', 'c', 'v', 'a', 's', 'd', 'f', 'g', 'h', 'q', 'w', 'e', 'r', 't', 'y']
-weights = [5, 1, 1, 3, 3, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1]
+strings = ['z', 'c', 'v', 'a', 's', 'd', 'f', 'g', 'h', 'w', 'e', 'r', 't', 'y']
+weights = [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
 
 def buff_key(buff):
-    helper.key_press_release(buff)
+    title = helper.get_process_name()
+    if title == "地下城与勇士：创新世纪":
+        helper.key_press_release(buff)
 
+
+def super_skill(super_skill_list):
+    title = helper.get_process_name()
+    if title == "地下城与勇士：创新世纪":
+        super_list = super_skill_list.split(",")
+        helper.key_press_release(super_list)
+
+    if strings.__contains__(super_skill_list):
+        strings.remove(super_skill_list)
 
 def skill_name(mem) -> str:
     rw_addr = call.person_ptr()
@@ -66,9 +77,9 @@ def skill_cool_down(mem) -> str:
     skill_ptr = mem.read_long(jnl_address + address.JnlPyAddr)
 
     code = KeyCode.VK_X
-    for i in range(13):
+    for i in range(1, 15):
         temp_skill_addr = mem.read_long(skill_ptr + i * 16)
-        if temp_skill_addr > 0 and call.cool_down_call(mem, temp_skill_addr):
+        if temp_skill_addr > 0 and call.cool_down_call(temp_skill_addr):
             if i == 0:
                 code = KeyCode.VK_A
             elif i == 1:

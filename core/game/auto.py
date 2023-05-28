@@ -16,7 +16,7 @@ from core.game import call, init, address
 class Auto:
     # 首次进图
     firstEnterMap = False
-
+    addBuff = False
     # 已完成刷图次数
     completedNum = 0
     # 线程开关
@@ -50,8 +50,8 @@ class Auto:
 
     @classmethod
     def test_func(cls):
-        role_name = cls.map_data.get_jn_name()
-        logger.info("技能名称 {}".format( role_name), 1)
+        role_name = cls.map_data.get_role_name()
+        logger.info("技能名称 {}".format(role_name), 1)
 
     @classmethod
     def hide_body(cls):
@@ -66,6 +66,13 @@ class Auto:
             # 透明call
             logger.info("关闭透明 {}", 2)
             call.hide_call(call.person_ptr())
+
+    @classmethod
+    def follow_monster_switch(cls):
+        # 跟随怪物
+        if config().getint("自动配置", "跟随打怪") == 1:
+            while True:
+                cls.traversal.follow_monster()
 
     @classmethod
     def switch(cls):
@@ -114,10 +121,10 @@ class Auto:
                 # 在地图内
                 if cls.map_data.get_stat() == 3:
                     # 第一个房间 加buff
-                    if cls.firstEnterMap is True:
+                    if cls.firstEnterMap is True and cls.addBuff is False:
                         buff = config().get("自动配置", "buff技能")
                         skill.buff_key(buff)
-
+                        cls.addBuff = True
                     if cls.firstEnterMap is False and cls.map_data.is_town() is False:
                         # 透明call
                         call.hide_call(call.person_ptr())
@@ -137,18 +144,14 @@ class Auto:
                     # boss房间 使用觉醒
                     if cls.map_data.is_boss_room():
                         if cls.map_data.is_pass() is False:
-                            supper_skill = config().get("自动配置", "觉醒技能")
-                            helper.key_press_release(supper_skill)
+                            supper_skill_list = config().get("自动配置", "觉醒技能")
+                            skill.super_skill(supper_skill_list)
 
                     # 过图
                     if cls.map_data.is_open_door() is True and cls.map_data.is_boss_room() is False:
                         # 捡物品
                         cls.pick.pickup()
                         # 过图
-                        # 第一个房间 加buff
-                        if cls.firstEnterMap is True:
-                            buff = config().get("自动配置", "buff技能")
-                            skill.buff_key(buff)
                         cls.pass_map()
                         continue
 
@@ -164,6 +167,7 @@ class Auto:
                             # 退出副本
                             cls.quit_map()
                             cls.firstEnterMap = False
+                            cls.addBuff = False
             except Exception as err:
                 print("-----------自动线程开始-----------")
                 except_type, _, except_traceback = sys.exc_info()
@@ -234,6 +238,9 @@ class Auto:
             init.global_data.map_id = cls.task.handle_main()
             init.global_data.map_level = 0
         if auto_model == 2 and cls.map_data.get_role_level() == 110:
+            # 获取校色名望值 自动根据你的名望 选择刷英豪 还是普通 哦哦哦 了解了 没注意这个 这个可以加开关的吧 没必要 我加这个就是破图用的  不写5 就固定了 但是你的自己开图 哦哦哦 好的
+            # 再看看你那个冷却？
+
             if cls.map_data.get_fame() < 23330:
                 map_ids = list(map(int, config().get("自动配置", "普通地图").split(",")))
             else:
@@ -278,7 +285,7 @@ class Auto:
 
     @classmethod
     def enter_map(cls, map_id: int, map_level: int):
-        """进图"""
+        """进图  这个5 会自动适配是否进图的  从高到低 没开图 自动开图 我说是下面那个case 选其他难度 1-4的时候 会卡住"""
         if map_level == 5:
             for i in range(4, -1, -1):
                 if cls.map_data.get_stat() == 3:
@@ -294,7 +301,8 @@ class Auto:
         while cls.thread_switch:
             time.sleep(0.2)
             # 进图副本跳出循环
-            if cls.map_data.get_stat() == 3:
+            stat = cls.map_data.get_stat()
+            if stat == 3:
                 break
 
     @classmethod
@@ -304,6 +312,8 @@ class Auto:
             return
 
         over_map = config().getint("自动配置", "过图方式")
+        over_map_size = config().getint("自动配置", "卡门重试")
+
         if over_map > 0:
             # 寻路过图
             map_data = cls.game_map.map_data()
@@ -312,7 +322,12 @@ class Auto:
                 if over_map == 1:
                     call.over_map_call(direction)
                 if over_map == 2:
-                    call.drift_over_map(direction)
+                    for i in range(over_map_size):
+                        call.drift_over_map(direction)
+                        time.sleep(0.5)
+                    if cls.map_data.is_open_door() is True and cls.map_data.is_boss_room() is False:
+                        logger.info("卡门 强制过图", 1)
+                        call.over_map_call(direction)
 
     @classmethod
     def quit_map(cls):

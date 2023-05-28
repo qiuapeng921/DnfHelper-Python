@@ -127,7 +127,7 @@ def skill_call_power():
     if title == "地下城与勇士：创新世纪":
         """技能call"""
         helper.key_press_always("x")
-        key = skill.skill_cool_down(mem)
+        key = skill.pick_key()
         helper.key_press_release(key)
         helper.key_release("x")
 
@@ -160,21 +160,9 @@ def skill_call(addr: int, code: int, harm: int, x: int, y: int, z: int, size: fl
     shell_code = helper.add_list(shell_code, [255, 208, 72, 129, 196, 0, 2, 0, 0])
     compile_call(shell_code)
 
-
-def cool_down_call(mem, skill_ptr):
-    if skill_ptr < 0:
-        return False
-    empty_addr = address.CoolDownKbAddr
-    mem.write_int(empty_addr, 0)
-    shell_code = [72, 131, 236, 32]
-    shell_code = helper.add_list(shell_code, [49, 210])
-    shell_code = helper.add_list(shell_code, [72, 185], helper.int_to_bytes(skill_ptr, 8))
-    shell_code = helper.add_list(shell_code, [255, 21, 2, 0, 0, 0, 235, 8])
-    shell_code = helper.add_list(shell_code, helper.int_to_bytes(address.LqCallJudgeAddr, 8))
-    shell_code = helper.add_list(shell_code, [72, 162], helper.int_to_bytes(empty_addr, 8))
-    shell_code = helper.add_list(shell_code, [72, 131, 196, 32])
-    compile_call(shell_code)
-    return mem.read_int(empty_addr) < 1
+def cool_down_call(skill_ptr):
+    addr = fast_call.call(0x14416D8C0)
+    return 0
 
 
 def hide_call(obj_ptr: int):

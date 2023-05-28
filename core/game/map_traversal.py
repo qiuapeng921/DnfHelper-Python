@@ -108,7 +108,6 @@ class Screen:
                             elif skill == 1:
                                 call.skill_call_power()
 
-
     def ignore_building(self, ok: bool):
         """无视建筑"""
         rd_addr = call.person_ptr()
