@@ -55,6 +55,7 @@ CzSyCallAddr = 0x144FF5920  # 城镇瞬移CALL
 XzJsCallAddr = 0x14133EFF0  # 选择角色CALL
 FhJsCallAddr = 0x143A397A0  # 返回角色CALL
 LqCallJudgeAddr = 0x14416D8C0  # 冷却判断CALL
+JnYdCallAddr = 0x14417D450  # 技能移动CALL
 CdResetCallAddr = 0x143FEB9C0  # CD重置CALL
 FjCallAddr = 0x143DFAF50  # 分解CALL
 ZlCallAddr = 0x143DF1820  # 整理CALL

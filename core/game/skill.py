@@ -2,8 +2,8 @@ import time
 import random
 from enum import Enum
 
-from common import helper
-from core.game import address, call
+from common import helper, logger
+from core.game import address, call, fast_call
 from core.game import mem, map_data
 
 
@@ -36,7 +36,7 @@ strings = ['z', 'c', 'v', 'a', 's', 'd', 'f', 'g', 'h', 'w', 'e', 'r', 't', 'y']
 weights = [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
 # 不好用的技能
-un_use = ['流心', '后跳', '属性变换', '受身蹲伏', '刀魂', '三段斩', '流心', '格林机枪', '锁魂刺']
+un_use = ['流心', '后跳', '属性变换', '受身蹲伏', '刀魂', '三段刃', '流心', '格林机枪', '锁魂刺']
 
 
 def buff_key(buff):
@@ -99,6 +99,45 @@ def empty_skill() -> int:
         if mem.read_int(temp) == 0:
             if a > 13:
                 return a
+
+
+# 移动技能
+def skill_move(skill_index, skill_empty):
+    try:
+        call.fast_call.call(address.JnYdCallAddr, address.JnlAddr(), call.person_ptr(), skill_index, skill_empty)
+    except Exception as e:
+        logger.file("read_longlong 技能位置:{},移动位置:{},错误:{}".format(skill_index, skill_index, e.args))
+
+
+# 移除掉不好用的技能
+def remove_skill():
+    skill_data = skill_name()
+    if len(skill_data) < 0:
+        return
+    for index, key in enumerate(skill_data.keys()):
+        print(index, key, skill_data[key])
+        if un_use.__contains__(skill_data[key]):
+            # 存在不好用的技能
+            skill_move(index - 1, empty_skill())
+
+
+'''.版本 2
+
+技能指针 ＝ 读长整数 (读长整数 (取人物指针 () ＋ #技能栏) ＋ #技能栏偏移)
+.计次循环首 (14, i)
+    地址 ＝ 读长整数 (技能指针 ＋ (i － 1) × 8)
+    名称 ＝ 数据文本 (读字节集 (读长整数 (地址 ＋ #技能名称), 200))
+    .计次循环首 (取数组成员数 (技能数组), n)
+        .如果真 (寻找文本 (名称, 技能数组 [n], , 假) ≠ -1)
+            公告 (“移除技能：” ＋ 到文本 (名称))
+            移动技能Call (i － 1, 技能空位 ())  ' 后跳
+            跳出循环 ()
+        .如果真结束
+
+    .计次循环尾 ()
+    完美延时 (200)
+.计次循环尾 ()
+'''
 
 
 #  循环技能冷却

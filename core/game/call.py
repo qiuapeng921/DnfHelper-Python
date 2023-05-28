@@ -160,10 +160,6 @@ def skill_call(addr: int, code: int, harm: int, x: int, y: int, z: int, size: fl
     shell_code = helper.add_list(shell_code, [255, 208, 72, 129, 196, 0, 2, 0, 0])
     compile_call(shell_code)
 
-def cool_down_call(skill_ptr):
-    addr = fast_call.call(0x14416D8C0)
-    return 0
-
 
 def hide_call(obj_ptr: int):
     """透明call"""

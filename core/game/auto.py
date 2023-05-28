@@ -53,7 +53,7 @@ class Auto:
 
     @classmethod
     def test_func(cls):
-        role_name = skill.select_skill_cool_down()
+        role_name = skill.remove_skill()
         logger.info("技能名称 {}".format(role_name), 1)
 
     @classmethod
