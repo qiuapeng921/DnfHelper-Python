@@ -11,6 +11,11 @@ import random
 from core.game import mem
 
 
+def is_dnf_win():
+    title = get_process_name()
+    return title == "地下城与勇士：创新世纪"
+
+
 def get_process_name():
     # 获取当前活动窗口句柄
     hwnd = win32gui.GetForegroundWindow()

@@ -117,7 +117,7 @@ def skill_call_power_random():
     title = helper.get_process_name()
     if title == "地下城与勇士：创新世纪":
         """技能call"""
-        key = skill.skill_cool_down(mem)
+        key = skill.select_skill_cool_down()
         helper.key_release(key)
 
 

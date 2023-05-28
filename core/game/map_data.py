@@ -133,15 +133,15 @@ class MapData:
         result = float(cut_weigh) / float(max_weigh) * 100
         return int(result)
 
-    def back_pack_item(self) -> int:
+    def back_pack_item(self) -> dict:
         """取背包负重"""
         rw_addr = call.person_ptr()
         mem = self.mem
-        addr = mem.read_long(mem.read_long(address.BbJzAddr) + address.WplPyAddr) + 0x48  # 装备栏偏移
-        # 收集所有装备
+        item_addr = mem.read_long(mem.read_long(address.BbJzAddr) + address.WplPyAddr) + 0x48  # 物品栏偏移
+        # 物品栏
         item_map = {}
         for i in range(56):
-            equip = mem.read_long(mem.read_long(addr + i * 8) - 72 + 16)
+            equip = mem.read_long(mem.read_long(item_addr + i * 8) - 72 + 16)
             if equip > 0:
                 # 装备品级
                 equip_level = mem.read_int(equip + address.ZbPjAddr)
@@ -166,16 +166,3 @@ class MapData:
         name = self.mem.read_long(address.RwName)
         str_name = helper.address_to_str(name)
         return str_name
-
-    def get_jn_name(self) -> str:
-        """获取技能名字"""
-        rw_addr = call.person_ptr()
-        # self.mem.read_bytes(self.mem.read_long(skill_addr), 100)
-        #   helper.unicode_to_ascii(self.mem.read_bytes(self.mem.read_long(rw_addr + address.JnlAddr), 100))
-        try:
-            return skill.skill_cool_down(self.mem)
-        except Exception as e:
-            print(e)
-        return
-
-
