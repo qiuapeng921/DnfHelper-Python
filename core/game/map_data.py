@@ -112,12 +112,15 @@ class MapData:
 
         return coordinate
 
+    # 是否对话框A
     def is_dialog_a(self):
         return self.mem.read_int(addr.DHAddr) == 1
 
+    # 是否聊天对话框
     def is_dialog_b(self):
         return self.mem.read_int(addr.DHAddrB) == 1
 
+    # 是否对话确认框
     def is_dialog_esc(self):
         return self.mem.read_int(addr.EscDHAddr) == 1
 
@@ -130,15 +133,38 @@ class MapData:
         result = float(cut_weigh) / float(max_weigh) * 100
         return int(result)
 
+    def back_pack_item(self) -> int:
+        """取背包负重"""
+        rw_addr = call.person_ptr()
+        mem = self.mem
+        addr = mem.read_long(mem.read_long(address.BbJzAddr) + address.WplPyAddr) + 0x48  # 装备栏偏移
+        # 收集所有装备
+        item_map = {}
+        for i in range(56):
+            equip = mem.read_long(mem.read_long(addr + i * 8) - 72 + 16)
+            if equip > 0:
+                # 装备品级
+                equip_level = mem.read_int(equip + address.ZbPjAddr)
+                # 装备名称
+                name_addr = mem.read_long(equip + address.WpMcAddr)
+                name = helper.unicode_to_ascii(mem.read_bytes(name_addr, 100))
+                item_map[name] = equip_level
+
+        # 遍历所有物品
+        for key, value in item_map.items():
+            print(key, value)
+
+        return item_map
+
     def get_fame(self) -> int:
         """获取名望"""
         rw_addr = call.person_ptr()
         return self.mem.read_long(rw_addr + address.RwMwAddr)
 
-    def get_role_name(self) -> int:
+    def get_role_name(self) -> str:
         """获取角色名字"""
         name = self.mem.read_long(address.RwName)
-        str_name = helper.bytes_to_str(name, self.mem)
+        str_name = helper.address_to_str(name)
         return str_name
 
     def get_jn_name(self) -> str:

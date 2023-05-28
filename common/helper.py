@@ -8,6 +8,8 @@ import win32api
 import win32gui
 import random
 
+from core.game import mem
+
 
 def get_process_name():
     # 获取当前活动窗口句柄
@@ -149,9 +151,13 @@ def ascii_to_unicode(string: str) -> list:
     return list(bytes_arr)
 
 
-def bytes_to_str(address, mem) -> str:
+def address_to_str(address) -> str:
     name_bytes = mem.read_bytes(address, 200)
     return unicode_to_ascii(name_bytes)
+
+
+def address_to_int(address) -> str:
+    return mem.read_int(address)
 
 
 def unicode_to_ascii(ls: list) -> str:
@@ -204,4 +210,3 @@ def key_press(list_key: list, delay: float):
 
 if __name__ == '__main__':
     buff = "right,right,space"
-

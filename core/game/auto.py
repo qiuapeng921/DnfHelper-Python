@@ -38,8 +38,10 @@ class Auto:
 
     game_map = None
 
+    skill = None
+
     @classmethod
-    def __init__(cls, task, traversal, map_data, pack, pick, equip, game_map):
+    def __init__(cls, task, traversal, map_data, pack, pick, equip, game_map, skill):
         cls.task = task
         cls.traversal = traversal
         cls.map_data = map_data
@@ -47,10 +49,11 @@ class Auto:
         cls.pick = pick
         cls.equip = equip
         cls.game_map = game_map
+        cls.skill = skill
 
     @classmethod
     def test_func(cls):
-        role_name = cls.map_data.get_role_name()
+        role_name = skill.skill_cool_down()
         logger.info("技能名称 {}".format(role_name), 1)
 
     @classmethod
@@ -102,7 +105,7 @@ class Auto:
                     helper.key_press_release('esc')
                     helper.key_press_release('space')
                     continue
-                if cls.map_data.is_dialog_esc() and (cls.map_data.is_dialog_a() and cls.map_data.is_dialog_b()()):
+                if cls.map_data.is_dialog_esc() and (cls.map_data.is_dialog_a() and cls.map_data.is_dialog_b()):
                     helper.key_press_release('esc')
                     helper.key_press_release('space')
                     continue

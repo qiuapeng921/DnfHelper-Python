@@ -4,8 +4,7 @@ NcBhKbAddr = 0  # 内存汇编
 PtGgKbAddr = 0  # 普通公告
 JnKbAddr = 0  # 技能Call
 GtKbAddr = 0  # 过图Call
-CoolDownKbAddr = 0 # 冷却Call
-
+CoolDownKbAddr = 0  # 冷却Call
 
 RwAddr = 0x14A51F8E8  # 新人物基址
 RwAddr1 = 0x14A51F8D8  # 人物基址
@@ -146,3 +145,14 @@ JnlRAddr = 0xF0  # 技能R
 JnlTAddr = 0x108  # 技能T
 JnlYAddr = 0x120  # 技能Y
 JnlCtrlAddr = 0x138  # 技能Ctrl
+
+JnlQAddr1 = 0x19E8  # 冷却判断233
+JnlQAddr2 = 0x19EC  # 冷却判断234
+JnlQAddr3 = 0x1B54  # 冷却判断235
+JnlQAddr4 = 0x1B58  # 冷却判断236
+JnlQAddr5 = 0x1B5C  # 冷却判断237
+
+JnLqCs1 = 5547676784  # 技能冷却参数1
+JnLqCs2 = 5541861560  # 技能冷却参数2
+JnCs = 5539286832  # 技能冷却参数
+JnLqPd3 = 4  # 冷却判断3
