@@ -32,14 +32,14 @@ def init_empty_addr():
     address.GtKbAddr = mem.allocate(2048)
     address.CoolDownKbAddr = mem.allocate(2048)
 
+
 def hotkey2():
     keyboard.add_hotkey('f1', auto.test_func)
     # 透明
     keyboard.add_hotkey('f2', auto.hide_body)
     # 跟随打怪
     keyboard.add_hotkey('f3', auto.follow_monster_switch)
-    #keyboard.add_hotkey('f1', traversal.screen_switch)
-    #keyboard.add_hotkey('`', traversal.screen_kill)
+    keyboard.add_hotkey('f4', auto.pick_item)
     keyboard.add_hotkey('end', auto.switch)
     keyboard.add_hotkey('home', auto.switch)
     keyboard.add_hotkey('ctrl+up', call.over_map_call, args=(2,))
@@ -77,7 +77,9 @@ def hotkey():
     while user32.GetMessageA(ctypes.byref(msg), None, 0, 0) > 0:
         if msg.message == win32con.WM_HOTKEY:
             if win32api.HIWORD(msg.lParam) == win32con.VK_F1:
-                traversal.screen_switch()
+                auto.test_func()
+            if win32api.HIWORD(msg.lParam) == win32con.VK_F2:
+                auto.hide_body()
             if win32api.HIWORD(msg.lParam) == win32con.VK_END:
                 auto.switch()
             if win32api.HIWORD(msg.lParam) == 192:

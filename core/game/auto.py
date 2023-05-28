@@ -75,6 +75,11 @@ class Auto:
                 cls.traversal.follow_monster()
 
     @classmethod
+    def pick_item(cls):
+        # 捡物品
+        cls.pick.pickup()
+
+    @classmethod
     def switch(cls):
         """自动开关"""
         init.global_data.auto_switch = not init.global_data.auto_switch
@@ -144,7 +149,8 @@ class Auto:
                     # boss房间 使用觉醒
                     if cls.map_data.is_boss_room():
                         if cls.map_data.is_pass() is False:
-                            supper_skill_list = config().get("自动配置", "觉醒技能")
+                            supper_skill_str = config().get("自动配置", "觉醒技能")
+                            supper_skill_list = supper_skill_str.split(",")
                             skill.super_skill(supper_skill_list)
 
                     # 过图
@@ -310,7 +316,7 @@ class Auto:
 
         over_map = config().getint("自动配置", "过图方式")
         over_map_size = config().getint("自动配置", "卡门重试")
-        random_wait = config().getfloat("自动配置", "过图等待")
+        random_wait = config().getint("自动配置", "过图等待")
 
         '''过图随机'''
         if random_wait != 0:
@@ -329,7 +335,7 @@ class Auto:
                         time.sleep(0.5)
                     if cls.map_data.is_open_door() is True and cls.map_data.is_boss_room() is False:
                         logger.info("被卡门 强制过图", 1)
-                        call.over_map_call(direction)
+                        # call.over_map_call(direction)
 
     @classmethod
     def quit_map(cls):
@@ -345,7 +351,7 @@ class Auto:
             out_value = config().get("自动配置", "出图按键")
             for i in range(3):
                 helper.key_press_release(out_value)
-            if cls.map_data.get_stat() == 1 or cls.map_data.is_town():
+            if cls.map_data.get_stat() == 1 and cls.map_data.is_town():
                 return
 
         if out_type == 0:

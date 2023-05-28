@@ -36,6 +36,9 @@ class Screen:
 
     @classmethod
     def screen_kill(cls):
+        skill = config().getint("自动配置", "全屏开关")
+        if skill == 0:
+            return
         """秒杀完毕"""
         call.skill_call(0, 54141, 0, 0, 0, 0, 1.0)
         logger.info("秒杀完毕 [ √ ]", 1)

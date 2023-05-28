@@ -38,8 +38,7 @@ def buff_key(buff):
 def super_skill(super_skill_list):
     title = helper.get_process_name()
     if title == "地下城与勇士：创新世纪":
-        super_list = super_skill_list.split(",")
-        helper.key_press_release(super_list)
+        helper.key_press_release(super_skill_list)
 
     if strings.__contains__(super_skill_list):
         strings.remove(super_skill_list)
