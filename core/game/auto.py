@@ -238,9 +238,6 @@ class Auto:
             init.global_data.map_id = cls.task.handle_main()
             init.global_data.map_level = 0
         if auto_model == 2 and cls.map_data.get_role_level() == 110:
-            # 获取校色名望值 自动根据你的名望 选择刷英豪 还是普通 哦哦哦 了解了 没注意这个 这个可以加开关的吧 没必要 我加这个就是破图用的  不写5 就固定了 但是你的自己开图 哦哦哦 好的
-            # 再看看你那个冷却？
-
             if cls.map_data.get_fame() < 23330:
                 map_ids = list(map(int, config().get("自动配置", "普通地图").split(",")))
             else:
@@ -313,6 +310,11 @@ class Auto:
 
         over_map = config().getint("自动配置", "过图方式")
         over_map_size = config().getint("自动配置", "卡门重试")
+        random_wait = config().getfloat("自动配置", "过图等待")
+
+        '''过图随机'''
+        if random_wait != 0:
+            time.sleep(random.uniform(0, random_wait))
 
         if over_map > 0:
             # 寻路过图
@@ -326,7 +328,7 @@ class Auto:
                         call.drift_over_map(direction)
                         time.sleep(0.5)
                     if cls.map_data.is_open_door() is True and cls.map_data.is_boss_room() is False:
-                        logger.info("卡门 强制过图", 1)
+                        logger.info("被卡门 强制过图", 1)
                         call.over_map_call(direction)
 
     @classmethod
@@ -339,9 +341,20 @@ class Auto:
         cls.pack.get_income(0, random.randint(0, 3))
 
         out_type = config().getint("自动配置", "出图方式")
+        if out_type == 2:
+            out_value = config().get("自动配置", "出图按键")
+            for i in range(3):
+                helper.key_press_release(out_value)
+            if cls.map_data.get_stat() == 1 or cls.map_data.is_town():
+                return
+
         if out_type == 0:
             time.sleep(5)
 
+        cls.level_map_while()
+
+    @classmethod
+    def level_map_while(cls):
         while cls.thread_switch:
             time.sleep(0.2)
             # 出图
