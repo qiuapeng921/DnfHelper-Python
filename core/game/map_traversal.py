@@ -3,7 +3,7 @@ import time
 
 from common import config
 from common import logger
-from core.game import call, init, address
+from core.game import call, init, address, map_base
 
 
 class Screen:
@@ -51,33 +51,22 @@ class Screen:
         if map_obj.get_stat() != 3:
             return
 
+        code = int(code_config[1])
+        harm = int(code_config[2])
+        size = float(code_config[3])
+        num = int(code_config[2])
+
         rw_addr = call.person_ptr()
-        map_data = mem.read_long(mem.read_long(rw_addr + address.DtPyAddr) + 16)
-        start = mem.read_long(map_data + address.DtKs2)
-        end = mem.read_long(map_data + address.DtJs2)
-        obj_num = int((end - start) / 24)
-        num = 0
-        for obj_tmp in range(obj_num):
-            obj_ptr = mem.read_long(start + obj_tmp * 24)
-            obj_ptr = mem.read_long(obj_ptr + 16) - 32
-            if obj_ptr > 0:
-                obj_type_a = mem.read_int(obj_ptr + address.LxPyAddr)
-                obj_camp = mem.read_int(obj_ptr + address.ZyPyAddr)
-                obj_code = mem.read_int(obj_ptr + address.DmPyAddr)
-                if obj_type_a == 529 or obj_type_a == 545 or obj_type_a == 273 or obj_type_a == 61440:
-                    obj_blood = mem.read_long(obj_ptr + address.GwXlAddr)
-                    if obj_camp > 0 and obj_code > 0 and obj_blood > 0 and obj_ptr != rw_addr:
-                        monster = map_obj.read_coordinate(obj_ptr)
-                        if skill == 0:
-                            code = int(code_config[1])
-                            harm = int(code_config[2])
-                            size = float(code_config[3])
-                            call.skill_call(rw_addr, code, harm, monster.x, monster.y, 0, size)
-                            num = num + 1
-                            if num >= code_config[4]:
-                                break
-                        elif skill == 1:
-                            call.skill_call_power()
+        monster, target_addr = map_base.map_has_monster()
+        if target_addr == 0 or monster is None:
+            return
+        obj_blood = mem.read_long(target_addr + address.GwXlAddr)
+        if obj_blood > 0:
+            if skill == 0:
+                for i in range(num):
+                    call.skill_call(rw_addr, code, harm, monster.x, monster.y, 0, size)
+            elif skill == 1:
+                call.skill_call_power()
 
     def follow_monster(self):
         """跟随怪物"""
@@ -88,29 +77,18 @@ class Screen:
 
         skill = config().getint("自动配置", "使用技能")
         rw_addr = call.person_ptr()
-        map_data = mem.read_long(mem.read_long(rw_addr + address.DtPyAddr) + 16)
-        start = mem.read_long(map_data + address.DtKs2)
-        end = mem.read_long(map_data + address.DtJs2)
-        # 目标数
-        obj_num = int((end - start) / 24)
-        for obj_tmp in range(obj_num):
-            obj_ptr = mem.read_long(start + obj_tmp * 24)
-            obj_ptr = mem.read_long(obj_ptr + 16) - 32
-            if obj_ptr > 0:
-                obj_type_a = mem.read_int(obj_ptr + address.LxPyAddr)
-                if obj_type_a == 529 or obj_type_a == 545 or obj_type_a == 273 or obj_type_a == 61440:
-                    obj_camp = mem.read_int(obj_ptr + address.ZyPyAddr)
-                    obj_code = mem.read_int(obj_ptr + address.DmPyAddr)
-                    obj_blood = mem.read_long(obj_ptr + address.GwXlAddr)
-                    if obj_camp > 0 and obj_ptr != rw_addr:
-                        monster = map_obj.read_coordinate(obj_ptr)
-                        if obj_blood > 0:
-                            call.drift_call(rw_addr, monster.x, monster.y, 0, 2)
-                            if skill == 0:
-                                time.sleep(0.2)
-                                call.skill_call(rw_addr, 70231, 99999, monster.x, monster.y, 0, 1.0)
-                            elif skill == 1:
-                                call.skill_call_power()
+        monster, target_addr = map_base.map_has_monster()
+        if target_addr == 0 or monster is None:
+            return
+        obj_blood = mem.read_long(target_addr + address.GwXlAddr)
+        if obj_blood > 0:
+            call.drift_call(rw_addr, monster.x, monster.y, 0, 2)
+        if skill == 0:
+            time.sleep(0.2)
+            call.skill_call(rw_addr, 70231, 99999, monster.x, monster.y, 0, 1.0)
+        if skill == 1:
+            call.skill_call_power()
+        return
 
     def ignore_building(self, ok: bool):
         """无视建筑"""
@@ -121,29 +99,3 @@ class Screen:
         else:
             self.mem.write_int(rd_addr + address.JzCtAddr, 40)
             self.mem.write_int(rd_addr + address.DtCtAddr, 10)
-
-    def cross_fissure2(self):
-        mem = self.mem
-        """跟随怪物"""
-        map_obj = init.map_data
-        if map_obj.get_stat() != 3:
-            return
-
-        rw_addr = call.person_ptr()
-        map_data = mem.read_long(mem.read_long(rw_addr + address.DtPyAddr) + 16)
-        start = mem.read_long(map_data + address.DtKs2)
-        end = mem.read_long(map_data + address.DtJs2)
-        obj_num = int((end - start) / 24)
-        for obj_tmp in range(obj_num):
-            obj_ptr = mem.read_long(start + obj_tmp * 24)
-            obj_ptr = mem.read_long(obj_ptr + 16) - 32
-            if obj_ptr > 0:  # 33 4129 273 = 上 129
-                obj_type_a = mem.read_int(obj_ptr + address.LxPyAddr)
-                if obj_type_a == 529 or obj_type_a == 545 or obj_type_a == 273 or obj_type_a == 61440:
-                    obj_camp = mem.read_int(obj_ptr + address.ZyPyAddr)
-                    obj_code = mem.read_int(obj_ptr + address.DmPyAddr)
-                    obj_blood = mem.read_long(obj_ptr + address.GwXlAddr)
-                    if obj_camp > 0 and obj_ptr != rw_addr:
-                        monster = map_obj.read_coordinate(obj_ptr)
-                        if obj_blood > 0:
-                            call.drift_call(rw_addr, monster.x, monster.y, 0, 2)
