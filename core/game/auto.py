@@ -53,7 +53,7 @@ class Auto:
 
     @classmethod
     def test_func(cls):
-        role_name = skill.remove_skill()
+        role_name = cls.traversal.cross_fissure2()
         logger.info("技能名称 {}".format(role_name), 1)
 
     @classmethod
@@ -243,18 +243,37 @@ class Auto:
 
         # 1 剧情 2 搬砖
         auto_model = config().getint("自动配置", "自动模式")
+        first_upgrade = config().getint("自动配置", "优先升级")
+        map_select = config().getint("自动配置", "手动选择")
+        normal_map = list(map(int, config().get("自动配置", "普通地图").split(",")))
+        super_map = list(map(int, config().get("自动配置", "英豪地图").split(",")))
         if auto_model == 1 and cls.map_data.get_role_level() < 110:
             init.global_data.map_id = cls.task.handle_main()
             init.global_data.map_level = 0
-        if auto_model == 2 and cls.map_data.get_role_level() == 110:
-            if cls.map_data.get_fame() < 23330:
-                map_ids = list(map(int, config().get("自动配置", "普通地图").split(",")))
+        if auto_model == 2:
+            if cls.map_data.get_role_level() < 110:
+                if first_upgrade == 1:
+                    init.global_data.map_id = cls.task.handle_main()
+                    init.global_data.map_level = 0
             else:
-                map_ids = list(map(int, config().get("自动配置", "英豪地图").split(",")))
+                map_ids = []
+                if map_select == 0:
+                    # 自动模式
+                    if cls.map_data.get_fame() < 23330 and map_select == 0:
+                        map_ids = normal_map
+                    else:
+                        map_ids = super_map
+                elif map_select == 1:
+                    # 普通地图
+                    map_ids = normal_map
+                elif map_select == 2:
+                    # 英豪地图
+                    map_ids = normal_map
 
-            random_number = random.randint(0, len(map_ids) - 1)
-            init.global_data.map_id = map_ids[random_number]
-            init.global_data.map_level = config().getint("自动配置", "地图难度")
+                if map_ids.__len__() > 0:
+                    random_number = random.randint(0, len(map_ids) - 1)
+                    init.global_data.map_id = map_ids[random_number]
+                    init.global_data.map_level = config().getint("自动配置", "地图难度")
 
         if init.global_data.map_id == 0:
             logger.info("地图编号为空,无法切换区域", 2)
@@ -291,7 +310,7 @@ class Auto:
 
     @classmethod
     def enter_map(cls, map_id: int, map_level: int):
-        """进图  这个5 会自动适配是否进图的  从高到低 没开图 自动开图 我说是下面那个case 选其他难度 1-4的时候 会卡住"""
+        """进图  这个5 会自动适配是否进图的  从高到低 没开图 自动开图 """
         if map_level == 5:
             for i in range(4, -1, -1):
                 if cls.map_data.get_stat() == 3:
@@ -337,8 +356,39 @@ class Auto:
                         call.drift_over_map(direction)
                         time.sleep(0.5)
                     if cls.map_data.is_open_door() is True and cls.map_data.is_boss_room() is False:
+                        logger.info("被卡门 尝试进入裂缝", 1)
+                        # 尝试找门
+                        for i in range(over_map_size):
+                            cls.cross_fissure()
+
                         logger.info("被卡门 强制过图", 1)
                         # call.over_map_call(direction)
+
+    @classmethod
+    def cross_fissure(cls):
+        """跟随怪物"""
+        map_obj = init.map_data
+        if map_obj.get_stat() != 3:
+            return
+
+        rw_addr = call.person_ptr()
+        map_data = mem.read_long(mem.read_long(rw_addr + address.DtPyAddr) + 16)
+        start = mem.read_long(map_data + address.DtKs2)
+        end = mem.read_long(map_data + address.DtJs2)
+        obj_num = int((end - start) / 24)
+        for obj_tmp in range(obj_num):
+            obj_ptr = mem.read_long(start + obj_tmp * 24)
+            obj_ptr = mem.read_long(obj_ptr + 16) - 32
+            if obj_ptr > 0:
+                obj_type_a = mem.read_int(obj_ptr + address.LxPyAddr)
+                if obj_type_a == 529 or obj_type_a == 545 or obj_type_a == 273 or obj_type_a == 61440:
+                    obj_camp = mem.read_int(obj_ptr + address.ZyPyAddr)
+                    obj_code = mem.read_int(obj_ptr + address.DmPyAddr)
+                    obj_blood = mem.read_long(obj_ptr + address.GwXlAddr)
+                    if obj_camp > 0 and obj_ptr != rw_addr:
+                        monster = map_obj.read_coordinate(obj_ptr)
+                        if obj_blood > 0:
+                            call.drift_call(rw_addr, monster.x, monster.y, 0, 2)
 
     @classmethod
     def quit_map(cls):
