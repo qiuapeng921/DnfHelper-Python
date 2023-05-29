@@ -1,9 +1,55 @@
 import logging
 
 from common import helper, globle, logger
-from core.game import address as addr, skill
+from core.game import address as addr, skill, map_base
 from core.game import call, address
 import random
+
+
+def get_cross_map_coordinate(map_id):
+    """获取裂缝坐标"""
+    ret = globle.CoordinateType()
+    if map_id == 100002964 or map_id == 100002974:  # 判断开始 (map_id ＝ 100002964 或 map_id ＝ 100002974)  # //王之摇篮
+        ret.x = 2
+        ret.y = 5
+        return ret
+
+    if map_id == 100002965 or map_id == 100002969:  # 判断 (map_id ＝ 100002965 或 map_id ＝ 100002969)  # //海伯伦的预言所
+        ret.x = 5
+        ret.y = 2
+        return ret
+
+    if map_id == 100002950 or map_id == 100002951:  # 判断 (map_id ＝ 100002950 或 map_id ＝ 100002951)  # //白色大地
+        ret.x = 7
+        ret.y = 2
+        return ret
+
+    if map_id == 100002952 or map_id == 100002953:  # 判断 (map_id ＝ 100002952 或 map_id ＝ 100002953)  # //圣殿贝里科蒂斯
+        ret.x = 6
+        ret.y = 0
+        return ret
+
+    if map_id == 100002705 or map_id == 100002706:  # 判断 (map_id ＝ 100002705 或 map_id ＝ 100002706)  # //昆法特
+        ret.x = 6
+        ret.y = 0
+        return ret
+
+    if map_id == 100002962 or map_id == 100002963:  # 判断 (map_id ＝ 100002962 或 map_id ＝ 100002963)  # //柯涅恩山
+        ret.x = 6
+        ret.y = 2
+        return ret
+
+    if map_id == 100002676 or map_id == 400001567:  # 判断 (map_id ＝ 100002676 或 map_id ＝ 400001567)  # //纳瑟乌森林
+        ret.x = 5
+        ret.y = 0
+        return ret
+
+    if map_id == 400001565 or map_id == 400001566:  # 判断 (map_id ＝ 400001565 或 map_id ＝ 400001566)  # //永痕之光研究所
+        ret.x = 6
+        ret.y = 1
+        return ret
+    ret = None  # 默认情况
+    return ret
 
 
 class MapData:
@@ -50,8 +96,11 @@ class MapData:
         boss = self.get_boss_room()
         if cut.x == boss.x and cut.y == boss.y:
             return True
-
         return False
+
+    def is_run_person(self):
+        """是否跑动中"""
+        return self.mem.mem.read_int(call.person_ptr() + address.DzIDAddr) == 14
 
     def is_pass(self):
         """是否通关"""
@@ -71,6 +120,29 @@ class MapData:
         result.x = self.decode(room_data + addr.BOSSRoomXAddr)
         result.y = self.decode(room_data + addr.BOSSRoomYAddr)
         return result
+
+    def into_cross_rom(self):
+        """进入裂缝房间"""
+        cross_coord = self.cross_room()
+        if cross_coord is None:
+            return
+        call.drift_call(call.person_ptr(), cross_coord.x, cross_coord.y, 0, 50)
+
+    def cross_room(self) -> object:
+        """裂缝是否出现"""
+        mem = self.mem
+        start, end = map_base.get_map_start_and_end()
+        obj_num = int((end - start) / 24)
+        for obj_tmp in range(obj_num):
+            cross_addr = map_base.get_address(start, obj_tmp)
+            if cross_addr <= 0:
+                continue
+            cross_code = mem.read_int(cross_addr + address.DmPyAddr)
+            '''紧急任务裂缝'''
+            if cross_code == 490019076:
+                cross_coord = self.read_coordinate(cross_addr)
+                return cross_coord
+        return None
 
     def get_cut_room(self) -> globle.CoordinateType:
         """获取当前房间坐标"""
@@ -133,36 +205,9 @@ class MapData:
         result = float(cut_weigh) / float(max_weigh) * 100
         return int(result)
 
-    def back_pack_item(self) -> dict:
-        """取背包负重"""
-        rw_addr = call.person_ptr()
-        mem = self.mem
-        item_addr = mem.read_long(mem.read_long(address.BbJzAddr) + address.WplPyAddr) + 0x48  # 物品栏偏移
-        # 物品栏
-        item_map = {}
-        for i in range(56):
-            equip = mem.read_long(mem.read_long(item_addr + i * 8) - 72 + 16)
-            if equip > 0:
-                # 装备品级
-                equip_level = mem.read_int(equip + address.ZbPjAddr)
-                # 装备名称
-                name_addr = mem.read_long(equip + address.WpMcAddr)
-                name = helper.unicode_to_ascii(mem.read_bytes(name_addr, 100))
-                item_map[name] = equip_level
-
-        # 遍历所有物品
-        for key, value in item_map.items():
-            print(key, value)
-
-        return item_map
-
-    def get_fame(self) -> int:
-        """获取名望"""
-        rw_addr = call.person_ptr()
-        return self.mem.read_long(rw_addr + address.RwMwAddr)
-
-    def get_role_name(self) -> str:
-        """获取角色名字"""
-        name = self.mem.read_long(address.RwName)
-        str_name = helper.address_to_str(name)
-        return str_name
+    def map_jbl(self):
+        """是否加百利商店"""
+        pass_map_type = self.mem.read_int(address.JblAddr)
+        if pass_map_type == 1002 or pass_map_type == 1003:
+            return True
+        return False

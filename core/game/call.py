@@ -179,8 +179,8 @@ def drift_call(ptr, x, y, z, speed):
     """
     漂移call
     :param ptr: int
-    :param x: int
-    :param y: int
+    :param x: int 目标地址
+    :param y: int 目标地址
     :param z: int
     :param speed: int 速度
     :return:
@@ -295,16 +295,20 @@ def drift_over_map(fx):
     end_y = mem.read_int(coordinate_structure + 12)
     x, y = (int(0), int(0))
     if fx == 0:
+        # 左
         x = int(start_x + end_x + 20)
         y = int(start_y + end_y / 2)
 
     if fx == 1:
+        # 右
         x = int(start_x - 20)
         y = int(start_y + end_y / 2)
     if fx == 2:
+        # 上
         x = int(start_x + end_x / 2)
         y = int(start_y + end_y + 20)
     if fx == 3:
+        # 下
         x = int(start_x + end_x / 2)
         y = int(start_y - 20)
 

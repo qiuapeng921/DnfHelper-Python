@@ -91,6 +91,7 @@ class Screen:
         map_data = mem.read_long(mem.read_long(rw_addr + address.DtPyAddr) + 16)
         start = mem.read_long(map_data + address.DtKs2)
         end = mem.read_long(map_data + address.DtJs2)
+        # 目标数
         obj_num = int((end - start) / 24)
         for obj_tmp in range(obj_num):
             obj_ptr = mem.read_long(start + obj_tmp * 24)
@@ -136,7 +137,7 @@ class Screen:
         for obj_tmp in range(obj_num):
             obj_ptr = mem.read_long(start + obj_tmp * 24)
             obj_ptr = mem.read_long(obj_ptr + 16) - 32
-            if obj_ptr > 0:
+            if obj_ptr > 0:  # 33 4129 273 = 上 129
                 obj_type_a = mem.read_int(obj_ptr + address.LxPyAddr)
                 if obj_type_a == 529 or obj_type_a == 545 or obj_type_a == 273 or obj_type_a == 61440:
                     obj_camp = mem.read_int(obj_ptr + address.ZyPyAddr)

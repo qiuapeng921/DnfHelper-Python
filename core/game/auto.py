@@ -9,7 +9,7 @@ import traceback
 
 from common import config
 from common import helper, logger
-from core.game import mem, skill, run_time
+from core.game import mem, skill, run_time, person_base
 from core.game import call, init, address
 
 
@@ -53,8 +53,8 @@ class Auto:
 
     @classmethod
     def test_func(cls):
-        role_name = cls.traversal.cross_fissure2()
-        logger.info("技能名称 {}".format(role_name), 1)
+        result = person_base.get_real_fatigue()
+        logger.info("测试结果 {}".format(result), 1)
 
     @classmethod
     def hide_body(cls):
@@ -75,6 +75,8 @@ class Auto:
         # 跟随怪物
         if config().getint("自动配置", "跟随打怪") == 1:
             while True:
+                if init.map_data.is_open_door():
+                    return
                 cls.traversal.follow_monster()
 
     @classmethod
@@ -213,7 +215,7 @@ class Auto:
         time.sleep(0.2)
         cls.pack.select_role(init.global_data.completed_role)
 
-        role_name = cls.map_data.get_role_name()
+        role_name = person_base.get_role_name()
         logger.info("进入角色 {} ".format(role_name), 2)
         time.sleep(0.5)
         logger.info("进入角色 {} ".format(init.global_data.completed_role), 2)
@@ -259,7 +261,7 @@ class Auto:
                 map_ids = []
                 if map_select == 0:
                     # 自动模式
-                    if cls.map_data.get_fame() < 23330 and map_select == 0:
+                    if person_base.get_fame() < 23330 and map_select == 0:
                         map_ids = normal_map
                     else:
                         map_ids = super_map

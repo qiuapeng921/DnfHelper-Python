@@ -157,3 +157,24 @@ JnLqCs1 = 5547676784  # 技能冷却参数1
 JnLqCs2 = 5541861560  # 技能冷却参数2
 JnCs = 5539286832  # 技能冷却参数
 JnLqPd3 = 4  # 冷却判断3
+
+FzyAddr = 0x149D22E68  # 副职业基址
+FzyLevel1 = 0xA8  # 副职业一级
+FzyLevel2 = 0x10  # 副职业二级
+FzyOffset = 0x4AC  # 副职业偏移
+GetStructureCALL = 0x1441923D0  # 获取结构CALL
+LianJinExtractCALL = 0x143DEBAD0  # 炼金提取CALL
+FangQiFuZhiCALL = 0x1433F4460  # 放弃副职CALL
+# 人物信息
+PersonCoinAddr = 0x14A56EB9C  # 人物金币
+
+JblAddr = 0x149D00FC0  # 加百利 通关商店
+角色初始指针 = 0xF0
+角色总数偏移 = 0x4DC
+偏爱角色数量 = 0x288
+普通角色数量 = 0x2B8
+偏爱角色位置 = 0x1F0
+普通角色位置 = 0x1EC
+
+背包基址 = 0x149D22EF0
+物品栏偏移 = 0xA8
