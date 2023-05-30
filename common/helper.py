@@ -169,7 +169,7 @@ def key_press_release(key: str):
     keyboard.release(key)
 
 
-def key_press_release(key: str, delay: float):
+def key_press_release_delay(key: str, delay: float):
     keyboard.press(key)
     time.sleep(delay)
     keyboard.release(key)
@@ -178,6 +178,6 @@ def key_press_release(key: str, delay: float):
 def key_press(list_key: list, delay: float):
     for key in list_key:
         if delay > 0:
-            key_press_release(key, delay)
+            key_press_release_delay(key, delay)
             return
         keyboard.press(key)
