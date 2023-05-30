@@ -14,7 +14,7 @@ Python编写的dnf助手
 
 ### 交流群: star后带上github用户名加群
 
-<img src="https://ghproxy.com/https://raw.githubusercontent.com/qiuapeng921/DnfHelper-Python/master/static/qq.png" alt="alt text" width="500" height="600">
+<img src="https://ghproxy.com/https://raw.githubusercontent.com/qiuapeng921/DnfHelper-Python/master/static/qq.png" alt="alt text" width="500" height="700">
 
 ## Project supported by JetBrains
 
