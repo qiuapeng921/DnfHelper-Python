@@ -12,5 +12,16 @@ Python编写的dnf助手
 4. python main.py
 ```
 
-### 交流群:  star后带上github用户名加群,否则不加
+### 交流群: star后带上github用户名加群
+
 <img src="https://ghproxy.com/https://raw.githubusercontent.com/qiuapeng921/DnfHelper-Python/master/static/qq.png" alt="alt text" width="500" height="800">
+
+## Project supported by JetBrains
+
+Many thanks to Jetbrains for kindly providing a license for me to work on this and other open-source projects.
+
+[![](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)](https://www.jetbrains.com/?from=https://github.com/overtrue)
+
+## License
+
+MIT
