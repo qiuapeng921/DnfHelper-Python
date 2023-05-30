@@ -9,6 +9,7 @@ Python编写的dnf助手
    https://www.python.org/ftp/python/3.10.8/python-3.10.8-amd64.exe)
 2. git clone https://ghproxy.com/https://github.com/qiuapeng921/DnfHelper-Python.git
 3. pip install -i https://mirrors.cloud.tencent.com/pypi/simple -r requirements.txt
+4. 复制根目录static/sys目录下随便一个驱动到C盘根目录,改名为3swg 或者不改名字改 main.py init_driver("驱动名字")
 4. python main.py
 ```
 
