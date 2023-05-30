@@ -77,8 +77,7 @@ def map_has_item(code_type):
         # 地图信息.代码 ＝ 读整数型 (地图信息.怪指针 ＋ #代码偏移)
         obj_code = mem.read_int(target_addr + address_all.代码偏移)
 
-        success_code_a = [529, 545, 273, 61440]
-        success_code_b = [529, 545, 273, 61440]
+        success_code = [529, 545, 273, 61440]
 
         if obj_camp == 0 or target_addr == call.person_ptr():
             continue
@@ -87,7 +86,7 @@ def map_has_item(code_type):
             if fail_code.__contains__(obj_code) or obj_camp == 0:
                 continue
 
-            if success_code_a.__contains__(obj_type_a) or success_code_b.__contains__(obj_type_b) and obj_camp > 0:
+            if success_code.__contains__(obj_type_a) or success_code.__contains__(obj_type_b) and obj_camp > 0:
                 return target_coordinate, target_addr
         if code_type == 3:
             if obj_code == 490019076:
