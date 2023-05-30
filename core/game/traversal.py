@@ -1,9 +1,10 @@
 import _thread
 import time
 
-from common import config
+from common import config, helper
 from common import logger
 from core.game import call, init, address, map_base
+from core.game import call, init, address, skill
 
 
 class Screen:
@@ -84,9 +85,11 @@ class Screen:
         if obj_blood > 0:
             call.drift_call(rw_addr, monster.x, monster.y, 0, 2)
         if skill == 0:
+            '''特效'''
             time.sleep(0.2)
             call.skill_call(rw_addr, 70231, 99999, monster.x, monster.y, 0, 1.0)
         if skill == 1:
+            '''技能'''
             call.skill_call_power()
         return
 
