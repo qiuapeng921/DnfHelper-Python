@@ -1,8 +1,17 @@
 import time
 
 from common import helper
-from core.game import mem
-from core.game import init, address
+from core.game import init, address, skill
+from core.game import mem, fast_call as fc
+
+fast_call = fc.FastCall
+
+
+def init_call():
+    global fast_call
+    fast_call = fc.FastCall(mem)
+    fast_call.init_code()
+
 
 # 是否执行完成
 run_status = False
@@ -96,6 +105,15 @@ def get_per_ptr_call(addr: int):
 def person_ptr():
     """人物指针"""
     return get_per_ptr_call(address.RwKbAddr)
+
+
+def skill_call_power():
+    # 获取当前窗口的焦点
+    title = helper.get_process_name()
+    if title == "DNF.exe":
+        """技能call"""
+        keys = skill.pick_key()
+        helper.key_press(keys, 0.3)
 
 
 def skill_call(addr: int, code: int, harm: int, x: int, y: int, z: int, size: float):

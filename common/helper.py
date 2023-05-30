@@ -1,10 +1,21 @@
 import struct
+import time
 from datetime import datetime
 
 import keyboard
 import psutil
-import time
 import win32api
+import win32gui
+
+
+def get_process_name():
+    # 获取当前活动窗口句柄
+    hwnd = win32gui.GetForegroundWindow()
+
+    # 获取窗口标题
+    window_title = win32gui.GetWindowText(hwnd)
+
+    return window_title
 
 
 def get_process_id_by_name(name: str) -> int:
@@ -69,11 +80,11 @@ def int_to_bytes(int_val, int_type):
         :return: bytes
     """
     if int_type == 2:
-        return struct.pack('<h', int_val)
+        return struct.pack('<H', int_val)
     if int_type == 4:
-        return struct.pack('<i', int_val)
+        return struct.pack('<I', int_val)
     if int_type == 8:
-        return struct.pack('<q', int_val)
+        return struct.pack('<Q', int_val)
 
 
 def float_to_bytes(float_val, float_type):
@@ -156,3 +167,17 @@ def key_press_release(key: str):
     keyboard.press(key)
     time.sleep(0.01)
     keyboard.release(key)
+
+
+def key_press_release(key: str, delay: float):
+    keyboard.press(key)
+    time.sleep(delay)
+    keyboard.release(key)
+
+
+def key_press(list_key: list, delay: float):
+    for key in list_key:
+        if delay > 0:
+            key_press_release(key, delay)
+            return
+        keyboard.press(key)
