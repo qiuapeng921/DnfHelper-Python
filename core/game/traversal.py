@@ -98,11 +98,13 @@ class Screen:
                         if obj_blood > 0:
                             call.drift_call(rw_addr, monster.x, monster.y, 0, 2)
                             time.sleep(0.2)
-                            # call.skill_call(rw_addr, 70231, 99999, monster.x, monster.y, 0, 1.0)
-                            title = helper.get_process_name()
-                            if title == "地下城与勇士.创新世纪":
-                                keys = skill.pick_key()
-                                helper.key_press(keys, 0.3)
+                            if config().getint("自动配置", "跟随打怪") == 2:
+                                title = helper.get_process_name()
+                                if title == "地下城与勇士.创新世纪":
+                                    keys = skill.pick_key()
+                                    helper.key_press(keys, 0.3)
+                            if config().getint("自动配置", "跟随打怪") == 3:
+                                call.skill_call(rw_addr, 70231, 99999, monster.x, monster.y, 0, 1.0)
 
     def ignore_building(self, ok: bool):
         """无视建筑"""
