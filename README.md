@@ -14,7 +14,7 @@
 
 ### 交流群: star后带上github用户名加群
 
-#### qq群
+#### 企鹅群
 
 <img src="static/qq.png" alt="alt text" width="276" height="319"> 
 
