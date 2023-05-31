@@ -100,7 +100,7 @@ class Screen:
                             time.sleep(0.2)
                             if config().getint("自动配置", "跟随打怪") == 2:
                                 title = helper.get_process_name()
-                                if title == "地下城与勇士.创新世纪":
+                                if title == "地下城与勇士：创新世纪":
                                     keys = skill.pick_key()
                                     helper.key_press(keys, 0.3)
                             if config().getint("自动配置", "跟随打怪") == 3:
