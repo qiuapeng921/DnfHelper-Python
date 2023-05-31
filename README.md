@@ -13,8 +13,13 @@
 
 ### 交流群: star后带上github用户名加群
 
-<img src="https://ghproxy.com/https://raw.githubusercontent.com/qiuapeng921/DnfHelper-Python/master/static/qq.png" alt="alt text" width="400" height="500">
-<img src="static/weGroup.jpg" width="256px;" >
+#### qq群
+
+<img src="static/qq.png" alt="alt text" width="276" height="319"> 
+
+#### 微信群
+
+<img src="static/wechat.png" alt="alt text" width="308" height="318">
 
 ## 赞赏
 
@@ -24,7 +29,7 @@
 
 - 又或者:
 
- <img src="static/wePay.png" width="256px;" >
+ <img src="static/wePay.png" width="301"  alt="">
 
 ## Project supported by JetBrains
 
