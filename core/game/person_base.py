@@ -1,5 +1,6 @@
 from common import helper
-from core.game import address, mem, call, address_all
+from core.game import address, mem, call
+from core.game.addr import address_all
 
 
 # 背包金币

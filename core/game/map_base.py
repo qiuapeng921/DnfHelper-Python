@@ -1,5 +1,6 @@
 from common import globle
-from core.game import call, address, mem, address_all
+from core.game import call, address, mem
+from core.game.addr import address_all
 
 
 # 地图起始地址
@@ -62,6 +63,18 @@ def map_has_item(code_type):
         target_addr = get_address(start, obj_tmp)
         if target_addr < 0:
             continue
+        if start == target_addr:
+            continue
+        # 地图信息.阵营 ＝ 读整数型 (地图信息.怪指针 ＋ #阵营偏移)
+        obj_camp = mem.read_int(target_addr + address_all.阵营偏移)
+        if obj_camp <= 0:
+            continue
+        # 如果是地图固定坐标 则跳过
+        # 怪物代码 ＝ 读整数型 (地图信息.怪指针 ＋ #代码偏移)
+        obj_code = mem.read_int(target_addr + address_all.代码偏移)
+        if check_monster(obj_code):
+            continue
+        # 怪物位置
         target_coordinate = read_coordinate(target_addr)
 
         # 类型 ＝ 读整数型 (地图信息.怪指针 ＋ #类型偏移)
@@ -72,13 +85,8 @@ def map_has_item(code_type):
         if code_type == 1:
             if code_list.__contains__(obj_type_a) or code_list.__contains__(obj_type_b):
                 return target_coordinate, target_addr
-        # 地图信息.阵营 ＝ 读整数型 (地图信息.怪指针 ＋ #阵营偏移)
-        obj_camp = mem.read_int(target_addr + address_all.阵营偏移)
-        # 地图信息.代码 ＝ 读整数型 (地图信息.怪指针 ＋ #代码偏移)
-        obj_code = mem.read_int(target_addr + address_all.代码偏移)
 
-        success_code = [529, 545, 273, 61440]
-
+        monster_code = [529, 545, 273, 61440]
         if obj_camp == 0 or target_addr == call.person_ptr():
             continue
         if code_type == 2:
@@ -86,12 +94,70 @@ def map_has_item(code_type):
             if fail_code.__contains__(obj_code) or obj_camp == 0:
                 continue
 
-            if success_code.__contains__(obj_type_a) or success_code.__contains__(obj_type_b) and obj_camp > 0:
+            if monster_code.__contains__(obj_type_a) or monster_code.__contains__(obj_type_b):
                 return target_coordinate, target_addr
         if code_type == 3:
             if obj_code == 490019076:
                 return target_coordinate, target_addr
     return None, 0
+
+
+# 地图固定坐标
+def check_monster(monster):
+    if monster == 109013676:
+        return True
+    elif monster == 109051364:  # 风暴格兰迪柱子1
+        return True
+    elif monster == 109051365:  # 风暴格兰迪柱子2
+        return True
+    elif monster == 109051366:  # 风暴格兰迪柱子3
+        return True
+    elif monster == 109000441:  # 破坏通讯器 不幸之门 旋转木桩
+        return True
+    elif monster == 109010714:  # 无底坑道 谎言基尔施
+        return True
+    elif monster == 109010715:  # 无底坑道 锐利的卡沙萨
+        return True
+    elif monster == 10624:  # 破坏实验装置 发电机
+        return True
+    elif monster == 8104:  # 哥布林投石车
+        return True
+    elif monster == 109034881:  # 蕴含时空石的建筑
+        return True
+    elif monster == 69268:  # 剧情的建筑 暴君的祭坛地图
+        return True
+    elif monster == 85157:  # 克雷发电机控制开关
+        return True
+    elif monster == 85159:  # 克雷发电机
+        return True
+    elif monster == 10199:  # 破损的GT-9600
+        return True
+    elif monster == 8824:  # 解救冒险家被抓 根特外围关人笼子
+        return True
+    elif monster == 817:  # 冻结之月亮
+        return True
+    elif monster == 109022849:  # 大奴隶
+        return True
+    elif monster == 80416:  # '
+        return True
+    elif monster == 80417:  # 发电机 拯救皇女陛下领主房间
+        return True
+    elif monster == 80369:  # 青铜石巨人的子弹
+        return True
+    elif monster == 69037:  # 巨龙石像
+        return True
+    elif monster == 61320:  # 稻草人
+        return True
+    elif monster == 61321:  # 狂风稻草人
+        return True
+    elif monster == 13097:  # 狂风稻草人
+        return True
+    elif monster == 1087:  # 狂风稻草人
+        return True
+    elif monster == 109010180:  # 狂风稻草人
+        return True
+    else:
+        return False
 
 
 def read_coordinate(param: int) -> globle.CoordinateType:

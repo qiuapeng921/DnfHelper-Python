@@ -8,6 +8,7 @@ from core.game import skill, init, address
 from common import helper, logger
 import win32gui
 from core.game import mem, fast_call as fc
+from core.game.addr import address_all
 
 fast_call = fc.FastCall
 
@@ -364,3 +365,24 @@ def submit_task_call(task_id):
     helper.add_list(shell_code, call(address.TjCallAddr))
     helper.add_list(shell_code, add_rsp(48))
     compile_call(shell_code)
+
+
+# 冷却判断call
+def is_cooling_call(skill_addr):
+    fast_call.call(address_all.冷却判断CALL, skill_addr)
+
+
+def skill_down_call(skill_addr):
+    if skill_addr > 0:
+        mem.write_int(address.CoolDownKbAddr, 0)
+        shell_code = [72, 131, 236, 32]
+        helper.add_list(shell_code, [49, 210])
+        helper.add_list(shell_code, [72, 185], helper.int_to_bytes(mem.read_long(skill_addr), 8))
+        helper.add_list(shell_code, [255, 21, 2, 0, 0, 0, 235, 8])
+        helper.add_list(shell_code, helper.int_to_bytes(mem.read_long(address_all.冷却判断CALL), 8))
+        helper.add_list(shell_code, [72, 162], helper.int_to_bytes(mem.read_long(address.CoolDownKbAddr), 8))
+        helper.add_list(shell_code, [72, 131, 196, 32])
+        compile_call(shell_code)
+        return mem.read_int(address.CoolDownKbAddr)
+    else:
+        return 0

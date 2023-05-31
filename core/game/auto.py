@@ -53,7 +53,7 @@ class Auto:
 
     @classmethod
     def test_func(cls):
-        result = person_base.get_real_fatigue()
+        result = skill.check_skill_down_single('a')
         logger.info("测试结果 {}".format(result), 1)
 
     @classmethod
@@ -136,8 +136,10 @@ class Auto:
                         skill.buff_key(buff)
                         cls.addBuff = True
                     if cls.firstEnterMap is False and cls.map_data.is_town() is False:
-                        # 透明call
-                        call.hide_call(call.person_ptr())
+                        hide = config().getint("自动配置", "开启透明")
+                        if hide == 1:
+                            # 透明call
+                            call.hide_call(call.person_ptr())
                         # sss评分
                         sss_score = config().getint("自动配置", "评分")
                         mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, sss_score)

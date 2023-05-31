@@ -5,6 +5,7 @@ from enum import Enum
 from common import helper, logger
 from core.game import address, call, fast_call
 from core.game import mem, map_data
+from core.game.addr import address_all
 
 
 class Skill:
@@ -28,6 +29,8 @@ class KeyCode(Enum):
     VK_T = 't'
     VK_Y = 'y'
     VK_TAB = 'tab'
+    VK_ALT = 'alt'
+    VK_CTRL = 'ctrl'
 
 
 # 技能列表
@@ -67,17 +70,32 @@ def check_skill_down(skill_addr) -> str:
     return ret - jnl_address_1 if ret - jnl_address_1 > 0 else jnl_address_1 - ret
 
 
-def skill_name():
+def skill_name_map():
     skill_ptr = get_skill_base_addr()
     skill_map = {}
     for i in range(14):
-        skill_str = mem.read_long(mem.read_long(skill_ptr + i * 24) + 16) - 16
+        skill_str = mem.read_long(mem.read_long(skill_ptr + i * 24) + 16)
+        if skill_str is None:
+            continue
+        skill_str = skill_str - 16
         # 技能名称
         skill_item_name_ptr = mem.read_long(skill_str + address.JnMcAddr)
         name = helper.address_to_str(skill_item_name_ptr)
         # 技能等级
         skill_item_level_ptr = helper.address_to_int(skill_str + address.JnDjAddr)
         skill_map[skill_str] = name
+
+    return skill_map
+
+
+def skill_map():
+    skill_ptr = get_skill_base_addr()
+    skill_map = {}
+    for i in range(14):
+        skill_str = mem.read_long(skill_ptr + i * 8)
+        if skill_str is None:
+            continue
+        call.skill_down_call(skill_str)
 
     return skill_map
 
@@ -111,7 +129,7 @@ def skill_move(skill_index, skill_empty):
 
 # 移除掉不好用的技能
 def remove_skill():
-    skill_data = skill_name()
+    skill_data = skill_name_map()
     if len(skill_data) < 0:
         return
     for index, key in enumerate(skill_data.keys()):
@@ -124,13 +142,13 @@ def remove_skill():
 #  循环技能冷却
 def select_skill_cool_down() -> str:
     # 读取技能栏
-    skill_data = skill_name()
+    skill_data = skill_name_map()
     if len(skill_data) < 0:
         return KeyCode.VK_X.value
     for index, key in enumerate(skill_data.keys()):
         print(index, key, skill_data[key])
         code = KeyCode.VK_X
-        if key > 0 and check_skill_down(key):
+        if key > 0 and call.is_cooling_call(key):
             if index == 0:
                 code = KeyCode.VK_A
             elif index == 1:
@@ -159,7 +177,7 @@ def select_skill_cool_down() -> str:
                 code = KeyCode.VK_Y
             elif index == 13:
                 code = KeyCode.VK_TAB
-            return KeyCode.VK_X.value
+            return code.value
         return code.value
 
 
@@ -192,6 +210,61 @@ def pick_strings(keys, num_picks, weights_temp):
 
 def pick_key(num_picks: int = 5):
     return pick_strings(strings, num_picks, weights)
+
+
+'''以下是读取内存方法'''
+
+
+# 取剩余SP值
+def get_sp():
+    # mem.read_long (mem.read_long (mem.read_long (#技能SP值) ＋ #技能SP值一级) ＋ #技能SP值二级)
+    return mem.read_long(
+        mem.read_long(mem.read_long(address_all.技能SP值) + address_all.技能SP值一级) + address_all.技能SP值二级)
+
+
+# 技能冷却判断
+def check_skill_down_single(key):
+    skill_addr = get_skill_base_addr()
+
+    result = 0
+    if key == KeyCode.VK_A.value:
+        result = mem.read_long(skill_addr + address_all.技能A)
+    elif key == KeyCode.VK_S.value:
+        result = mem.read_long(skill_addr + address_all.技能S)
+    elif key == KeyCode.VK_D.value:
+        result = mem.read_long(skill_addr + address_all.技能D)
+    elif key == KeyCode.VK_F.value:
+        result = mem.read_long(skill_addr + address_all.技能F)
+    elif key == KeyCode.VK_G.value:
+        result = mem.read_long(skill_addr + address_all.技能G)
+    elif key == KeyCode.VK_H.value:
+        result = mem.read_long(skill_addr + address_all.技能H)
+    elif key == KeyCode.VK_ALT.value:
+        result = mem.read_long(skill_addr + address_all.技能Alt)
+    elif key == KeyCode.VK_Q.value:
+        result = mem.read_long(skill_addr + address_all.技能Q)
+    elif key == KeyCode.VK_W.value:
+        result = mem.read_long(skill_addr + address_all.技能W)
+    elif key == KeyCode.VK_E.value:
+        result = mem.read_long(skill_addr + address_all.技能E)
+    elif key == KeyCode.VK_R.value:
+        result = mem.read_long(skill_addr + address_all.技能R)
+    elif key == KeyCode.VK_T.value:
+        result = mem.read_long(skill_addr + address_all.技能T)
+    elif key == KeyCode.VK_Y.value:
+        result = mem.read_long(skill_addr + address_all.技能Y)
+    elif key == KeyCode.VK_CTRL.value:
+        result = mem.read_long(skill_addr + address_all.技能Ctrl)
+
+    result = mem.read_long(result + 16) - 16
+    skill_ptr = mem.read_long(result + address_all.技能名称)
+    if skill_ptr == 0 or skill_ptr is None:
+        return 1
+    skill_name = helper.address_to_str(skill_ptr)
+    if skill_name == "":
+        return 1
+
+    return call.skill_down_call(result)
 
 
 if __name__ == '__main__':
