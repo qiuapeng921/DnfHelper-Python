@@ -8,7 +8,8 @@
 2. git clone https://ghproxy.com/https://github.com/qiuapeng921/DnfHelper-Python.git
 3. pip install -i https://mirrors.cloud.tencent.com/pypi/simple -r requirements.txt
 4. 复制根目录static/sys目录下随便一个驱动到C盘根目录,改名为3swg 或者不改名字改 main.py init_driver("驱动名字")
-5. python main.py
+5. 复制根目录static下的helper.ini和main.py放同一级目录
+6. python main.py
 ```
 
 ### 交流群: star后带上github用户名加群
