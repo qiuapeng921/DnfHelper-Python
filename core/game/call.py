@@ -58,8 +58,13 @@ def compile_call(byte_arr: list):
     mem.write_bytes(hook_shell, bytes(hook_shell_value))
 
     mem.write_int(jump_address, 1)
+    check = 0
     while mem.read_int(jump_address) == 1:
-        time.sleep(0.01)
+        check += 1
+        time.sleep(0.1)
+        if check > 50:
+            logger.info("call执行超时", 1)
+            break
 
     mem.write_bytes(hook_shell, hook_old_data)
     mem.write_bytes(blank_address, helper.get_empty_bytes(len(byte_arr) + 16))
@@ -369,7 +374,7 @@ def submit_task_call(task_id):
 
 # 冷却判断call
 def is_cooling_call(skill_addr):
-    fast_call.call(address_all.冷却判断CALL, skill_addr)
+    return fast_call.call(address_all.冷却判断CALL, skill_addr)
 
 
 def skill_down_call(skill_addr):

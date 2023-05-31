@@ -5,7 +5,7 @@ from enum import Enum
 from common import helper, logger
 from core.game import address, call, fast_call
 from core.game import mem, map_data
-from core.game.addr import address_all
+from core.game.addr import address_all, xiaochen_address
 
 
 class Skill:
@@ -56,28 +56,39 @@ def super_skill(super_skill_list):
         helper.key_press_release(super_skill_list)
 
 
-def check_skill_down(skill_addr) -> str:
-    temp_addr = skill_addr
-    jnl_address_1 = mem.read_long(temp_addr + address.JnlQAddr1)
-    jnl_address_2 = mem.read_long(temp_addr + address.JnlQAddr2)
-    jnl_address_3 = mem.read_float(temp_addr + address.JnlQAddr3)
+'''解密1 ＝ 读整数型 (技能指针 ＋ #判断冷却1)
+解密2 ＝ 读整数型 (技能指针 ＋ #判断冷却2)
+解密3 ＝ _float (读整数型 (技能指针 ＋ #判断冷却3))
+ret ＝ 读整数型 (#冷却参数_1 ＋ 读整数型 (#冷却参数_2 ＋ 16) × #冷却判断偏移3) ＋ 读整数型 (#冷却参数_2 ＋ 24)
+ret ＝ 到整数 (到小数 (ret － 解密2) × 解密3 ＋ 到小数 (解密2))
+返回 (选择 (ret － 解密1 ＞ 0, 0, 解密1 － ret))'''
 
-    ret = mem.read_long(
-        address.JnLqCs1 + mem.read_long(address.JnLqCs2 + 16) * address.JnLqPd3) + mem.read_long(
-        address.JnLqCs2 + 24)
-    ret = int(ret - jnl_address_2 * jnl_address_3) + jnl_address_2
-    print(ret)
-    return ret - jnl_address_1 if ret - jnl_address_1 > 0 else jnl_address_1 - ret
+
+def check_skill_down(skill_addr) -> str:
+    # 解密1 ＝ 读整数型 (技能指针 ＋ #判断冷却1)
+    jnl_address_1 = mem.read_int(skill_addr + address_all.浮点冷却)
+    # 解密2 ＝ 读整数型 (技能指针 ＋ #判断冷却2)
+    jnl_address_2 = mem.read_int(skill_addr + xiaochen_address.判断冷却_2)
+    # 解密3 ＝ _float (读整数型 (技能指针 ＋ #判断冷却3))
+    jnl_address_3 = float(mem.read_int(skill_addr + xiaochen_address.判断冷却_3))
+
+    # ret ＝ 读整数型 (#冷却参数_1 ＋ 读整数型 (#冷却参数_2 ＋ 16) × #冷却判断偏移3) ＋ 读整数型 (#冷却参数_2 ＋ 24)
+    ret = mem.read_int(
+        xiaochen_address.冷却参数_1 + mem.read_int(xiaochen_address.冷却参数_2 + 16) * 4) + mem.read_int(
+        xiaochen_address.冷却参数_2 + 24)
+    # ret ＝ 到整数 (到小数 (ret － 解密2) × 解密3 ＋ 到小数 (解密2))
+    ret = int(float(ret - jnl_address_2) * jnl_address_3 + float(jnl_address_2))
+    # 返回 (选择 (ret － 解密1 ＞ 0, 0, 解密1 － ret))
+    return 0 if ret - jnl_address_1 > 0 else jnl_address_1 - ret
 
 
 def skill_name_map():
     skill_ptr = get_skill_base_addr()
     skill_map = {}
     for i in range(14):
-        skill_str = mem.read_long(mem.read_long(skill_ptr + i * 24) + 16)
-        if skill_str is None:
+        skill_str = mem.read_long(skill_ptr + i * 24 + 16) - 16
+        if skill_str is None or skill_str < 0:
             continue
-        skill_str = skill_str - 16
         # 技能名称
         skill_item_name_ptr = mem.read_long(skill_str + address.JnMcAddr)
         name = helper.address_to_str(skill_item_name_ptr)
@@ -92,10 +103,11 @@ def skill_map():
     skill_ptr = get_skill_base_addr()
     skill_map = {}
     for i in range(14):
-        skill_str = mem.read_long(skill_ptr + i * 8)
+        skill_str = mem.read_long(skill_ptr + i * 24 + 16) - 16
         if skill_str is None:
             continue
-        call.skill_down_call(skill_str)
+        check_skill_down(skill_str)
+        print(get_skill_name(skill_str))
 
     return skill_map
 
@@ -107,6 +119,14 @@ def get_skill_base_addr():
     # 技能栏偏移
     skill_ptr = mem.read_long(jnl_address + address.JnlPyAddr)
     return skill_ptr
+
+
+# 获取技能名称
+def get_skill_name(skill_addr):
+    skill_name_addr = mem.read_long(skill_addr + address.JnMcAddr)
+    if skill_name_addr is None:
+        return ""
+    return helper.address_to_str(skill_name_addr)
 
 
 # 技能空位
@@ -257,14 +277,13 @@ def check_skill_down_single(key):
         result = mem.read_long(skill_addr + address_all.技能Ctrl)
 
     result = mem.read_long(result + 16) - 16
-    skill_ptr = mem.read_long(result + address_all.技能名称)
-    if skill_ptr == 0 or skill_ptr is None:
+    if result == 0 or result is None:
         return 1
-    skill_name = helper.address_to_str(skill_ptr)
+    skill_name = get_skill_name(result)
     if skill_name == "":
         return 1
 
-    return call.skill_down_call(result)
+    return call.is_cooling_call(result)
 
 
 if __name__ == '__main__':

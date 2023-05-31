@@ -53,7 +53,7 @@ class Auto:
 
     @classmethod
     def test_func(cls):
-        result = skill.check_skill_down_single('a')
+        result = skill.skill_map()
         logger.info("测试结果 {}".format(result), 1)
 
     @classmethod
@@ -141,8 +141,8 @@ class Auto:
                             # 透明call
                             call.hide_call(call.person_ptr())
                         # sss评分
-                        sss_score = random.randint(5201314, 9999999)
-                        mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, sss_score)
+                        score = config().get("自动配置", "评分")
+                        mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, int(score))
                         # 无视建筑
                         # cls.traversal.ignore_building(True)
                         # 进图开启功能
@@ -349,7 +349,7 @@ class Auto:
             time.sleep(random.uniform(0, random_wait))
 
         if over_map > 0:
-            # 寻路过图
+            # 寻路过图 获取地图数据
             map_data = cls.game_map.map_data()
             if len(map_data.map_route) >= 2:
                 direction = cls.game_map.get_direction(map_data.map_route[0], map_data.map_route[1])

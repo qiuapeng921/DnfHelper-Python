@@ -148,8 +148,11 @@ class MapData:
         """获取当前房间坐标"""
         result = globle.CoordinateType()
         rw = self.mem
+        # 房间数据 ＝ 读长整数 (读长整数 (读长整数 (#房间编号) ＋ #时间基址) ＋ #门型偏移)
         room_data = rw.read_long(rw.read_long(rw.read_long(addr.FJBHAddr) + addr.SJAddr) + addr.MxPyAddr)
+        # 返回数据.x ＝ 读长整数 (房间数据 ＋ #当前房间X)
         result.x = self.mem.read_int(room_data + addr.CutRoomXAddr)
+        # 返回数据.y ＝ 读长整数 (房间数据 ＋ #当前房间Y)
         result.y = self.mem.read_int(room_data + addr.CutRoomYAddr)
         return result
 
