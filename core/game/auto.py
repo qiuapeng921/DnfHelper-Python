@@ -141,7 +141,7 @@ class Auto:
                             # 透明call
                             call.hide_call(call.person_ptr())
                         # sss评分
-                        sss_score = config().getint("自动配置", "评分")
+                        sss_score = random.randint(5201314, 9999999)
                         mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, sss_score)
                         # 无视建筑
                         # cls.traversal.ignore_building(True)
@@ -150,7 +150,7 @@ class Auto:
                         cls.firstEnterMap = True
 
                     # 跟随怪物
-                    if config().getint("自动配置", "跟随打怪") == 1:
+                    if config().getint("自动配置", "跟随打怪") > 0:
                         cls.traversal.follow_monster()
 
                     # boss房间 使用觉醒
