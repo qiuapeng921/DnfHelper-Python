@@ -1,8 +1,6 @@
 ### 此代码库仅自己学习! 禁止商用和用于非法操作; 如果违反产生的任何纠纷与本人无任何关系!
 
-Python编写的dnf助手
-
-###### 如何启动
+## 如何启动
 
 ```markdown
 1. 下载并安装python3.10.8
@@ -16,6 +14,17 @@ Python编写的dnf助手
 ### 交流群: star后带上github用户名加群
 
 <img src="https://ghproxy.com/https://raw.githubusercontent.com/qiuapeng921/DnfHelper-Python/master/static/qq.png" alt="alt text" width="400" height="500">
+<img src="static/weGroup.jpg" width="256px;" >
+
+## 赞赏
+
+如果我的项目对你有帮助, 可以通过以下方式支持我:
+
+- 点个star。
+
+- 又或者:
+
+ <img src="static/wePay.png" width="256px;" >
 
 ## Project supported by JetBrains
 
