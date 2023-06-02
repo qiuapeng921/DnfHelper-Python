@@ -1,4 +1,6 @@
+import math
 import struct
+import threading
 import time
 from datetime import datetime
 
@@ -7,8 +9,6 @@ import psutil
 import win32api
 import win32gui
 import random
-
-from core.game import mem
 
 
 def is_dnf_win():
@@ -54,13 +54,13 @@ def get_module_handle(pid: int, name: str) -> int:
             return module.rss
 
 
-start_time = datetime.now()  # 记录程序启动时间
+sys_start_time = datetime.now()  # 记录程序启动时间
 
 
 def get_app_run_time():
     """返回程序运行时间的格式化字符串"""
     current_time = datetime.now()  # 获取当前时间
-    duration = current_time - start_time  # 计算时间差
+    duration = current_time - sys_start_time  # 计算时间差
 
     hours, remainder = divmod(duration.total_seconds(), 3600)
     minutes, seconds = divmod(remainder, 60)
@@ -156,15 +156,6 @@ def ascii_to_unicode(string: str) -> list:
     return list(bytes_arr)
 
 
-def address_to_str(address) -> str:
-    name_bytes = mem.read_bytes(address, 200)
-    return unicode_to_ascii(name_bytes)
-
-
-def address_to_int(address) -> str:
-    return mem.read_int(address)
-
-
 def unicode_to_ascii(ls: list) -> str:
     if isinstance(ls, bytes):
         ls = list(ls)
@@ -180,7 +171,13 @@ def unicode_to_ascii(ls: list) -> str:
     return text
 
 
-def key_press_always(key: str):
+# 计算距离
+def distance(x1, y1, x2, y2) -> float:
+    # 距离 ＝ 求平方根 (求次方 (x1 － x2, 2) ＋ 求次方 (y1 － y2, 2))
+    return abs(math.sqrt(math.pow(x1 - x2, 2) + math.pow(y1 - y2, 2)))
+
+
+def key_press(key: str):
     keyboard.press(key)
 
 
@@ -196,22 +193,89 @@ def key_press_release_with_delay(key: str, delay: float):
 
 def key_press_release(key: str):
     keyboard.press(key)
-    # 随机睡眠0.1-0.4
-    time.sleep(random.uniform(0.1, 0.4))
+    time.sleep(random.uniform(0.01, 0.1))
     keyboard.release(key)
 
 
-def press_and_release(key: str):
-    keyboard.press_and_release(str)
+def key_press_release_no_delay(key: str):
+    keyboard.press(key)
+    keyboard.release(key)
 
 
-def key_press(list_key: list, delay: float):
-    for key in list_key:
-        if delay > 0:
-            key_press_release_with_delay(key, delay)
-            return
-        key_press_release(key)
+上 = '8'
+下 = '9'
+左 = '7'
+右 = '0'
 
 
-if __name__ == '__main__':
-    buff = "right,right,space"
+def key_press_release_top():
+    key_press_release(上)
+
+
+def key_press_release_down():
+    key_press_release(下)
+
+
+def key_press_release_left():
+    key_press_release(左)
+
+
+def key_press_release_right():
+    key_press_release(右)
+
+
+def run_key(key, delay):
+    key_press_release_with_delay(key, 0.1)
+    key_press_release_no_delay(key)
+    key_press(key)
+    time.sleep(delay)
+    key_release(key)
+
+
+def stop_run():
+    key_release(上)
+    key_release(下)
+    key_release(左)
+    key_release(右)
+
+
+def run_left(delay):
+    run_key(左, delay)
+
+
+def run_top(delay):
+    key_press_release_with_delay(左, 0.1)
+    key_press_release_no_delay(左)
+    key_press(左)
+    key_press(上)
+    key_press(左)
+    key_press(上)
+    time.sleep(delay)
+    key_release(上)
+    key_release(左)
+
+
+def run_down(delay):
+    run_key(下, delay)
+
+
+def run_right(delay):
+    run_key(右, delay)
+
+
+def calculate_current_time_difference(start_time):
+    return calculate_time_difference(start_time, datetime.now(), "seconds")
+
+
+# 计算时间差
+def calculate_time_difference(start_time, end_time, output_type):
+    time_difference = end_time - start_time
+
+    if output_type == "seconds":
+        return time_difference.total_seconds()
+    elif output_type == "minutes":
+        return time_difference.total_seconds() / 60
+    elif output_type == "hours":
+        return time_difference.total_seconds() / 3600
+    else:
+        return None

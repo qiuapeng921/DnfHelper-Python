@@ -132,7 +132,7 @@ def skill_call_power():
     title = helper.get_process_name()
     if title == "地下城与勇士：创新世纪":
         """技能call"""
-        helper.key_press_always("x")
+        helper.key_press("x")
         key = skill.pick_key()
         helper.key_press_release(key)
         helper.key_release("x")
@@ -391,3 +391,19 @@ def skill_down_call(skill_addr):
         return mem.read_int(address.CoolDownKbAddr)
     else:
         return 0
+
+
+def cool_down_call(skill_addr):
+    if skill_addr < 0:
+        return False
+    empty_addr = address.CoolDownKbAddr
+    mem.write_int(empty_addr, 0)
+    shell_code = [72, 131, 236, 32]
+    helper.add_list(shell_code, [49, 210])
+    helper.add_list(shell_code, [72, 185], helper.int_to_bytes(skill_addr, 8))
+    helper.add_list(shell_code, [255, 21, 2, 0, 0, 0, 235, 8])
+    helper.add_list(shell_code, helper.int_to_bytes(address.LqCallJudgeAddr, 8))
+    helper.add_list(shell_code, [72, 162], helper.int_to_bytes(empty_addr, 8))
+    helper.add_list(shell_code, [72, 131, 196, 32])
+    compile_call(shell_code)
+    return mem.read_int(empty_addr) < 1

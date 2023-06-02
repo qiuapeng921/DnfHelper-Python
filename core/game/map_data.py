@@ -171,6 +171,10 @@ class MapData:
         map_byte = self.mem.read_bytes(self.mem.read_long(room_data + address.DtMcAddr), 52)
         return helper.unicode_to_ascii(map_byte)
 
+    # 角色位置
+    def get_role_coordinate(self) -> globle.CoordinateType:
+        return self.read_coordinate(call.person_ptr())
+
     def read_coordinate(self, param: int) -> globle.CoordinateType:
         """读取坐标"""
         coordinate = globle.CoordinateType()

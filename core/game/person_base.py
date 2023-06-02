@@ -1,3 +1,5 @@
+import math
+
 from common import helper
 from core.game import address, mem, call
 from core.game.addr import address_all
@@ -30,9 +32,9 @@ def get_coin_str(coin):
 
 def get_role_name(self) -> str:
     """获取角色名字"""
-    name = self.mem.read_long(address.RwName)
-    str_name = helper.address_to_str(name)
-    return str_name
+    name_address = self.mem.read_long(address.RwName)
+    name_bytes = mem.read_bytes(name_address, 200)
+    return helper.unicode_to_ascii(name_bytes)
 
 
 # 获取名望
@@ -104,6 +106,12 @@ def search_item(item_name, item_type) -> int:
 def get_role_pos() -> tuple:
     # 返回 (读整数型 (读长整数 (读长整数 (#角色基址) ＋ #角色初始指针) ＋ #普通角色位置))
     return mem.read_int(mem.read_long(address_all.角色基址) + address_all.角色初始指针 + address_all.普通角色位置),
+
+
+# 取动作ID
+def get_action_id() -> int:
+    # 返回 (读长整数 (取人物指针 () ＋ #动作ID))
+    return mem.read_long(call.person_ptr() + address_all.动作ID)
 
 
 # 是否黑钻

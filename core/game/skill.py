@@ -90,10 +90,9 @@ def skill_name_map():
         if skill_str is None or skill_str < 0:
             continue
         # 技能名称
-        skill_item_name_ptr = mem.read_long(skill_str + address.JnMcAddr)
-        name = helper.address_to_str(skill_item_name_ptr)
+        name = get_skill_name(skill_str)
         # 技能等级
-        skill_item_level_ptr = helper.address_to_int(skill_str + address.JnDjAddr)
+        skill_item_level_ptr = mem.read_int(skill_str + address.JnDjAddr)
         skill_map[skill_str] = name
 
     return skill_map
@@ -126,7 +125,8 @@ def get_skill_name(skill_addr):
     skill_name_addr = mem.read_long(skill_addr + address.JnMcAddr)
     if skill_name_addr is None:
         return ""
-    return helper.address_to_str(skill_name_addr)
+    name_bytes = mem.read_bytes(skill_name_addr, 200)
+    return helper.unicode_to_ascii(name_bytes)
 
 
 # 技能空位

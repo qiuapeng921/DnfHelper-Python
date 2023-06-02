@@ -366,11 +366,10 @@ class Auto:
                             cls.cross_fissure()
 
                         logger.info("被卡门 强制过图", 1)
-                        # call.over_map_call(direction)
+                        call.over_map_call(direction)
 
     @classmethod
     def cross_fissure(cls):
-        """跟随怪物"""
         map_obj = init.map_data
         if map_obj.get_stat() != 3:
             return

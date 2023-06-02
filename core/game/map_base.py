@@ -159,7 +159,7 @@ def check_monster(monster):
     else:
         return False
 
-
+# 获取坐标位置
 def read_coordinate(param: int) -> globle.CoordinateType:
     """读取坐标"""
     coordinate = globle.CoordinateType()
@@ -174,4 +174,17 @@ def read_coordinate(param: int) -> globle.CoordinateType:
         coordinate.y = int(mem.read_float(ptr + 36))
         coordinate.z = int(mem.read_float(ptr + 40))
 
+    return coordinate
+
+
+# 取当前房间
+def get_current_room():
+    coordinate = globle.CoordinateType()
+    # 房间数据 ＝ 读长整数 (读长整数 (读长整数 (#房间编号) ＋ #时间基址) ＋ #门型偏移)
+    room_data = mem.read_long(
+        mem.read_long(mem.read_long(address_all.房间编号) + address_all.时间基址) + address_all.门型偏移)
+    # 返回数据.x ＝ 读长整数 (房间数据 ＋ #当前房间X)
+    coordinate.x = mem.read_long(room_data + address_all.当前房间X)
+    # 返回数据.y ＝ 读长整数 (房间数据 ＋ #当前房间Y)
+    coordinate.y = mem.read_long(room_data + address_all.当前房间Y)
     return coordinate
