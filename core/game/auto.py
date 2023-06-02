@@ -367,7 +367,6 @@ class Auto:
                         # 尝试找门
                         for i in range(over_map_size):
                             cls.cross_fissure()
-
                         logger.info("被卡门 强制过图", 1)
                         call.over_map_call(direction)
 

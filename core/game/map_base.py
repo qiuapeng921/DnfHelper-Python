@@ -7,7 +7,10 @@ from core.game.addr import address_all
 def get_map_start_and_end():
     rw_addr = call.person_ptr()
     # 地图信息.地指针 ＝ 读长整数 (读长整数 (人物指针 ＋ #地图偏移) ＋ 16)
-    map_addr = mem.read_long(mem.read_long(call.person_ptr() + address_all.地图偏移) + 16)
+    temp_addr = mem.read_long(call.person_ptr() + address_all.地图偏移)
+    if temp_addr is None or temp_addr == 0 or temp_addr == rw_addr:
+        return 0, 0
+    map_addr = mem.read_long(temp_addr + 16)
     # 地图信息.首地址 ＝ 读长整数 (地图信息.地指针 ＋ #地图开始2)
     start = mem.read_long(map_addr + address_all.地图开始2)
     # 地图信息.尾地址 ＝ 读长整数 (地图信息.地指针 ＋ #地图结束2)

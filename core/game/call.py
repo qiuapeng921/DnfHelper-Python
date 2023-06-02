@@ -61,9 +61,9 @@ def compile_call(byte_arr: list):
     while mem.read_int(jump_address) == 1:
         check += 1
         time.sleep(0.1)
-        if check > 3:
+        if check >= 3:
             logger.info("call执行超时", 1)
-            break
+            return
 
     mem.write_bytes(hook_shell, hook_old_data)
     mem.write_bytes(blank_address, helper.get_empty_bytes(len(byte_arr) + 16))
@@ -114,7 +114,10 @@ def get_per_ptr_call(addr: int):
 
 def person_ptr():
     """人物指针"""
-    return get_per_ptr_call(address.RwKbAddr)
+    person_addr = get_per_ptr_call(address.RwKbAddr)
+    if person_addr == 0:
+        logger.info("人物指针获取失败, 直接退出程序", 1)
+        exit(0)
 
 
 def skill_call_power_random():

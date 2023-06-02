@@ -1,5 +1,6 @@
 import _thread
 import datetime
+import random
 import time
 
 from common import config, helper
@@ -96,6 +97,7 @@ class Screen:
             supper_skill_str = config().get("自动配置", "觉醒技能")
             supper_skill_list = supper_skill_str.split(",")
             call.skill_call_power(supper_skill_list)
+            time.sleep(random.uniform(1, 4))
         return
 
     def ignore_building(self, ok: bool):

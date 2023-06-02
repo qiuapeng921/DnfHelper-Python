@@ -26,7 +26,7 @@ def info(msg: str, t: int):
             globle.win_app.add_edit_content(msg)
 
 
-count = 10  # 全局变量
+count = 5  # 全局变量
 
 
 def file(msg: str):
