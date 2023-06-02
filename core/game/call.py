@@ -12,7 +12,6 @@ from core.game.addr import address_all
 
 fast_call = fc.FastCall
 
-
 def init_call():
     global fast_call
     fast_call = fc.FastCall(mem)

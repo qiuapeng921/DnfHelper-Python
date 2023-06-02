@@ -1,6 +1,6 @@
 import logging
 
-from common import helper, globle
+from common import helper, globle, config
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -26,5 +26,12 @@ def info(msg: str, t: int):
             globle.win_app.add_edit_content(msg)
 
 
+count = 10  # 全局变量
+
+
 def file(msg: str):
+    global count  # 声明count为全局变量
+    count -= 1  # 每次减一
+    if count <= 0:
+        exit()  # 退出程序
     fileLog.debug("{} {}".format(helper.get_now_date(), msg))
