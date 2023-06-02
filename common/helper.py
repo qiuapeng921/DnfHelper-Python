@@ -10,6 +10,11 @@ import win32api
 import win32gui
 import random
 
+上 = '8'
+下 = '9'
+左 = '7'
+右 = '0'
+
 
 def is_dnf_win():
     title = get_process_name()
@@ -185,6 +190,11 @@ def key_release(key: str):
     keyboard.release(key)
 
 
+def key_press_release_list(key_list: list):
+    for key in key_list:
+        key_press_release(key)
+
+
 def key_press_release_with_delay(key: str, delay: float):
     keyboard.press(key)
     time.sleep(delay)
@@ -200,12 +210,6 @@ def key_press_release(key: str):
 def key_press_release_no_delay(key: str):
     keyboard.press(key)
     keyboard.release(key)
-
-
-上 = '8'
-下 = '9'
-左 = '7'
-右 = '0'
 
 
 def key_press_release_top():

@@ -53,8 +53,11 @@ class Auto:
 
     @classmethod
     def test_func(cls):
-        result = skill.skill_map()
-        logger.info("测试结果 {}".format(result), 1)
+        for i in range(5):
+            code = skill.skill_map_cool_down_all()
+            helper.key_press_release(code)
+            logger.info("测试结果 {}".format(code), 1)
+            time.sleep(3)
 
     @classmethod
     def hide_body(cls):

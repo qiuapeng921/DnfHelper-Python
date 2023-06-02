@@ -70,7 +70,7 @@ class Screen:
                 for i in range(num):
                     call.skill_call(rw_addr, code, harm, monster.x, monster.y, 0, size)
             elif skill_type == 1:
-                call.skill_call_power()
+                call.skill_call_power([])
 
     def follow_monster(self):
         """跟随怪物"""
@@ -93,7 +93,9 @@ class Screen:
             call.skill_call(rw_addr, 70231, 99999, monster.x, monster.y, 0, 1.0)
         if skill_type == 1:
             '''技能'''
-            call.skill_call_power()
+            supper_skill_str = config().get("自动配置", "觉醒技能")
+            supper_skill_list = supper_skill_str.split(",")
+            call.skill_call_power(supper_skill_list)
         return
 
     def ignore_building(self, ok: bool):

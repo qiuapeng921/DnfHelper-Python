@@ -21,18 +21,30 @@ class KeyCode(Enum):
     VK_F = 'f'
     VK_G = 'g'
     VK_H = 'h'
-    VK_X = 'x'
     VK_Q = 'q'
+    VK_V = 'v'
     VK_W = 'w'
     VK_E = 'e'
     VK_R = 'r'
     VK_T = 't'
     VK_Y = 'y'
     VK_TAB = 'tab'
-    VK_ALT = 'alt'
-    VK_CTRL = 'ctrl'
 
 
+mapping = {0: KeyCode.VK_A,
+           1: KeyCode.VK_S,
+           2: KeyCode.VK_D,
+           3: KeyCode.VK_F,
+           4: KeyCode.VK_G,
+           5: KeyCode.VK_H,
+           6: KeyCode.VK_Q,
+           7: KeyCode.VK_V,
+           8: KeyCode.VK_W,
+           9: KeyCode.VK_E,
+           10: KeyCode.VK_R,
+           11: KeyCode.VK_T,
+           12: KeyCode.VK_Y,
+           13: KeyCode.VK_TAB}
 # 技能列表
 strings = ['z', 'c', 'v', 'a', 's', 'd', 'f', 'g', 'h', 'w', 'e', 'r', 't', 'y']
 # 权重
@@ -54,14 +66,6 @@ def super_skill(super_skill_list):
 
     if helper.is_dnf_win():
         helper.key_press_release(super_skill_list)
-
-
-'''解密1 ＝ 读整数型 (技能指针 ＋ #判断冷却1)
-解密2 ＝ 读整数型 (技能指针 ＋ #判断冷却2)
-解密3 ＝ _float (读整数型 (技能指针 ＋ #判断冷却3))
-ret ＝ 读整数型 (#冷却参数_1 ＋ 读整数型 (#冷却参数_2 ＋ 16) × #冷却判断偏移3) ＋ 读整数型 (#冷却参数_2 ＋ 24)
-ret ＝ 到整数 (到小数 (ret － 解密2) × 解密3 ＋ 到小数 (解密2))
-返回 (选择 (ret － 解密1 ＞ 0, 0, 解密1 － ret))'''
 
 
 def check_skill_down(skill_addr) -> str:
@@ -92,25 +96,47 @@ def skill_name_map():
         # 技能名称
         name = get_skill_name(skill_str)
         # 技能等级
-        skill_item_level_ptr = mem.read_int(skill_str + address.JnDjAddr)
+        mem.read_int(skill_str + address.JnDjAddr)
         skill_map[skill_str] = name
 
     return skill_map
 
 
-def skill_map():
+def get_skill_map() -> dict:
+    skill_map_data = {}
     skill_ptr = get_skill_base_addr()
-    skill_map = {}
-    for i in range(14):
-        skill_str = mem.read_long(skill_ptr + i * 24 + 16) - 16
-        if skill_str is None:
+    for key, value in mapping.items():
+        skill_str = mem.read_long(skill_ptr + key * 24 + 16) - 16
+        if skill_str <= 0 or skill_str is None:
             continue
-        check_skill_down(skill_str)
-        print(get_skill_name(skill_str))
-
-    return skill_map
+        skill_map_data[mapping.get(key).value] = skill_str
+    return skill_map_data
 
 
+def skill_map_cool_down_all():
+    code = skill_map_cool_down([])
+    if code is None:
+        return 'x'
+    return code
+
+
+def skill_map_cool_down(un_select):
+    skill_map = get_skill_map()
+    keys = list(skill_map.keys())
+    random.shuffle(keys)
+    visited = []
+    for key_code in keys:
+        if un_select.__contains__(key_code):
+            continue
+        value = skill_map[key_code]
+        visited.append(value)
+        cool_down = call.cool_down_call(value)
+        if cool_down:
+            return key_code
+    return 'x'
+
+
+# 技能初始基址
 def get_skill_base_addr():
     rw_addr = call.person_ptr()
     # 技能栏
@@ -139,14 +165,6 @@ def empty_skill() -> int:
                 return a
 
 
-# 移动技能
-def skill_move(skill_index, skill_empty):
-    try:
-        call.fast_call.call(address.JnYdCallAddr, address.JnlAddr(), call.person_ptr(), skill_index, skill_empty)
-    except Exception as e:
-        logger.file("read_longlong 技能位置:{},移动位置:{},错误:{}".format(skill_index, skill_index, e.args))
-
-
 # 移除掉不好用的技能
 def remove_skill():
     skill_data = skill_name_map()
@@ -156,49 +174,7 @@ def remove_skill():
         print(index, key, skill_data[key])
         if un_use.__contains__(skill_data[key]):
             # 存在不好用的技能
-            skill_move(index - 1, empty_skill())
-
-
-#  循环技能冷却
-def select_skill_cool_down() -> str:
-    # 读取技能栏
-    skill_data = skill_name_map()
-    if len(skill_data) < 0:
-        return KeyCode.VK_X.value
-    for index, key in enumerate(skill_data.keys()):
-        print(index, key, skill_data[key])
-        code = KeyCode.VK_X
-        if key > 0 and call.is_cooling_call(key):
-            if index == 0:
-                code = KeyCode.VK_A
-            elif index == 1:
-                code = KeyCode.VK_S
-            elif index == 2:
-                code = KeyCode.VK_D
-            elif index == 3:
-                code = KeyCode.VK_F
-            elif index == 4:
-                code = KeyCode.VK_G
-            elif index == 5:
-                code = KeyCode.VK_H
-            elif index == 6:
-                code = KeyCode.VK_X
-            elif index == 7:
-                code = KeyCode.VK_Q
-            elif index == 8:
-                code = KeyCode.VK_W
-            elif index == 9:
-                code = KeyCode.VK_E
-            elif index == 10:
-                code = KeyCode.VK_R
-            elif index == 11:
-                code = KeyCode.VK_T
-            elif index == 12:
-                code = KeyCode.VK_Y
-            elif index == 13:
-                code = KeyCode.VK_TAB
-            return code.value
-        return code.value
+            call.skill_move(index - 1, empty_skill())
 
 
 def pick_strings(keys, num_picks, weights_temp):
@@ -276,14 +252,16 @@ def check_skill_down_single(key):
     elif key == KeyCode.VK_CTRL.value:
         result = mem.read_long(skill_addr + address_all.技能Ctrl)
 
+    if result is None or result <= 0:
+        return False
     result = mem.read_long(result + 16) - 16
     if result == 0 or result is None:
-        return 1
+        return False
     skill_name = get_skill_name(result)
     if skill_name == "":
-        return 1
+        return False
 
-    return call.is_cooling_call(result)
+    return call.cool_down_call(result)
 
 
 if __name__ == '__main__':

@@ -62,7 +62,7 @@ def compile_call(byte_arr: list):
     while mem.read_int(jump_address) == 1:
         check += 1
         time.sleep(0.1)
-        if check > 50:
+        if check > 3:
             logger.info("call执行超时", 1)
             break
 
@@ -123,17 +123,17 @@ def skill_call_power_random():
     title = helper.get_process_name()
     if title == "地下城与勇士：创新世纪":
         """技能call"""
-        key = skill.select_skill_cool_down()
-        helper.key_release(key)
+        key = skill.pick_key()
+        helper.key_press_release_list(key)
 
 
-def skill_call_power():
+def skill_call_power(un_used):
     # 获取当前窗口的焦点
     title = helper.get_process_name()
     if title == "地下城与勇士：创新世纪":
         """技能call"""
         helper.key_press("x")
-        key = skill.pick_key()
+        key = skill.skill_map_cool_down(un_used)
         helper.key_press_release(key)
         helper.key_release("x")
 
@@ -372,25 +372,21 @@ def submit_task_call(task_id):
     compile_call(shell_code)
 
 
-# 冷却判断call
-def is_cooling_call(skill_addr):
-    return fast_call.call(address_all.冷却判断CALL, skill_addr)
-
-
 def skill_down_call(skill_addr):
     if skill_addr > 0:
-        mem.write_int(address.CoolDownKbAddr, 0)
+        empty_addr = address.CoolDownKbAddr
+        mem.write_int(empty_addr, 0)
         shell_code = [72, 131, 236, 32]
         helper.add_list(shell_code, [49, 210])
-        helper.add_list(shell_code, [72, 185], helper.int_to_bytes(mem.read_long(skill_addr), 8))
+        helper.add_list(shell_code, [72, 185], helper.int_to_bytes(skill_addr, 8))
         helper.add_list(shell_code, [255, 21, 2, 0, 0, 0, 235, 8])
-        helper.add_list(shell_code, helper.int_to_bytes(mem.read_long(address_all.冷却判断CALL), 8))
-        helper.add_list(shell_code, [72, 162], helper.int_to_bytes(mem.read_long(address.CoolDownKbAddr), 8))
+        helper.add_list(shell_code, helper.int_to_bytes(address_all.冷却判断CALL, 8))
+        helper.add_list(shell_code, [72, 162], helper.int_to_bytes(address.CoolDownKbAddr, 8))
         helper.add_list(shell_code, [72, 131, 196, 32])
         compile_call(shell_code)
-        return mem.read_int(address.CoolDownKbAddr)
+        return mem.read_int(empty_addr) < 0
     else:
-        return 0
+        return False
 
 
 def cool_down_call(skill_addr):
@@ -407,3 +403,11 @@ def cool_down_call(skill_addr):
     helper.add_list(shell_code, [72, 131, 196, 32])
     compile_call(shell_code)
     return mem.read_int(empty_addr) < 1
+
+
+# 移动技能
+def skill_move(skill_index, skill_empty):
+    try:
+        call.fast_call.call(address.JnYdCallAddr, address.JnlAddr(), call.person_ptr(), skill_index, skill_empty)
+    except Exception as e:
+        logger.file("read_longlong 技能位置:{},移动位置:{},错误:{}".format(skill_index, skill_index, e.args))
