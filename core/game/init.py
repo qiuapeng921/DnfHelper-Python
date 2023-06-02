@@ -5,9 +5,10 @@ import keyboard
 
 from common import globle
 from core.game import auto as a
-from core.game import call, other as o, map_traversal as mt, game_map as gm, pack as p, task as t, address
-from core.game import map_data as md, fast_call as fc
+from core.game import call, other as o, traversal as mt, game_map as gm, pack as p, task as t, address
+from core.game import map_data as md
 from core.game import mem
+from core.game import skill as sk
 
 map_data = md.MapData(mem)
 game_map = gm.GameMap()
@@ -16,9 +17,9 @@ pack = p.Pack()
 task = t.Task(mem, pack, map_data, )
 pick = o.Pickup(mem, pack, map_data)
 equip = o.Equip(mem, pack, map_data)
+skill = sk.Skill()
 traversal = mt.Screen(mem)
-fast_call = fc.FastCall(mem)
-auto = a.Auto(task, traversal, map_data, pack, pick, equip, game_map)
+auto = a.Auto(task, traversal, map_data, pack, pick, equip, game_map, skill)
 
 
 def init_empty_addr():
@@ -31,12 +32,18 @@ def init_empty_addr():
     address.PtGgKbAddr = mem.allocate(2048)
     address.JnKbAddr = mem.allocate(2048)
     address.GtKbAddr = mem.allocate(2048)
+    address.CoolDownKbAddr = mem.allocate(2048)
 
 
 def hotkey2():
-    keyboard.add_hotkey('f1', traversal.screen_switch)
-    keyboard.add_hotkey('`', traversal.screen_kill)
+    keyboard.add_hotkey('f1', auto.test_func)
+    # 透明
+    keyboard.add_hotkey('f2', auto.hide_body)
+    # 跟随打怪
+    keyboard.add_hotkey('f3', auto.follow_monster_switch)
+    keyboard.add_hotkey('f4', auto.pick_item)
     keyboard.add_hotkey('end', auto.switch)
+    keyboard.add_hotkey('home', auto.switch)
     keyboard.add_hotkey('ctrl+up', call.over_map_call, args=(2,))
     keyboard.add_hotkey('ctrl+down', call.over_map_call, args=(3,))
     keyboard.add_hotkey('ctrl+left', call.over_map_call, args=(0,))
@@ -72,7 +79,9 @@ def hotkey():
     while user32.GetMessageA(ctypes.byref(msg), None, 0, 0) > 0:
         if msg.message == win32con.WM_HOTKEY:
             if win32api.HIWORD(msg.lParam) == win32con.VK_F1:
-                traversal.screen_switch()
+                auto.test_func()
+            if win32api.HIWORD(msg.lParam) == win32con.VK_F2:
+                auto.hide_body()
             if win32api.HIWORD(msg.lParam) == win32con.VK_END:
                 auto.switch()
             if win32api.HIWORD(msg.lParam) == 192:

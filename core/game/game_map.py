@@ -17,21 +17,27 @@ class GameMap:
         :param cut_room
         :param next_room
         :return: int
+        0左 1右 2上 3下
         """
         direction = 0
         x = cut_room.x - next_room.x
         y = cut_room.y - next_room.y
         if x == 0 and y == 0:
+            # 无
             return 4
         if x == 0:
             if y == 1:
+                # 上
                 direction = 2
             else:
+                # 下
                 direction = 3
         elif y == 0:
             if x == 1:
+                # 左
                 direction = 0
             else:
+                # 右
                 direction = 1
         return direction
 
@@ -130,28 +136,41 @@ class GameMap:
     @classmethod
     def map_data(cls) -> globle.MapDataType:
         """地图数据"""
-        map_obj = MapData(mem)
-        data = globle.MapDataType()
+        map_obj = MapData(mem)  # 创建对象
+        data = globle.MapDataType()  # 初始化一个地图数据对象
 
+        # 房间数据 ＝ 读长整数 (读长整数 (读长整数 (#房间编号) ＋ #时间基址) ＋ #门型偏移)
         room_data = mem.read_long(mem.read_long(mem.read_long(address.FJBHAddr) + address.SJAddr) + address.MxPyAddr)
+        # 房间索引 ＝ 读整数型 (房间数据 ＋ #索引偏移)
         room_index = map_obj.decode(room_data + address.SyPyAddr)
-
+        # 地图数据.地图宽度 ＝ 读长整数 (读长整数 (房间数据 ＋ #宽高偏移) ＋ 房间索引 × 8 ＋ 0)
         data.width = mem.read_int(mem.read_long(room_data + address.KgPyAddr) + room_index * 8 + 0)
+        # 地图数据.地图高度 ＝ 读长整数 (读长整数 (房间数据 ＋ #宽高偏移) ＋ 房间索引 × 8 ＋ 4)
         data.height = mem.read_int(mem.read_long(room_data + address.KgPyAddr) + room_index * 8 + 4)
-        data.tmp = mem.read_long(mem.read_long(room_data + address.SzPyAddr) + 32 * room_index + 8)
+        # 地图数据.临时变量 ＝ 读长整数 (读长整数 (房间数据 ＋ #数组偏移) ＋ (#数组偏移 － #宽高偏移) × 房间索引 ＋ 8)
+        data.tmp = mem.read_long(
+            mem.read_long(room_data + address.SzPyAddr) + (address.SzPyAddr - address.KgPyAddr) * room_index + 8)
+        # 地图数据.通道数量 ＝ 地图数据.地图宽度 × 地图数据.地图高度
         data.channel_num = data.width * data.height
-
+        if data.channel_num >= 200:
+            return data
         for i in range(data.channel_num):
+            # 地图数据.地图通道 [局部计次] ＝ 读整数型 (地图数据.临时变量 ＋ 局部计次 × 4 － 4)
             data.map_channel.insert(0 + i, mem.read_int(data.tmp + i * 4))
 
+        # 地图数据.起始坐标.x ＝ 取当前房间 ().x ＋ 1
         data.start_zb.x = map_obj.get_cut_room().x + 1
+        # 地图数据.起始坐标.y ＝ 取当前房间 ().y ＋ 1
         data.start_zb.y = map_obj.get_cut_room().y + 1
+        # 地图数据.终点坐标.x ＝ 取BOSS房间 ().x ＋ 1
         data.end_zb.x = map_obj.get_boss_room().x + 1
+        # 地图数据.终点坐标.y ＝ 取BOSS房间 ().y ＋ 1
         data.end_zb.y = map_obj.get_boss_room().y + 1
 
         if data.start_zb.x == data.end_zb.x and data.start_zb.y == data.end_zb.y:
             return data
 
+        # 地图数据.消耗疲劳 ＝ 获取走法 (地图数据.地图通道, 地图数据.地图宽度, 地图数据.地图高度, 地图数据.起始坐标, 地图数据.终点坐标, 地图数据.地图走法)
         data.consume_fatigue = cls.get_route(data.map_channel, data.width, data.height, data.start_zb, data.end_zb,
                                              data.map_route)
         return data
@@ -171,10 +190,13 @@ class GameMap:
         start_coordinate = globle.CoordinateType()
         end_coordinate = globle.CoordinateType()
 
+        # 地图起点.x ＝ 地图终点.x 且 地图起点.y ＝ 地图终点.y 走到末尾了
         if map_start.x == map_end.x and map_start.y == map_end.y:
             return 0, None
 
+        # 生成地图 (地图宽度, 地图高度, 地图通道, 地图数组)
         map_array = cls.gen_map(width, height, map_channel)
+        # 显示地图 (地图数组, 地图宽度, 地图高度, 地图标签)
         map_flag = cls.display_map(map_array, width, height)
         start_coordinate.x = map_start.x * 3 - 2
         start_coordinate.y = map_start.y * 3 - 2

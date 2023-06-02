@@ -1,8 +1,22 @@
 import time
 
+import keyword
 from common import helper
-from core.game import mem
+from core.game import mem, map_data
 from core.game import init, address
+from core.game import skill, init, address
+from common import helper, logger
+import win32gui
+from core.game import mem, fast_call as fc
+from core.game.addr import address_all
+
+fast_call = fc.FastCall
+
+def init_call():
+    global fast_call
+    fast_call = fc.FastCall(mem)
+    fast_call.init_code()
+
 
 # 是否执行完成
 run_status = False
@@ -43,8 +57,13 @@ def compile_call(byte_arr: list):
     mem.write_bytes(hook_shell, bytes(hook_shell_value))
 
     mem.write_int(jump_address, 1)
+    check = 0
     while mem.read_int(jump_address) == 1:
-        time.sleep(0.01)
+        check += 1
+        time.sleep(0.1)
+        if check >= 3:
+            logger.info("call执行超时", 1)
+            return
 
     mem.write_bytes(hook_shell, hook_old_data)
     mem.write_bytes(blank_address, helper.get_empty_bytes(len(byte_arr) + 16))
@@ -95,7 +114,30 @@ def get_per_ptr_call(addr: int):
 
 def person_ptr():
     """人物指针"""
-    return get_per_ptr_call(address.RwKbAddr)
+    person_addr = get_per_ptr_call(address.RwKbAddr)
+    if person_addr == 0 or person_addr is None:
+        logger.info("人物指针获取失败, 直接退出程序", 1)
+    return person_addr
+
+
+def skill_call_power_random():
+    # 获取当前窗口的焦点
+    title = helper.get_process_name()
+    if title == "地下城与勇士：创新世纪":
+        """技能call"""
+        key = skill.pick_key()
+        helper.key_press_release_list(key)
+
+
+def skill_call_power(un_used):
+    # 获取当前窗口的焦点
+    title = helper.get_process_name()
+    if title == "地下城与勇士：创新世纪":
+        """技能call"""
+        helper.key_press("x")
+        key = skill.skill_map_cool_down(un_used)
+        helper.key_press_release(key)
+        helper.key_release("x")
 
 
 def skill_call(addr: int, code: int, harm: int, x: int, y: int, z: int, size: float):
@@ -145,8 +187,8 @@ def drift_call(ptr, x, y, z, speed):
     """
     漂移call
     :param ptr: int
-    :param x: int
-    :param y: int
+    :param x: int 目标地址
+    :param y: int 目标地址
     :param z: int
     :param speed: int 速度
     :return:
@@ -261,16 +303,20 @@ def drift_over_map(fx):
     end_y = mem.read_int(coordinate_structure + 12)
     x, y = (int(0), int(0))
     if fx == 0:
+        # 左
         x = int(start_x + end_x + 20)
         y = int(start_y + end_y / 2)
 
     if fx == 1:
+        # 右
         x = int(start_x - 20)
         y = int(start_y + end_y / 2)
     if fx == 2:
+        # 上
         x = int(start_x + end_x / 2)
         y = int(start_y + end_y + 20)
     if fx == 3:
+        # 下
         x = int(start_x + end_x / 2)
         y = int(start_y - 20)
 
@@ -326,3 +372,44 @@ def submit_task_call(task_id):
     helper.add_list(shell_code, call(address.TjCallAddr))
     helper.add_list(shell_code, add_rsp(48))
     compile_call(shell_code)
+
+
+def skill_down_call(skill_addr):
+    if skill_addr > 0:
+        empty_addr = address.CoolDownKbAddr
+        mem.write_int(empty_addr, 0)
+        shell_code = [72, 131, 236, 32]
+        helper.add_list(shell_code, [49, 210])
+        helper.add_list(shell_code, [72, 185], helper.int_to_bytes(skill_addr, 8))
+        helper.add_list(shell_code, [255, 21, 2, 0, 0, 0, 235, 8])
+        helper.add_list(shell_code, helper.int_to_bytes(address_all.冷却判断CALL, 8))
+        helper.add_list(shell_code, [72, 162], helper.int_to_bytes(address.CoolDownKbAddr, 8))
+        helper.add_list(shell_code, [72, 131, 196, 32])
+        compile_call(shell_code)
+        return mem.read_int(empty_addr) < 0
+    else:
+        return False
+
+
+def cool_down_call(skill_addr):
+    if skill_addr < 0:
+        return False
+    empty_addr = address.CoolDownKbAddr
+    mem.write_int(empty_addr, 0)
+    shell_code = [72, 131, 236, 32]
+    helper.add_list(shell_code, [49, 210])
+    helper.add_list(shell_code, [72, 185], helper.int_to_bytes(skill_addr, 8))
+    helper.add_list(shell_code, [255, 21, 2, 0, 0, 0, 235, 8])
+    helper.add_list(shell_code, helper.int_to_bytes(address.LqCallJudgeAddr, 8))
+    helper.add_list(shell_code, [72, 162], helper.int_to_bytes(empty_addr, 8))
+    helper.add_list(shell_code, [72, 131, 196, 32])
+    compile_call(shell_code)
+    return mem.read_int(empty_addr) < 1
+
+
+# 移动技能
+def skill_move(skill_index, skill_empty):
+    try:
+        call.fast_call.call(address.JnYdCallAddr, address.JnlAddr(), call.person_ptr(), skill_index, skill_empty)
+    except Exception as e:
+        logger.file("read_longlong 技能位置:{},移动位置:{},错误:{}".format(skill_index, skill_index, e.args))

@@ -1,7 +1,10 @@
+import sys
+import traceback
+
 from common import helper, logger, globle
-from plugins.driver import init_driver
-from core.game import mem
 from core.game import init
+from core.game import mem
+from plugins.driver import init_driver
 
 if __name__ == '__main__':
     try:
@@ -14,21 +17,20 @@ if __name__ == '__main__':
             exit()
 
         mem.set_process_id(process_id)
+
         init.init_empty_addr()
+        # 初始化fastcall
+        init.call.init_call()
+
         logger.info("加载成功-欢迎使用", 1)
         logger.info("当前时间：{}".format(helper.get_now_date()), 1)
         init.hotkey2()
     except KeyboardInterrupt as e:
-        pass
+        logger.file("信道推出")
     except Exception as err:
-        import sys
-        import traceback
-
         except_type, _, except_traceback = sys.exc_info()
-        errArgs = ''.join(err.args)
-        logger.file(errArgs)
+        err_str = ','.join(str(i) for i in err.args)
         logger.file(except_type)
+        logger.file(err_str)
         for i in traceback.extract_tb(except_traceback):
-            logger.file(i.name)
-            logger.file(i.filename)
-            logger.file(str(i.lineno))
+            logger.file("函数{},文件:{},行:{}".format(i.name, i.filename, i.lineno))

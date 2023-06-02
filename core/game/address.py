@@ -4,12 +4,14 @@ NcBhKbAddr = 0  # 内存汇编
 PtGgKbAddr = 0  # 普通公告
 JnKbAddr = 0  # 技能Call
 GtKbAddr = 0  # 过图Call
+CoolDownKbAddr = 0  # 冷却Call
 
 RwAddr = 0x14A51F8E8  # 新人物基址
 RwAddr1 = 0x14A51F8D8  # 人物基址
 RwAddr2 = 0x149C9C558  # 人物基址B
 RWCallAddr = 0x144180270  # 人物CALL
 JSDjAddr = 0x149D09190  # 角色等级
+RwName = 0x149D09160  # 人物名称
 PFAddr = 0x149D21D40  # 评分基址
 GGCsAddr = 0x14A5205F0  # 公告参数
 GGCallAddr = 0x14423EE50  # 公告CALL
@@ -53,6 +55,7 @@ CzSyCallAddr = 0x144FF5920  # 城镇瞬移CALL
 XzJsCallAddr = 0x14133EFF0  # 选择角色CALL
 FhJsCallAddr = 0x143A397A0  # 返回角色CALL
 LqCallJudgeAddr = 0x14416D8C0  # 冷却判断CALL
+JnYdCallAddr = 0x14417D450  # 技能移动CALL
 CdResetCallAddr = 0x143FEB9C0  # CD重置CALL
 FjCallAddr = 0x143DFAF50  # 分解CALL
 ZlCallAddr = 0x143DF1820  # 整理CALL
@@ -128,3 +131,50 @@ JnDjAddr = 0x19BC  # 技能等级
 JnSxDj1Addr = 0x2AC  # 技能上限等级1
 TranslateMessage = 0x1467A6D00
 GameTimeGetTime = 0x1467A70B0
+
+JnlAAddr = 0x0  # 技能A
+JnlSAddr = 0x18  # 技能S
+JnlDAddr = 0x30  # 技能D
+JnlFAddr = 0x48  # 技能F
+JnlGAddr = 0x60  # 技能G
+JnlHAddr = 0x78  # 技能H
+JnlAltAddr = 0x90  # 技能Alt
+JnlQAddr = 0xA8  # 技能Q
+JnlWAddr = 0xC0  # 技能W
+JnlEAddr = 0xD8  # 技能E
+JnlRAddr = 0xF0  # 技能R
+JnlTAddr = 0x108  # 技能T
+JnlYAddr = 0x120  # 技能Y
+JnlCtrlAddr = 0x138  # 技能Ctrl
+
+JnlQAddr1 = 0x19E8  # 冷却判断233
+JnlQAddr2 = 0x19EC  # 冷却判断234
+JnlQAddr3 = 0x1B54  # 冷却判断235
+JnlQAddr4 = 0x1B58  # 冷却判断236
+JnlQAddr5 = 0x1B5C  # 冷却判断237
+
+JnLqCs1 = 5547676784  # 技能冷却参数1
+JnLqCs2 = 5541861560  # 技能冷却参数2
+JnCs = 5539286832  # 技能冷却参数
+JnLqPd3 = 4  # 冷却判断3
+
+FzyAddr = 0x149D22E68  # 副职业基址
+FzyLevel1 = 0xA8  # 副职业一级
+FzyLevel2 = 0x10  # 副职业二级
+FzyOffset = 0x4AC  # 副职业偏移
+GetStructureCALL = 0x1441923D0  # 获取结构CALL
+LianJinExtractCALL = 0x143DEBAD0  # 炼金提取CALL
+FangQiFuZhiCALL = 0x1433F4460  # 放弃副职CALL
+# 人物信息
+PersonCoinAddr = 0x14A56EB9C  # 人物金币
+
+JblAddr = 0x149D00FC0  # 加百利 通关商店
+角色初始指针 = 0xF0
+角色总数偏移 = 0x4DC
+偏爱角色数量 = 0x288
+普通角色数量 = 0x2B8
+偏爱角色位置 = 0x1F0
+普通角色位置 = 0x1EC
+
+背包基址 = 0x149D22EF0
+物品栏偏移 = 0xA8

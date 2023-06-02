@@ -1,15 +1,17 @@
-import ctypes
-
 import _thread
+import ctypes
+import sys
 import time
+import traceback
+
 import xcgui._xcgui as gui
 from xcgui import XApp
 from xcgui import XWindow, XButton, XEdit, XShapeText
 
-from plugins.driver import init_driver
 from common import helper, logger, globle
-from core.game import mem
 from core.game import init
+from core.game import mem
+from plugins.driver import init_driver
 
 svgIcon = '<svg t="1674984352573" class="icon" viewBox="0 0 1024 1024" version="1.1" ' \
           'xmlns="http://www.w3.org/2000/svg" p-id="10315" width="16" height="16"><path d="M901.957085 ' \
@@ -102,6 +104,9 @@ class AppWindow(XWindow):
         self.add_edit_content("当前时间：{}".format(helper.get_now_date()))
 
         self.activation_but.enable(False)
+        # 初始化fastcall
+        # init.call.init_call()
+
         init.hotkey()
         return True
 
@@ -141,15 +146,11 @@ if __name__ == '__main__':
         app.run()
         app.exit()
     except KeyboardInterrupt as e:
-        pass
+        logger.file("信道推出")
     except Exception as err:
-        import sys
-        import traceback
-
         except_type, _, except_traceback = sys.exc_info()
-        errArgs = ''.join(err.args)
-        logger.file(errArgs)
+        err_str = ','.join(str(i) for i in err.args)
+        logger.file(except_type)
+        logger.file(err_str)
         for i in traceback.extract_tb(except_traceback):
-            logger.file(i.name)
-            logger.file(i.filename)
-            logger.file(str(i.lineno))
+            logger.file("函数{},文件:{},行:{}".format(i.name, i.filename, i.lineno))

@@ -44,17 +44,17 @@ class MapDataType:
     tmp = 0  # 临时变量
 
     def __init__(self):
-        self.map_name = ""
-        self.map_um = 0
-        self.map_channel = []
-        self.start_zb = CoordinateType()
-        self.end_zb = CoordinateType()
-        self.width = 0
-        self.height = 0
-        self.map_route = []
-        self.consume_fatigue = 0
-        self.channel_num = 0
-        self.tmp = 0
+        self.map_name = ""  # 地图名称
+        self.map_um = 0  # 地图编号
+        self.map_channel = []  # 地图通道
+        self.start_zb = CoordinateType()  # 起始坐标
+        self.end_zb = CoordinateType()  # 终点坐标
+        self.width = 0  # 宽
+        self.height = 0  # 高
+        self.map_route = []  # 地图走法
+        self.consume_fatigue = 0  # 消耗疲劳
+        self.channel_num = 0  # 通道数量
+        self.tmp = 0  # 临时变量
 
 
 # 游戏地图
