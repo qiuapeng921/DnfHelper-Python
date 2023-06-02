@@ -115,9 +115,9 @@ def get_per_ptr_call(addr: int):
 def person_ptr():
     """人物指针"""
     person_addr = get_per_ptr_call(address.RwKbAddr)
-    if person_addr == 0:
+    if person_addr == 0 or person_addr is None:
         logger.info("人物指针获取失败, 直接退出程序", 1)
-        exit(0)
+    return person_addr
 
 
 def skill_call_power_random():
