@@ -73,6 +73,41 @@ class Screen:
             elif skill_type == 1:
                 call.skill_call_power([])
 
+    def follow_monster2(self):
+        """跟随怪物"""
+        mem = self.mem
+        map_obj = init.map_data
+        if map_obj.get_stat() != 3:
+            return
+
+        rw_addr = call.person_ptr()
+        map_data = mem.read_long(mem.read_long(rw_addr + address.DtPyAddr) + 16)
+        start = mem.read_long(map_data + address.DtKs2)
+        end = mem.read_long(map_data + address.DtJs2)
+        obj_num = int((end - start) / 24)
+        skill_type = config().getint("自动配置", "使用技能")
+        for obj_tmp in range(obj_num):
+            obj_ptr = mem.read_long(start + obj_tmp * 24)
+            obj_ptr = mem.read_long(obj_ptr + 16) - 32
+            if obj_ptr > 0:
+                obj_type_a = mem.read_int(obj_ptr + address.LxPyAddr)
+                if obj_type_a == 529 or obj_type_a == 545 or obj_type_a == 273 or obj_type_a == 61440:
+                    obj_camp = mem.read_int(obj_ptr + address.ZyPyAddr)
+                    obj_code = mem.read_int(obj_ptr + address.DmPyAddr)
+                    obj_blood = mem.read_long(obj_ptr + address.GwXlAddr)
+                    if obj_camp > 0 and obj_ptr != rw_addr:
+                        monster = map_obj.read_coordinate(obj_ptr)
+                        if obj_blood > 0:
+                            call.drift_call(rw_addr, monster.x, monster.y, 0, 2)
+                            time.sleep(0.2)
+                            if skill_type == 1:
+                                title = helper.get_process_name()
+                                if title == "地下城与勇士：创新世纪":
+                                    keys = skill.pick_key()
+                                    helper.key_press_release_list(keys)
+                            if skill_type == 0:
+                                call.skill_call(rw_addr, 70231, 99999, monster.x, monster.y, 0, 1.0)
+
     def follow_monster(self):
         """跟随怪物"""
         mem = self.mem
@@ -88,7 +123,7 @@ class Screen:
         if target_addr == 0 or monster is None:
             return
         obj_blood = mem.read_long(target_addr + address.GwXlAddr)
-        if obj_blood > 0:
+        while obj_blood > 0:
             call.drift_call(rw_addr, monster.x, monster.y, 0, 2)
             if skill_type == 0:
                 '''特效'''
@@ -96,8 +131,10 @@ class Screen:
                 call.skill_call(rw_addr, 70231, 99999, monster.x, monster.y, 0, 1.0)
             if skill_type == 1:
                 '''技能'''
-                call.skill_call_power_random(supper_skill_list)
-            return
+                call.skill_call_power(supper_skill_list)
+            time.sleep(0.3)
+            obj_blood = mem.read_long(target_addr + address.GwXlAddr)
+            monster, target_addr = map_base.map_has_monster()
 
     def ignore_building(self, ok: bool):
         """无视建筑"""

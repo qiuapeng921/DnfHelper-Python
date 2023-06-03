@@ -42,9 +42,9 @@ mapping = {0: KeyCode.VK_A,
            12: KeyCode.VK_Y,
            13: KeyCode.VK_TAB}
 # 技能列表
-strings = ['z', 'c', 'v', 'a', 's', 'd', 'f', 'g', 'h', 'w', 'e', 'r', 't', 'y']
+strings = ['a', 's', 'd', 'f', 'g', 'h', 'w', 'e', 'r', 't']
 # 权重
-weights = [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+weights = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
 # 不好用的技能
 un_use = ['流心', '后跳', '属性变换', '受身蹲伏', '刀魂', '三段刃', '流心', '格林机枪', '锁魂刺']
@@ -118,7 +118,7 @@ def skill_map_cool_down_all():
 
 def skill_map_cool_down(un_select):
     global skil_data
-    if skil_data is None:
+    if skil_data is None or skil_data.__len__() == 0:
         skil_data = get_skill_map()
     keys = list(skil_data.keys())
     random.shuffle(keys)
