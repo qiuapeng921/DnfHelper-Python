@@ -62,18 +62,23 @@ class Screen:
         num = int(code_config[2])
 
         rw_addr = call.person_ptr()
-        monster, target_addr = map_base.map_has_monster()
-        if target_addr == 0 or monster is None:
-            return
-        obj_blood = mem.read_long(target_addr + address.GwXlAddr)
-        if obj_blood > 0:
-            if skill_type == 0:
-                for i in range(num):
-                    call.skill_call(rw_addr, code, harm, monster.x, monster.y, 0, size)
-            elif skill_type == 1:
-                call.skill_call_power([])
+        monster_map = map_base.map_has_monster()
+        for key, value in monster_map.items():
+            # 地址
+            target_addr = key
+            # 位置
+            monster = value
+            if target_addr == 0 or monster is None:
+                return
+            obj_blood = mem.read_long(target_addr + address.GwXlAddr)
+            if obj_blood > 0:
+                if skill_type == 0:
+                    for i in range(num):
+                        call.skill_call(rw_addr, code, harm, monster.x, monster.y, 0, size)
+                elif skill_type == 1:
+                    call.skill_call_power([])
 
-    def follow_monster2(self):
+    def follow_monster_base(self):
         """跟随怪物"""
         mem = self.mem
         map_obj = init.map_data
@@ -119,22 +124,34 @@ class Screen:
         supper_skill_str = config().get("自动配置", "觉醒技能")
         supper_skill_list = supper_skill_str.split(",")
         rw_addr = call.person_ptr()
-        monster, target_addr = map_base.map_has_monster()
-        if target_addr == 0 or monster is None:
+        # 地图怪物信息
+        monster_map = map_base.map_has_monster()
+        if len(monster_map) == 0:
             return
-        obj_blood = mem.read_long(target_addr + address.GwXlAddr)
-        while obj_blood > 0:
-            call.drift_call(rw_addr, monster.x, monster.y, 0, 2)
-            if skill_type == 0:
-                '''特效'''
-                time.sleep(0.2)
-                call.skill_call(rw_addr, 70231, 99999, monster.x, monster.y, 0, 1.0)
-            if skill_type == 1:
-                '''技能'''
-                call.skill_call_power(supper_skill_list)
-            time.sleep(0.3)
+        cross_map = map_obj.cross_room()
+        if len(cross_map) > 0:
+            return
+        for key, value in monster_map.items():
+            # 地址
+            target_addr = key
+            # 位置
+            monster = value
+            if target_addr == 0 or monster is None:
+                return
             obj_blood = mem.read_long(target_addr + address.GwXlAddr)
-            monster, target_addr = map_base.map_has_monster()
+            count = 2
+            while obj_blood > 0 or count >= 0:
+                call.drift_call(rw_addr, monster.x, monster.y, 0, 2)
+                time.sleep(0.3)
+                if skill_type == 0:
+                    '''特效'''
+                    time.sleep(0.2)
+                    call.skill_call(rw_addr, 70231, 99999, monster.x, monster.y, 0, 1.0)
+                if skill_type == 1:
+                    '''技能'''
+                    call.skill_call_power(supper_skill_list)
+                    count -= 1
+                obj_blood = mem.read_long(target_addr + address.GwXlAddr)
 
     def ignore_building(self, ok: bool):
         """无视建筑"""

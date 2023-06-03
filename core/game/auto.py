@@ -362,10 +362,6 @@ class Auto:
                         call.drift_over_map(direction)
                         time.sleep(0.5)
                     if cls.map_data.is_open_door() is True and cls.map_data.is_boss_room() is False:
-                        logger.info("被卡门 尝试进入裂缝", 1)
-                        # 尝试找门
-                        for i in range(over_map_size):
-                            cls.cross_fissure()
                         logger.info("被卡门 强制过图", 1)
                         call.over_map_call(direction)
 

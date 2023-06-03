@@ -62,6 +62,7 @@ def map_has_cross_hide():
 def map_has_item(code_type):
     start, end = get_map_start_and_end()
     obj_num = get_map_obj(start, end)
+    item_map = {}
     for obj_tmp in range(obj_num):
         target_addr = get_address(start, obj_tmp)
         if target_addr < 0:
@@ -87,7 +88,7 @@ def map_has_item(code_type):
         code_list = [289]
         if code_type == 1:
             if code_list.__contains__(obj_type_a) or code_list.__contains__(obj_type_b):
-                return target_coordinate, target_addr
+                item_map[target_addr] = target_coordinate
 
         monster_code = [529, 545, 273, 61440]
         if obj_camp == 0 or target_addr == call.person_ptr():
@@ -98,11 +99,11 @@ def map_has_item(code_type):
                 continue
 
             if monster_code.__contains__(obj_type_a) or monster_code.__contains__(obj_type_b):
-                return target_coordinate, target_addr
+                item_map[target_addr] = target_coordinate
         if code_type == 3:
             if obj_code == 490019076:
-                return target_coordinate, target_addr
-    return None, 0
+                item_map[target_addr] = target_coordinate
+    return item_map
 
 
 # 地图固定坐标
