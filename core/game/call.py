@@ -12,6 +12,7 @@ from core.game.addr import address_all
 
 fast_call = fc.FastCall
 
+
 def init_call():
     global fast_call
     fast_call = fc.FastCall(mem)
@@ -60,10 +61,10 @@ def compile_call(byte_arr: list):
     check = 0
     while mem.read_int(jump_address) == 1:
         check += 1
-        time.sleep(0.1)
+        time.sleep(0.5)
         if check >= 3:
             logger.info("call执行超时", 1)
-            return
+            continue
 
     mem.write_bytes(hook_shell, hook_old_data)
     mem.write_bytes(blank_address, helper.get_empty_bytes(len(byte_arr) + 16))
@@ -411,6 +412,14 @@ def cool_down_call(skill_addr):
 # 移动技能
 def skill_move(skill_index, skill_empty):
     try:
-        call.fast_call.call(address.JnYdCallAddr, address.JnlAddr(), call.person_ptr(), skill_index, skill_empty)
+        fast_call.call(address.JnYdCallAddr, address.JnlAddr(), person_ptr(), skill_index, skill_empty)
     except Exception as e:
         logger.file("read_longlong 技能位置:{},移动位置:{},错误:{}".format(skill_index, skill_index, e.args))
+
+
+# 技能三无
+def skill_nothing():
+    try:
+        fast_call.call(address_all.技能三无, person_ptr())
+    except Exception as e:
+        logger.file("read_longlong 技能三无:{},错误:{}".format(person_ptr(), e.args))

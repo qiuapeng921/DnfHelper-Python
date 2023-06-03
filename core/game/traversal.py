@@ -81,6 +81,8 @@ class Screen:
             return
 
         skill_type = config().getint("自动配置", "使用技能")
+        supper_skill_str = config().get("自动配置", "觉醒技能")
+        supper_skill_list = supper_skill_str.split(",")
         rw_addr = call.person_ptr()
         monster, target_addr = map_base.map_has_monster()
         if target_addr == 0 or monster is None:
@@ -88,17 +90,15 @@ class Screen:
         obj_blood = mem.read_long(target_addr + address.GwXlAddr)
         if obj_blood > 0:
             call.drift_call(rw_addr, monster.x, monster.y, 0, 2)
-        if skill_type == 0:
-            '''特效'''
-            time.sleep(0.2)
-            call.skill_call(rw_addr, 70231, 99999, monster.x, monster.y, 0, 1.0)
-        if skill_type == 1:
-            '''技能'''
-            supper_skill_str = config().get("自动配置", "觉醒技能")
-            supper_skill_list = supper_skill_str.split(",")
-            call.skill_call_power(supper_skill_list)
-            time.sleep(random.uniform(1, 4))
-        return
+            if skill_type == 0:
+                '''特效'''
+                time.sleep(0.2)
+                call.skill_call(rw_addr, 70231, 99999, monster.x, monster.y, 0, 1.0)
+            if skill_type == 1:
+                '''技能'''
+                call.skill_call_power(supper_skill_list)
+                time.sleep(random.uniform(0.1, 1))
+            return
 
     def ignore_building(self, ok: bool):
         """无视建筑"""
