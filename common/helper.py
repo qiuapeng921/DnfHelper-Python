@@ -15,7 +15,6 @@ import random
 左 = '7'
 右 = '0'
 
-
 def is_dnf_win():
     title = get_process_name()
     return title == "地下城与勇士：创新世纪"
@@ -196,15 +195,19 @@ def key_press_release_list(key_list: list):
 
 
 def key_press_release_with_delay(key: str, delay: float):
-    keyboard.press(key)
-    time.sleep(delay)
-    keyboard.release(key)
+    title = get_process_name()
+    if title == "地下城与勇士：创新世纪":
+        keyboard.press(key)
+        time.sleep(delay)
+        keyboard.release(key)
 
 
 def key_press_release(key: str):
-    keyboard.press(key)
-    time.sleep(random.uniform(0.01, 0.1))
-    keyboard.release(key)
+    title = get_process_name()
+    if title == "地下城与勇士：创新世纪":
+        keyboard.press(key)
+        time.sleep(random.uniform(0.01, 0.1))
+        keyboard.release(key)
 
 
 def key_press_release_no_delay(key: str):

@@ -23,11 +23,6 @@ auto = a.Auto(task, traversal, map_data, pack, pick, equip, game_map)
 skill_data = None
 
 
-def init_person():
-    global skill_data
-    skill_data = sk.get_skill_map()
-
-
 def init_empty_addr():
     """
     初始化全局空白

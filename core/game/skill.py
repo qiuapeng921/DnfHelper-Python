@@ -98,10 +98,14 @@ def skill_name_map():
     return skill_map
 
 
-def get_skill_map() -> dict:
+def get_skill_map(un_select=None) -> dict:
+    if un_select is None:
+        un_select = []
     skill_map_data = {}
     skill_ptr = get_skill_base_addr()
     for key, value in mapping.items():
+        if un_select.__contains__(value.value):
+            continue
         skill_str = mem.read_long(skill_ptr + key * 24 + 16) - 16
         if skill_str <= 0 or skill_str is None:
             continue
@@ -116,10 +120,23 @@ def skill_map_cool_down_all():
     return code
 
 
-def skill_map_cool_down(un_select):
+def enter_skill(un_used):
+    # 获取当前窗口的焦点
+    title = helper.get_process_name()
+    if title == "地下城与勇士：创新世纪":
+        """技能call"""
+        key = skill_map_cool_down(un_used)
+        logger.info("施放技能: {} ".format(key), 1)
+        while check_skill_down_single(key):
+            helper.key_press_release_list(["x", "x", "x", "z"])
+            time.sleep(0.3)
+            helper.key_press_release(key)
+
+
+def skill_map_cool_down(un_select=None):
     global skil_data
     if skil_data is None or skil_data.__len__() == 0:
-        skil_data = get_skill_map()
+        skil_data = get_skill_map(un_select)
     keys = list(skil_data.keys())
     random.shuffle(keys)
     visited = []
@@ -127,6 +144,8 @@ def skill_map_cool_down(un_select):
         if un_select.__contains__(key_code):
             continue
         value = skil_data[key_code]
+        if visited.__contains__(value):
+            continue
         visited.append(value)
         cool_down = call.cool_down_call(value)
         if cool_down:
@@ -233,8 +252,6 @@ def check_skill_down_single(key):
         result = mem.read_long(skill_addr + address_all.技能G)
     elif key == KeyCode.VK_H.value:
         result = mem.read_long(skill_addr + address_all.技能H)
-    elif key == KeyCode.VK_ALT.value:
-        result = mem.read_long(skill_addr + address_all.技能Alt)
     elif key == KeyCode.VK_Q.value:
         result = mem.read_long(skill_addr + address_all.技能Q)
     elif key == KeyCode.VK_W.value:
@@ -247,8 +264,6 @@ def check_skill_down_single(key):
         result = mem.read_long(skill_addr + address_all.技能T)
     elif key == KeyCode.VK_Y.value:
         result = mem.read_long(skill_addr + address_all.技能Y)
-    elif key == KeyCode.VK_CTRL.value:
-        result = mem.read_long(skill_addr + address_all.技能Ctrl)
 
     if result is None or result <= 0:
         return False

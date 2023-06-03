@@ -150,26 +150,27 @@ class Auto:
                         # 进图开启功能
                         # cls.start_func()
                         cls.firstEnterMap = True
-
-                    # 跟随怪物
-                    if config().getint("自动配置", "跟随打怪") > 0:
-                        cls.traversal.follow_monster()
-
-                    # boss房间 使用觉醒
+                        # boss房间 使用觉醒
                     if cls.map_data.is_boss_room():
                         if cls.map_data.is_pass() is False:
                             supper_skill_str = config().get("自动配置", "觉醒技能")
                             supper_skill_list = supper_skill_str.split(",")
                             skill.super_skill(supper_skill_list)
+                    start_time = time.time()
+                    # 跟随怪物
+                    if config().getint("自动配置", "跟随打怪") > 0:
+                        cls.traversal.follow_monster()
+                    logger.info("跟随怪物耗时 {}".format(time.time() - start_time), 1)
 
+                    start_time = time.time()
                     # 过图
                     if cls.map_data.is_open_door() is True and cls.map_data.is_boss_room() is False:
                         # 捡物品
                         cls.pick.pickup()
                         # 过图
                         cls.pass_map()
+                        logger.info("过图耗时 {}".format(time.time() - start_time), 1)
                         continue
-
                     # 通关
                     if cls.map_data.is_boss_room():
                         if cls.map_data.is_pass():

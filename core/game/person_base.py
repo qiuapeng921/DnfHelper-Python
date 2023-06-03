@@ -30,9 +30,9 @@ def get_coin_str(coin):
     return "空"
 
 
-def get_role_name(self) -> str:
+def get_role_name() -> str:
     """获取角色名字"""
-    name_address = self.mem.read_long(address.RwName)
+    name_address = mem.read_long(address.RwName)
     name_bytes = mem.read_bytes(name_address, 200)
     return helper.unicode_to_ascii(name_bytes)
 
