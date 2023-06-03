@@ -3,7 +3,7 @@ import random
 from enum import Enum
 
 from common import helper, logger
-from core.game import address, call, fast_call
+from core.game import address, call, fast_call, init
 from core.game import mem, map_data
 from core.game.addr import address_all, xiaochen_address
 
@@ -121,7 +121,7 @@ def skill_map_cool_down_all():
 
 
 def skill_map_cool_down(un_select):
-    skill_map = get_skill_map()
+    skill_map = init.skill_data
     keys = list(skill_map.keys())
     random.shuffle(keys)
     visited = []

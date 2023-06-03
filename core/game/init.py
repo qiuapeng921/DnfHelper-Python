@@ -20,6 +20,12 @@ equip = o.Equip(mem, pack, map_data)
 skill = sk.Skill()
 traversal = mt.Screen(mem)
 auto = a.Auto(task, traversal, map_data, pack, pick, equip, game_map, skill)
+skill_data = None
+
+
+def init_person():
+    global skill_data
+    skill_data = sk.get_skill_map()
 
 
 def init_empty_addr():

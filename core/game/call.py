@@ -419,7 +419,5 @@ def skill_move(skill_index, skill_empty):
 
 # 技能三无
 def skill_nothing():
-    try:
-        fast_call.call(address_all.技能三无, person_ptr())
-    except Exception as e:
-        logger.file("read_longlong 技能三无:{},错误:{}".format(person_ptr(), e.args))
+    # dw.WriteByteArr(game.JnSwAddr, []byte{144, 144, 144, 144, 144})
+    mem.write_bytes(address_all.技能三无, [144, 144, 144, 144, 144])
