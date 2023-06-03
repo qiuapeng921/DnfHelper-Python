@@ -96,8 +96,7 @@ class Screen:
                 call.skill_call(rw_addr, 70231, 99999, monster.x, monster.y, 0, 1.0)
             if skill_type == 1:
                 '''技能'''
-                call.skill_call_power(supper_skill_list)
-                time.sleep(random.uniform(0.1, 1))
+                call.skill_call_power_random(supper_skill_list)
             return
 
     def ignore_building(self, ok: bool):

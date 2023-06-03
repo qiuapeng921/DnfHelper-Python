@@ -7,11 +7,7 @@ from core.game import address, call, fast_call, init
 from core.game import mem, map_data
 from core.game.addr import address_all, xiaochen_address
 
-
-class Skill:
-    @classmethod
-    def __init__(cls):
-        pass
+skil_data = {}
 
 
 class KeyCode(Enum):
@@ -121,14 +117,16 @@ def skill_map_cool_down_all():
 
 
 def skill_map_cool_down(un_select):
-    skill_map = init.skill_data
-    keys = list(skill_map.keys())
+    global skil_data
+    if skil_data is None:
+        skil_data = get_skill_map()
+    keys = list(skil_data.keys())
     random.shuffle(keys)
     visited = []
     for key_code in keys:
         if un_select.__contains__(key_code):
             continue
-        value = skill_map[key_code]
+        value = skil_data[key_code]
         visited.append(value)
         cool_down = call.cool_down_call(value)
         if cool_down:

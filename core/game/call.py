@@ -58,14 +58,8 @@ def compile_call(byte_arr: list):
     mem.write_bytes(hook_shell, bytes(hook_shell_value))
 
     mem.write_int(jump_address, 1)
-    check = 0
     while mem.read_int(jump_address) == 1:
-        check += 1
         time.sleep(0.5)
-        if check >= 3:
-            logger.info("call执行超时", 1)
-            continue
-
     mem.write_bytes(hook_shell, hook_old_data)
     mem.write_bytes(blank_address, helper.get_empty_bytes(len(byte_arr) + 16))
     run_status = False
@@ -122,12 +116,13 @@ def person_ptr():
     return person_addr
 
 
-def skill_call_power_random():
+def skill_call_power_random(supper_skill_list):
     # 获取当前窗口的焦点
     title = helper.get_process_name()
     if title == "地下城与勇士：创新世纪":
         """技能call"""
         key = skill.pick_key()
+        key.remove(supper_skill_list)
         helper.key_press_release_list(key)
 
 

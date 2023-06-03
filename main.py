@@ -21,7 +21,7 @@ if __name__ == '__main__':
         init.init_empty_addr()
         # 初始化fastcall
         init.call.init_call()
-        init.init_person()
+        # init.init_person()
 
         logger.info("加载成功-欢迎使用", 1)
         logger.info("当前时间：{}".format(helper.get_now_date()), 1)

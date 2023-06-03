@@ -41,7 +41,7 @@ class Auto:
     skill = None
 
     @classmethod
-    def __init__(cls, task, traversal, map_data, pack, pick, equip, game_map, skill):
+    def __init__(cls, task, traversal, map_data, pack, pick, equip, game_map):
         cls.task = task
         cls.traversal = traversal
         cls.map_data = map_data
@@ -49,7 +49,6 @@ class Auto:
         cls.pick = pick
         cls.equip = equip
         cls.game_map = game_map
-        cls.skill = skill
 
     @classmethod
     def test_func(cls):
