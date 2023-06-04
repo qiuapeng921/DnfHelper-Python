@@ -128,7 +128,7 @@ class Screen:
         if len(monster_map) == 0:
             return
         cross_map = map_obj.cross_room()
-        if len(cross_map) > 0:
+        if len(cross_map) > 0 >= len(monster_map):
             return
             # 地址
         obj_blood = 100000

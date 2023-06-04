@@ -190,8 +190,10 @@ def key_release(key: str):
 
 
 def key_press_release_list(key_list: list):
-    for key in key_list:
-        key_press_release(key)
+    title = get_process_name()
+    if title == "地下城与勇士：创新世纪":
+        for key in key_list:
+            key_press_release(key)
 
 
 def key_press_release_with_delay(key: str, delay: float):
@@ -206,7 +208,7 @@ def key_press_release(key: str):
     title = get_process_name()
     if title == "地下城与勇士：创新世纪":
         keyboard.press(key)
-        time.sleep(random.uniform(0.01, 0.1))
+        time.sleep(random.uniform(0.1, 0.5))
         keyboard.release(key)
 
 

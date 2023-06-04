@@ -135,7 +135,8 @@ class Auto:
                     # 第一个房间 加buff
                     if cls.firstEnterMap is True and cls.addBuff is False:
                         buff = config().get("自动配置", "buff技能")
-                        skill.buff_key(buff)
+                        buff_list = buff.split(",")
+                        helper.key_press_release_list(buff_list)
                         cls.addBuff = True
                     if cls.firstEnterMap is False and cls.map_data.is_town() is False:
                         hide = config().getint("自动配置", "开启透明")
@@ -275,7 +276,7 @@ class Auto:
                     map_ids = normal_map
                 elif map_select == 2:
                     # 英豪地图
-                    map_ids = normal_map
+                    map_ids = super_map
 
                 if map_ids.__len__() > 0:
                     random_number = random.randint(0, len(map_ids) - 1)
