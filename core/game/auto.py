@@ -52,18 +52,16 @@ class Auto:
 
     @classmethod
     def test_func(cls):
-        for i in range(5):
+        while init.global_data.manual_switch:
             code = skill.skill_map_cool_down_all()
             helper.key_press_release(code)
             logger.info("测试结果 {}".format(code), 1)
-            time.sleep(3)
+            time.sleep(0.1)
 
     @classmethod
     def hide_body(cls):
-        if cls.map_data.get_stat() == 3:
-            # 透明call
-            logger.info("开启透明 {}", 2)
-            call.hide_call(call.person_ptr())
+        init.global_data.manual_switch = not init.global_data.manual_switch
+        call.hide_call(call.person_ptr())
 
     @classmethod
     def un_hide_body(cls):
@@ -138,41 +136,40 @@ class Auto:
 
                 # 在地图内
                 if cls.map_data.get_stat() == 3:
-                    # 第一个房间 加buff
-                    if cls.firstEnterMap is True and cls.addBuff is False:
-                        buff = config().get("自动配置", "buff技能")
-                        buff_list = buff.split(",")
-                        skill.check_skill_down_single_while(buff_list)
-                        cls.addBuff = True
-                    if cls.firstEnterMap is False and cls.map_data.is_town() is False:
-                        hide = config().getint("自动配置", "开启透明")
-                        if hide == 1:
-                            # 透明call
-                            call.hide_call(call.person_ptr())
-                        # sss评分
-                        score = config().get("自动配置", "评分")
-                        mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, int(score))
-                        # 无视建筑
-                        # cls.traversal.ignore_building(True)
-                        # 进图开启功能
-                        # cls.start_func()
-                        cls.firstEnterMap = True
+                    while cls.map_data.get_stat() == 3 and cls.thread_switch and not cls.map_data.is_pass():
+                        # 第一个房间 加buff
+                        if cls.firstEnterMap is False and cls.map_data.is_town() is False:
+                            hide = config().getint("自动配置", "开启透明")
+                            if hide == 1:
+                                # 透明call
+                                call.hide_call(call.person_ptr())
+                            # sss评分
+                            score = config().get("自动配置", "评分")
+                            mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, int(score))
+                            # 无视建筑
+                            # cls.traversal.ignore_building(True)
+                            # 进图开启功能
+                            # cls.start_func()
+                            cls.firstEnterMap = True
+                        if cls.firstEnterMap is True and cls.addBuff is False:
+                            buff = config().get("自动配置", "buff技能")
+                            buff_list = buff.split(",")
+                            skill.check_skill_down_single_while(buff_list)
+                            cls.addBuff = True
 
-                    start_time = time.time()
-                    # 跟随怪物
-                    if config().getint("自动配置", "跟随打怪") > 0:
-                        cls.traversal.follow_monster()
-                    logger.info("跟随怪物耗时 {}".format(time.time() - start_time), 1)
+                        # 跟随怪物
+                        if config().getint("自动配置", "跟随打怪") > 0:
+                            cls.traversal.follow_monster()
 
-                    start_time = time.time()
-                    # 过图
-                    if cls.map_data.is_open_door() is True and cls.map_data.is_boss_room() is False:
-                        # 捡物品
-                        cls.pick.pickup()
+                        start_time = time.time()
                         # 过图
-                        cls.pass_map()
-                        logger.info("过图耗时 {}".format(time.time() - start_time), 1)
-                        continue
+                        if cls.map_data.is_open_door() is True and cls.map_data.is_boss_room() is False:
+                            # 捡物品
+                            cls.pick.pickup()
+                            # 过图
+                            cls.pass_map()
+                            logger.info("过图耗时 {}".format(time.time() - start_time), 1)
+                            continue
                     # 通关
                     if cls.map_data.is_boss_room():
                         if cls.map_data.is_pass():
@@ -332,22 +329,15 @@ class Auto:
         """进图  这个5 会自动适配是否进图的  从高到低 没开图 自动开图 """
         auto_down = config().getint("自动配置", "地图难度")
         auto_type = config().getint("自动配置", "自动模式")
-        if auto_type == 2:
-            while cls.map_data.get_stat() == 2 and cls.thread_switch:
-                if auto_down == 5:
-                    for i in range(4, -1, -1):
-                        if cls.map_data.get_stat() == 3:
-                            break
-                        if cls.map_data.get_stat() == 2:
-                            cls.pack.go_map(map_id, i, 0, 0)
-                            time.sleep(1)
-                        if cls.map_data.get_stat() == 1:
-                            cls.select_map()
-                else:
-                    cls.pack.go_map(map_id, map_level, 0, 0)
-
-        if auto_type == 1:
-            cls.pack.go_map(map_id, map_level, 0, 0)
+        while cls.map_data.get_stat() == 2 and cls.thread_switch:
+            for i in range(4, -1, -1):
+                if cls.map_data.get_stat() == 3:
+                    break
+                if cls.map_data.get_stat() == 2:
+                    cls.pack.go_map(map_id, i, 0, 0)
+                    time.sleep(1)
+                if cls.map_data.get_stat() == 1:
+                    cls.select_map()
 
     @classmethod
     def pass_map(cls):

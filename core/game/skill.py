@@ -114,10 +114,7 @@ def get_skill_map(un_select=None) -> dict:
 
 
 def skill_map_cool_down_all():
-    code = skill_map_cool_down([])
-    if code is None:
-        return 'x'
-    return code
+    enter_skill([])
 
 
 def enter_skill(un_used):
@@ -127,7 +124,11 @@ def enter_skill(un_used):
         """技能call"""
         key = skill_map_cool_down(un_used)
         logger.info("施放技能: {} ".format(key), 1)
+        count = 3
         while check_skill_down_single(key):
+            count -= 1
+            if count == 0:
+                break
             helper.key_press_release_list(["x", "x", "x", "z"])
             time.sleep(0.3)
             helper.key_press_release(key)
@@ -135,7 +136,11 @@ def enter_skill(un_used):
 
 def check_skill_down_single_while(key_code_list):
     for key in key_code_list:
+        count = 3
         while check_skill_down_single(key):
+            count -= 1
+            if count == 0:
+                break
             time.sleep(0.3)
             helper.key_press_release(key)
 
@@ -271,6 +276,8 @@ def check_skill_down_single(key):
         result = mem.read_long(skill_addr + address_all.技能T)
     elif key == KeyCode.VK_Y.value:
         result = mem.read_long(skill_addr + address_all.技能Y)
+    elif key == KeyCode.VK_TAB.value:
+        result = mem.read_long(skill_addr + address_all.技能Tab)
 
     if result is None or result <= 0:
         return False

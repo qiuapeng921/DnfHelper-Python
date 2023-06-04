@@ -7,6 +7,7 @@ win_app = None
 class GlobalData:
     # 自动开关
     auto_switch = False
+    manual_switch = False
     # 任务编号
     task_id = 0
     # 副本编号
