@@ -12,25 +12,6 @@
 6. python main.py
 ```
 
-### 交流群: star后带上github用户名加群
-
-#### 企鹅群
-
-<img src="static/qq.png" alt="alt text" width="276" height="319"> 
-
-#### 微信群
-
-<img src="static/wechat.png" alt="alt text" width="308" height="318">
-
-## 赞赏
-
-如果我的项目对你有帮助, 可以通过以下方式支持我:
-
-- 点个star。
-
-- 又或者:
-
- <img src="static/wePay.png" width="301"  alt="">
 
 ## Project supported by JetBrains
 
