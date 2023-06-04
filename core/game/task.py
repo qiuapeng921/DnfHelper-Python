@@ -32,6 +32,11 @@ class Task:
                 logger.info("主线任务->任务条件 {}".format(task_condition), 1)
                 logger.info("主线任务->任务ID {}".format(task_id), 1)
 
+            special_map_id = special_map(task_id)
+            if special_map_id != -1:
+                map_id = special_map_id
+                return map_id
+
             # 无任务,刷新角色
             if task_id == 0:
                 if not self.refreshTask:
@@ -94,7 +99,8 @@ class Task:
                 map_id = self.highest_map()
                 logger.info("材料任务无法自动完成,执行最高等级地图", 1)
                 return map_id
-
+        # 其他任务先认为是0级
+        init.global_data.map_level = 0
         return map_id
 
     def main_line_task(self) -> tuple[str, str, int]:
@@ -487,3 +493,44 @@ class Task:
                 return 100002983
 
         return 0
+
+
+# 特殊装备地图
+def special_map(task_id):
+    if task_id == 675:  # 右槽_魔法石
+        init.global_data.map_level = 3
+        return 82
+    if task_id == 674:  # 右槽_辅助装备
+        init.global_data.map_level = 3
+        return 163
+    if task_id == 2635:  # 耳环
+        init.global_data.map_level = 5
+        if not init.global_data.earring01:
+            init.global_data.earring01 = True
+            return 311
+        else:
+            init.global_data.earring01 = False
+            return 314
+    return -1
+
+
+'''
+.判断开始 (任务编号 ＝ 675)  ' 右槽_魔法石
+    游戏数据.地图难度 ＝ 3
+    返回 (82)
+.判断 (任务编号 ＝ 674)  ' 右槽_辅助装备
+    游戏数据.地图难度 ＝ 3
+    返回 (163)
+.判断 (任务编号 ＝ 2635)  ' 耳环
+    游戏数据.地图难度 ＝ 5
+    .判断开始 (耳环01 ＝ 假)
+        耳环01 ＝ 真
+        返回 (311)
+    .默认
+        耳环01 ＝ 假
+        返回 (314)
+    .判断结束
+
+.默认
+    返回 (-1)
+'''

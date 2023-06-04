@@ -190,10 +190,8 @@ def key_release(key: str):
 
 
 def key_press_release_list(key_list: list):
-    title = get_process_name()
-    if title == "地下城与勇士：创新世纪":
-        for key in key_list:
-            key_press_release(key)
+    for key in key_list:
+        key_press_release(key)
 
 
 def key_press_release_with_delay(key: str, delay: float):

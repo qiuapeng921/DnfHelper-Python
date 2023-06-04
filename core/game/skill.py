@@ -133,6 +133,13 @@ def enter_skill(un_used):
             helper.key_press_release(key)
 
 
+def check_skill_down_single_while(key_code_list):
+    for key in key_code_list:
+        while check_skill_down_single(key):
+            time.sleep(0.3)
+            helper.key_press_release(key)
+
+
 def skill_map_cool_down(un_select=None):
     global skil_data
     if skil_data is None or skil_data.__len__() == 0:

@@ -136,7 +136,7 @@ class Auto:
                     if cls.firstEnterMap is True and cls.addBuff is False:
                         buff = config().get("自动配置", "buff技能")
                         buff_list = buff.split(",")
-                        helper.key_press_release_list(buff_list)
+                        skill.check_skill_down_single_while(buff_list)
                         cls.addBuff = True
                     if cls.firstEnterMap is False and cls.map_data.is_town() is False:
                         hide = config().getint("自动配置", "开启透明")
@@ -151,12 +151,7 @@ class Auto:
                         # 进图开启功能
                         # cls.start_func()
                         cls.firstEnterMap = True
-                        # boss房间 使用觉醒
-                    if cls.map_data.is_boss_room():
-                        if cls.map_data.is_pass() is False:
-                            supper_skill_str = config().get("自动配置", "觉醒技能")
-                            supper_skill_list = supper_skill_str.split(",")
-                            skill.super_skill(supper_skill_list)
+
                     start_time = time.time()
                     # 跟随怪物
                     if config().getint("自动配置", "跟随打怪") > 0:
@@ -266,6 +261,7 @@ class Auto:
             else:
                 map_ids = []
                 if map_select == 0:
+                    init.global_data.map_level = cls.fame_level()
                     # 自动模式
                     if person_base.get_fame() < 23330 and map_select == 0:
                         map_ids = normal_map
@@ -281,11 +277,10 @@ class Auto:
                 if map_ids.__len__() > 0:
                     random_number = random.randint(0, len(map_ids) - 1)
                     init.global_data.map_id = map_ids[random_number]
-                    init.global_data.map_level = config().getint("自动配置", "地图难度")
 
         if init.global_data.map_id == 0:
             logger.info("地图编号为空,无法切换区域", 2)
-            return
+            exit(0)
 
         time.sleep(0.2)
         # 区域发包
@@ -319,24 +314,21 @@ class Auto:
     @classmethod
     def enter_map(cls, map_id: int, map_level: int):
         """进图  这个5 会自动适配是否进图的  从高到低 没开图 自动开图 """
-        if map_level == 5:
-            for i in range(4, -1, -1):
-                if cls.map_data.get_stat() == 3:
-                    break
-                if cls.map_data.get_stat() == 2:
-                    cls.pack.go_map(map_id, i, 0, 0)
-                    time.sleep(1)
-                if cls.map_data.get_stat() == 1:
-                    cls.select_map()
-        else:
-            cls.pack.go_map(map_id, map_level, 0, 0)
+        auto_down = config().getint("自动配置", "地图难度")
 
-        while cls.thread_switch:
-            time.sleep(0.2)
-            # 进图副本跳出循环
-            stat = cls.map_data.get_stat()
-            if stat == 3:
-                break
+        while cls.map_data.get_stat() == 2 and cls.thread_switch:
+            if auto_down == 5:
+                for i in range(4, -1, -1):
+                    if cls.map_data.get_stat() == 3:
+                        break
+                    if cls.map_data.get_stat() == 2:
+                        cls.pack.go_map(map_id, i, 0, 0)
+                        time.sleep(1)
+                    if cls.map_data.get_stat() == 1:
+                        cls.select_map()
+            else:
+                cls.pack.go_map(map_id, map_level, 0, 0)
+
 
     @classmethod
     def pass_map(cls):
@@ -422,3 +414,17 @@ class Auto:
             cls.pack.leave_map()
             if cls.map_data.get_stat() == 1 or cls.map_data.is_town():
                 break
+
+    # 英豪名望判断等级
+    @classmethod
+    def fame_level(cls):
+        fame = person_base.get_fame()
+        if fame < 25837:
+            return 0
+        if fame < 29369:
+            return 1
+        if fame < 30946:
+            return 2
+        if fame < 32523:
+            return 3
+        return 4
