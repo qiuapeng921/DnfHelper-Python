@@ -24,86 +24,90 @@ class Task:
         self.submit_task()
         while init.global_data.auto_switch:
             time.sleep(0.3)
-            task_name, task_condition, task_id = self.main_line_task()
-            # 处理相同任务输出
-            if task_id != next_task_id and task_id > 0:
-                next_task_id = task_id
-                logger.info("主线任务->任务名称 {}".format(task_name), 1)
-                logger.info("主线任务->任务条件 {}".format(task_condition), 1)
-                logger.info("主线任务->任务ID {}".format(task_id), 1)
+            task_data_map = self.main_line_task()
+            sorted_task_map = sorted(task_data_map.items(), key=lambda x: x[1][3])
+            for task_id, task_info in sorted_task_map:
+                task_name, task_condition, task_id, task_sort = task_info
 
-            special_map_id = special_map(task_id)
-            if special_map_id != -1:
-                map_id = special_map_id
-                return map_id
+                # 处理相同任务输出
+                if task_id != next_task_id and task_id > 0:
+                    next_task_id = task_id
+                    logger.info("主线任务->任务名称 {}".format(task_name), 1)
+                    logger.info("主线任务->任务条件 {}".format(task_condition), 1)
+                    logger.info("主线任务->任务ID {}".format(task_id), 1)
 
-            # 无任务,刷新角色
-            if task_id == 0:
-                if not self.refreshTask:
-                    time.sleep(0.2)
-                    logger.info("暂无任务或卡任务,重新选择角色", 1)
-                    self.pack.return_role()
-                    time.sleep(2)
-                    self.pack.select_role(init.global_data.completed_role)
-                    time.sleep(0.5)
-                    self.refreshTask = True
-                    continue
-                else:
+                # 无任务,刷新角色
+                if task_id == 0:
+                    if not self.refreshTask:
+                        time.sleep(0.2)
+                        logger.info("暂无任务或卡任务,重新选择角色", 1)
+                        self.pack.return_role()
+                        time.sleep(2)
+                        self.pack.select_role(init.global_data.completed_role)
+                        time.sleep(0.5)
+                        self.refreshTask = True
+                        continue
+                    else:
+                        map_id = self.highest_map()
+                        logger.info("暂无任务,执行适应等级地图", 1)
+                        return map_id
+
+                self.refreshTask = False
+
+                # 跳过部分无法完成任务，取最高等级执行
+                # 任务名称[返回赫顿玛尔],任务条件[[seek n meet npc]],任务ID[3509] 材料不足无法完成任务
+                # 任务名称[黑市的商人],任务条件[[seek n meet npc]],任务ID[5943] 蛇肉任务
+                task_ids = [3509, 5943]
+                if task_id in task_ids:
                     map_id = self.highest_map()
-                    logger.info("暂无任务,执行适应等级地图", 1)
+                    logger.info("无法完成任务,执行适应等级地图", 1)
                     return map_id
 
-            self.refreshTask = False
+                #  是否可以跳过任务
+                #  86级寂静城任务无法跳过 任务id{3850, 3851, 3858, 3859, 3860, 3861, 3864, 3865, 3866, 3867, 3868}
+                #  特殊图 不跳过
+                if task_sort > 1:
+                    ok, task_level = self.can_skip(task_id)
+                    if ok and task_level not in [85, 86]:
+                        # 跳过任务
+                        init.call.jump_over_task_call()
+                        continue
 
-            # 跳过部分无法完成任务，取最高等级执行
-            # 任务名称[返回赫顿玛尔],任务条件[[seek n meet npc]],任务ID[3509] 材料不足无法完成任务
-            # 任务名称[黑市的商人],任务条件[[seek n meet npc]],任务ID[5943] 蛇肉任务
-            task_ids = [3509, 5943]
-            if task_id in task_ids:
-                map_id = self.highest_map()
-                logger.info("无法完成任务,执行适应等级地图", 1)
-                return map_id
+                # 任务未接，执行接取任务
+                if self.finish_status(task_id) == -1:
+                    # self.pack.accept_task(task_id)
+                    init.call.accept_task_call(task_id)
 
-            #  是否可以跳过任务
-            #  86级寂静城任务无法跳过 任务id{3850, 3851, 3858, 3859, 3860, 3861, 3864, 3865, 3866, 3867, 3868}
-            ok, task_level = self.can_skip(task_id)
-            if ok and task_level not in [85, 86]:
-                # 跳过任务
-                init.call.jump_over_task_call()
-                continue
+                #  任务完成，执行提交任务
+                if self.finish_status(task_id) == 0:
+                    # self.pack.submit_task(task_id)
+                    init.call.submit_task_call(task_id)
+                    continue
 
-            # 任务未接，执行接取任务
-            if self.finish_status(task_id) == -1:
-                # self.pack.accept_task(task_id)
-                init.call.accept_task_call(task_id)
+                # 剧情条件判断
+                if self.conditional(task_condition) == 1:
+                    # self.pack.finish_task(task_id)
+                    init.call.finish_task_call(task_id)
 
-            #  任务完成，执行提交任务
-            if self.finish_status(task_id) == 0:
-                # self.pack.submit_task(task_id)
-                init.call.submit_task_call(task_id)
-                continue
+                # 刷图任务
+                if self.conditional(task_condition) == 2:
+                    if special_map(task_id) != -1:
+                        return special_map(task_id)
+                    map_id = self.task_map(task_id)
+                    if map_id > 0:
+                        return map_id
 
-            # 剧情条件判断
-            if self.conditional(task_condition) == 1:
-                # self.pack.finish_task(task_id)
-                init.call.finish_task_call(task_id)
-
-            # 刷图任务
-            if self.conditional(task_condition) == 2:
-                map_id = self.task_map(task_id)
-                if map_id > 0:
+                # 材料任务
+                if self.conditional(task_condition) == 3:
+                    map_id = self.highest_map()
+                    logger.info("材料任务无法自动完成,执行最高等级地图", 1)
                     return map_id
-
-            # 材料任务
-            if self.conditional(task_condition) == 3:
-                map_id = self.highest_map()
-                logger.info("材料任务无法自动完成,执行最高等级地图", 1)
-                return map_id
         # 其他任务先认为是0级
         init.global_data.map_level = 0
         return map_id
 
-    def main_line_task(self) -> tuple[str, str, int]:
+    def main_line_task(self) -> dict:
+        task_map = {}
         mem = self.mem
         task_addr = mem.read_long(address.TaskAddr)
         start = mem.read_long(task_addr + address.QbRwStartAddr)
@@ -113,7 +117,9 @@ class Task:
         for i in range(num):
             task_ptr = mem.read_long(start + i * 8)
             task_type = mem.read_int(task_ptr + address.RwLxAddr)
-            if task_type == 0:
+            task_id = mem.read_int(task_ptr)
+            special_map_data = special_map(task_id)
+            if task_type == 0 or task_type == 11 or special_map_data != -1:
                 task_length = mem.read_int(task_ptr + address.RwDxAddr)
                 if task_length > 7:
                     tmp = mem.read_long(task_ptr + 16)
@@ -127,9 +133,11 @@ class Task:
                     list(mem.read_bytes(mem.read_long(task_ptr + address.RwTjAddr), 100)))
                 # 任务编号
                 task_id = mem.read_int(task_ptr)
-                return task_name, task_conditional, task_id
-
-        return "", "", 0
+                if special_map_data != -1:
+                    task_map[task_id] = [task_name, task_conditional, task_id, 1]
+                else:
+                    task_map[task_id] = [task_name, task_conditional, task_id, 2]
+        return task_map
 
     def can_skip(self, task_id) -> [bool, int]:
         """是否跳过"""
@@ -241,15 +249,14 @@ class Task:
                 elif frequency == 512:
                     return 1
 
-                tmp_arr[0] = int(frequency % 512)
+                tmp_arr.insert(int(frequency % 512), 0)
                 the_rest = int(frequency) - tmp_arr[0]
                 if the_rest < 262144:
-                    tmp_arr[1] = int(the_rest / 512)
+                    tmp_arr.insert(int(the_rest / 512), 1)
                     tmp_arr[1] = int(the_rest % 262144 / 512)
                 the_rest = int(the_rest - tmp_arr[0] * 512)
                 if the_rest < 262144:
-                    tmp_arr[2] = 0
-                    tmp_arr[2] = int(the_rest % 262144)
+                    tmp_arr.insert(int(the_rest % 262144), 2)
                 # 数组排序 从大到小
                 tmp_arr.sort(reverse=True)
                 if tmp_arr[0] == 0:
@@ -498,39 +505,12 @@ class Task:
 # 特殊装备地图
 def special_map(task_id):
     if task_id == 675:  # 右槽_魔法石
-        init.global_data.map_level = 3
-        return 82
+        init.global_data.map_list_level = 3
+        return [163]
     if task_id == 674:  # 右槽_辅助装备
-        init.global_data.map_level = 3
-        return 163
+        init.global_data.map_list_level = 3
+        return [82]
     if task_id == 2635:  # 耳环
-        init.global_data.map_level = 5
-        if not init.global_data.earring01:
-            init.global_data.earring01 = True
-            return 311
-        else:
-            init.global_data.earring01 = False
-            return 314
+        init.global_data.map_list_level = 3
+        return [291100319, 291100317, 291100309]
     return -1
-
-
-'''
-.判断开始 (任务编号 ＝ 675)  ' 右槽_魔法石
-    游戏数据.地图难度 ＝ 3
-    返回 (82)
-.判断 (任务编号 ＝ 674)  ' 右槽_辅助装备
-    游戏数据.地图难度 ＝ 3
-    返回 (163)
-.判断 (任务编号 ＝ 2635)  ' 耳环
-    游戏数据.地图难度 ＝ 5
-    .判断开始 (耳环01 ＝ 假)
-        耳环01 ＝ 真
-        返回 (311)
-    .默认
-        耳环01 ＝ 假
-        返回 (314)
-    .判断结束
-
-.默认
-    返回 (-1)
-'''

@@ -127,6 +127,12 @@ class Auto:
 
                 # 进入副本
                 if cls.map_data.get_stat() == 2:
+                    if init.global_data.map_id_list.__len__() != 0:
+                        # 有列表先用列表
+                        temp_map_id = init.global_data.map_id_list.pop()
+                        temp_level = init.global_data.map_list_level
+                        cls.enter_map(temp_map_id, temp_level)
+                        continue
                     cls.enter_map(init.global_data.map_id, init.global_data.map_level)
                     continue
 
@@ -250,14 +256,12 @@ class Auto:
         map_select = config().getint("自动配置", "手动选择")
         normal_map = list(map(int, config().get("自动配置", "普通地图").split(",")))
         super_map = list(map(int, config().get("自动配置", "英豪地图").split(",")))
-        if auto_model == 1 and cls.map_data.get_role_level() < 110:
-            init.global_data.map_id = cls.task.handle_main()
-            init.global_data.map_level = 0
+        if auto_model == 1:
+            cls.get_map_data()
         if auto_model == 2:
             if cls.map_data.get_role_level() < 110:
                 if first_upgrade == 1:
-                    init.global_data.map_id = cls.task.handle_main()
-                    init.global_data.map_level = 0
+                    cls.get_map_data()
             else:
                 map_ids = []
                 if map_select == 0:
@@ -290,6 +294,18 @@ class Auto:
         cls.select_map()
 
     @classmethod
+    def get_map_data(cls):
+        temp_map = cls.task.handle_main()
+        if type(temp_map) == list:
+            init.global_data.map_id = temp_map[0]
+            if init.global_data.map_id_list.__len__() > 0:
+                return
+            init.global_data.map_id_list = temp_map
+        else:
+            init.global_data.map_id = temp_map
+            init.global_data.map_level = 0
+
+    @classmethod
     def select_map(cls):
         """选图"""
         while cls.thread_switch:
@@ -315,20 +331,23 @@ class Auto:
     def enter_map(cls, map_id: int, map_level: int):
         """进图  这个5 会自动适配是否进图的  从高到低 没开图 自动开图 """
         auto_down = config().getint("自动配置", "地图难度")
+        auto_type = config().getint("自动配置", "自动模式")
+        if auto_type == 2:
+            while cls.map_data.get_stat() == 2 and cls.thread_switch:
+                if auto_down == 5:
+                    for i in range(4, -1, -1):
+                        if cls.map_data.get_stat() == 3:
+                            break
+                        if cls.map_data.get_stat() == 2:
+                            cls.pack.go_map(map_id, i, 0, 0)
+                            time.sleep(1)
+                        if cls.map_data.get_stat() == 1:
+                            cls.select_map()
+                else:
+                    cls.pack.go_map(map_id, map_level, 0, 0)
 
-        while cls.map_data.get_stat() == 2 and cls.thread_switch:
-            if auto_down == 5:
-                for i in range(4, -1, -1):
-                    if cls.map_data.get_stat() == 3:
-                        break
-                    if cls.map_data.get_stat() == 2:
-                        cls.pack.go_map(map_id, i, 0, 0)
-                        time.sleep(1)
-                    if cls.map_data.get_stat() == 1:
-                        cls.select_map()
-            else:
-                cls.pack.go_map(map_id, map_level, 0, 0)
-
+        if auto_type == 1:
+            cls.pack.go_map(map_id, map_level, 0, 0)
 
     @classmethod
     def pass_map(cls):
