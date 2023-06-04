@@ -7,12 +7,16 @@ win_app = None
 class GlobalData:
     # 自动开关
     auto_switch = False
+    manual_switch = False
     # 任务编号
     task_id = 0
     # 副本编号
     map_id = 0
+    # 副本编号
+    map_id_list = []
     # 副本难度
     map_level = 0
+    map_list_level = 0
     # 角色总数
     role_count = 0
     # 完成角色

@@ -1,6 +1,9 @@
-from common import globle
+from datetime import time
+
+from common import globle, logger
 from core.game import call, address, mem
 from core.game.addr import address_all
+import time
 
 
 # 地图起始地址
@@ -51,7 +54,10 @@ def map_has_goods():
 
 # 地图是否有怪物
 def map_has_monster():
-    return map_has_item(怪物校验)
+    start_time = time.time()
+    data = map_has_item(怪物校验, 1)
+    logger.info("地图是否有怪物耗时: {}".format(time.time() - start_time), 1)
+    return data
 
 
 def map_has_cross_hide():
@@ -59,10 +65,13 @@ def map_has_cross_hide():
 
 
 # 扫描地图是否有code校验
-def map_has_item(code_type):
+def map_has_item(code_type, item_size=0):
     start, end = get_map_start_and_end()
     obj_num = get_map_obj(start, end)
+    item_map = {}
     for obj_tmp in range(obj_num):
+        if 0 < item_size <= len(item_map):
+            return item_map
         target_addr = get_address(start, obj_tmp)
         if target_addr < 0:
             continue
@@ -87,7 +96,7 @@ def map_has_item(code_type):
         code_list = [289]
         if code_type == 1:
             if code_list.__contains__(obj_type_a) or code_list.__contains__(obj_type_b):
-                return target_coordinate, target_addr
+                item_map[target_addr] = target_coordinate
 
         monster_code = [529, 545, 273, 61440]
         if obj_camp == 0 or target_addr == call.person_ptr():
@@ -98,11 +107,12 @@ def map_has_item(code_type):
                 continue
 
             if monster_code.__contains__(obj_type_a) or monster_code.__contains__(obj_type_b):
-                return target_coordinate, target_addr
+                item_map[target_addr] = target_coordinate
         if code_type == 3:
             if obj_code == 490019076:
-                return target_coordinate, target_addr
-    return None, 0
+                item_map[target_addr] = target_coordinate
+
+    return item_map
 
 
 # 地图固定坐标
@@ -162,17 +172,18 @@ def check_monster(monster):
     else:
         return False
 
+
 # 获取坐标位置
 def read_coordinate(param: int) -> globle.CoordinateType:
     """读取坐标"""
     coordinate = globle.CoordinateType()
-    if mem.read_int(param + address_all.类型偏移) == 273:
-        ptr = mem.read_long(param + address_all.读取坐标)
+    if mem.read_int(param + address.LxPyAddr) == 273:
+        ptr = mem.read_long(param + address.DqZbAddr)
         coordinate.x = int(mem.read_float(ptr + 0))
         coordinate.y = int(mem.read_float(ptr + 4))
         coordinate.z = int(mem.read_float(ptr + 8))
     else:
-        ptr = mem.read_long(param + address_all.方向偏移)
+        ptr = mem.read_long(param + address.FxPyAddr)
         coordinate.x = int(mem.read_float(ptr + 32))
         coordinate.y = int(mem.read_float(ptr + 36))
         coordinate.z = int(mem.read_float(ptr + 40))

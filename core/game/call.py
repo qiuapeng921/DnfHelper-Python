@@ -12,6 +12,7 @@ from core.game.addr import address_all
 
 fast_call = fc.FastCall
 
+
 def init_call():
     global fast_call
     fast_call = fc.FastCall(mem)
@@ -57,14 +58,8 @@ def compile_call(byte_arr: list):
     mem.write_bytes(hook_shell, bytes(hook_shell_value))
 
     mem.write_int(jump_address, 1)
-    check = 0
     while mem.read_int(jump_address) == 1:
-        check += 1
-        time.sleep(0.1)
-        if check >= 3:
-            logger.info("call执行超时", 1)
-            return
-
+        time.sleep(0.01)
     mem.write_bytes(hook_shell, hook_old_data)
     mem.write_bytes(blank_address, helper.get_empty_bytes(len(byte_arr) + 16))
     run_status = False
@@ -116,28 +111,22 @@ def person_ptr():
     """人物指针"""
     person_addr = get_per_ptr_call(address.RwKbAddr)
     if person_addr == 0 or person_addr is None:
-        logger.info("人物指针获取失败, 直接退出程序", 1)
+        logger.info("人物指针获取失败, 异常情况", 1)
     return person_addr
 
 
-def skill_call_power_random():
+def skill_call_power_random(supper_skill_list):
     # 获取当前窗口的焦点
     title = helper.get_process_name()
     if title == "地下城与勇士：创新世纪":
         """技能call"""
         key = skill.pick_key()
+        key.remove(supper_skill_list)
         helper.key_press_release_list(key)
 
 
 def skill_call_power(un_used):
-    # 获取当前窗口的焦点
-    title = helper.get_process_name()
-    if title == "地下城与勇士：创新世纪":
-        """技能call"""
-        helper.key_press("x")
-        key = skill.skill_map_cool_down(un_used)
-        helper.key_press_release(key)
-        helper.key_release("x")
+    skill.enter_skill(un_used)
 
 
 def skill_call(addr: int, code: int, harm: int, x: int, y: int, z: int, size: float):
@@ -410,6 +399,12 @@ def cool_down_call(skill_addr):
 # 移动技能
 def skill_move(skill_index, skill_empty):
     try:
-        call.fast_call.call(address.JnYdCallAddr, address.JnlAddr(), call.person_ptr(), skill_index, skill_empty)
+        fast_call.call(address.JnYdCallAddr, address.JnlAddr(), person_ptr(), skill_index, skill_empty)
     except Exception as e:
         logger.file("read_longlong 技能位置:{},移动位置:{},错误:{}".format(skill_index, skill_index, e.args))
+
+
+# 技能三无
+def skill_nothing():
+    # dw.WriteByteArr(game.JnSwAddr, []byte{144, 144, 144, 144, 144})
+    mem.write_bytes(address_all.技能三无, [144, 144, 144, 144, 144])

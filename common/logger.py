@@ -26,12 +26,6 @@ def info(msg: str, t: int):
             globle.win_app.add_edit_content(msg)
 
 
-count = 5  # 全局变量
-
 
 def file(msg: str):
-    global count  # 声明count为全局变量
-    count -= 1  # 每次减一
-    if count <= 0:
-        exit()  # 退出程序
     fileLog.debug("{} {}".format(helper.get_now_date(), msg))

@@ -9,7 +9,7 @@ from plugins.driver import init_driver
 if __name__ == '__main__':
     try:
         globle.cmd = "cmd"
-        init_driver("3swg")
+        init_driver("win")
         logger.info("驱动加载成功", 1)
         process_id = helper.get_process_id_by_name("DNF.exe")
         if process_id == 0:
@@ -21,6 +21,7 @@ if __name__ == '__main__':
         init.init_empty_addr()
         # 初始化fastcall
         init.call.init_call()
+        # init.init_person()
 
         logger.info("加载成功-欢迎使用", 1)
         logger.info("当前时间：{}".format(helper.get_now_date()), 1)

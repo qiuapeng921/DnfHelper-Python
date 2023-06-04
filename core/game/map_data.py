@@ -130,6 +130,7 @@ class MapData:
 
     def cross_room(self) -> object:
         """裂缝是否出现"""
+        item_map = {}
         mem = self.mem
         start, end = map_base.get_map_start_and_end()
         obj_num = int((end - start) / 24)
@@ -141,8 +142,9 @@ class MapData:
             '''紧急任务裂缝'''
             if cross_code == 490019076:
                 cross_coord = self.read_coordinate(cross_addr)
-                return cross_coord
-        return None
+                item_map[cross_addr] = cross_coord
+                return item_map
+        return item_map
 
     def get_cut_room(self) -> globle.CoordinateType:
         """获取当前房间坐标"""

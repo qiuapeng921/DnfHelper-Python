@@ -3,15 +3,11 @@ import random
 from enum import Enum
 
 from common import helper, logger
-from core.game import address, call, fast_call
+from core.game import address, call, fast_call, init
 from core.game import mem, map_data
 from core.game.addr import address_all, xiaochen_address
 
-
-class Skill:
-    @classmethod
-    def __init__(cls):
-        pass
+skil_data = {}
 
 
 class KeyCode(Enum):
@@ -46,9 +42,9 @@ mapping = {0: KeyCode.VK_A,
            12: KeyCode.VK_Y,
            13: KeyCode.VK_TAB}
 # 技能列表
-strings = ['z', 'c', 'v', 'a', 's', 'd', 'f', 'g', 'h', 'w', 'e', 'r', 't', 'y']
+strings = ['a', 's', 'd', 'f', 'g', 'h', 'w', 'e', 'r', 't']
 # 权重
-weights = [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+weights = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
 # 不好用的技能
 un_use = ['流心', '后跳', '属性变换', '受身蹲伏', '刀魂', '三段刃', '流心', '格林机枪', '锁魂刺']
@@ -102,10 +98,14 @@ def skill_name_map():
     return skill_map
 
 
-def get_skill_map() -> dict:
+def get_skill_map(un_select=None) -> dict:
+    if un_select is None:
+        un_select = []
     skill_map_data = {}
     skill_ptr = get_skill_base_addr()
     for key, value in mapping.items():
+        if un_select.__contains__(value.value):
+            continue
         skill_str = mem.read_long(skill_ptr + key * 24 + 16) - 16
         if skill_str <= 0 or skill_str is None:
             continue
@@ -114,21 +114,50 @@ def get_skill_map() -> dict:
 
 
 def skill_map_cool_down_all():
-    code = skill_map_cool_down([])
-    if code is None:
-        return 'x'
-    return code
+    enter_skill([])
 
 
-def skill_map_cool_down(un_select):
-    skill_map = get_skill_map()
-    keys = list(skill_map.keys())
+def enter_skill(un_used):
+    # 获取当前窗口的焦点
+    title = helper.get_process_name()
+    if title == "地下城与勇士：创新世纪":
+        """技能call"""
+        key = skill_map_cool_down(un_used)
+        logger.info("施放技能: {} ".format(key), 1)
+        count = 3
+        while check_skill_down_single(key):
+            count -= 1
+            if count == 0:
+                break
+            helper.key_press_release_list(["x", "x", "x", "z"])
+            time.sleep(0.3)
+            helper.key_press_release(key)
+
+
+def check_skill_down_single_while(key_code_list):
+    for key in key_code_list:
+        count = 3
+        while check_skill_down_single(key):
+            count -= 1
+            if count == 0:
+                break
+            time.sleep(0.3)
+            helper.key_press_release(key)
+
+
+def skill_map_cool_down(un_select=None):
+    global skil_data
+    if skil_data is None or skil_data.__len__() == 0:
+        skil_data = get_skill_map(un_select)
+    keys = list(skil_data.keys())
     random.shuffle(keys)
     visited = []
     for key_code in keys:
         if un_select.__contains__(key_code):
             continue
-        value = skill_map[key_code]
+        value = skil_data[key_code]
+        if visited.__contains__(value):
+            continue
         visited.append(value)
         cool_down = call.cool_down_call(value)
         if cool_down:
@@ -235,8 +264,6 @@ def check_skill_down_single(key):
         result = mem.read_long(skill_addr + address_all.技能G)
     elif key == KeyCode.VK_H.value:
         result = mem.read_long(skill_addr + address_all.技能H)
-    elif key == KeyCode.VK_ALT.value:
-        result = mem.read_long(skill_addr + address_all.技能Alt)
     elif key == KeyCode.VK_Q.value:
         result = mem.read_long(skill_addr + address_all.技能Q)
     elif key == KeyCode.VK_W.value:
@@ -249,8 +276,8 @@ def check_skill_down_single(key):
         result = mem.read_long(skill_addr + address_all.技能T)
     elif key == KeyCode.VK_Y.value:
         result = mem.read_long(skill_addr + address_all.技能Y)
-    elif key == KeyCode.VK_CTRL.value:
-        result = mem.read_long(skill_addr + address_all.技能Ctrl)
+    elif key == KeyCode.VK_TAB.value:
+        result = mem.read_long(skill_addr + address_all.技能Tab)
 
     if result is None or result <= 0:
         return False
