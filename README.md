@@ -7,7 +7,7 @@
    https://www.python.org/ftp/python/3.10.8/python-3.10.8-amd64.exe)
 2. git clone https://ghproxy.com/https://github.com/qiuapeng921/DnfHelper-Python.git
 3. pip install -i https://mirrors.cloud.tencent.com/pypi/simple -r requirements.txt
-4. 复制根目录static/sys目录下随便一个驱动到C盘根目录,改名为3swg 或者不改名字改 main.py init_driver("驱动名字")
+4. 自己找破图标驱动丢在C盘根目录,改名为3swg 或者不改名字改 main.py init_driver("驱动名字")或者进去下载破图标驱动
 5. 复制根目录static下的helper.ini和main.py放同一级目录
 6. python main.py
 ```
@@ -32,9 +32,9 @@
 
  <img src="static/wePay.png" width="301"  alt="">
 
-## Project supported by JetBrains
+## JetBrains 支持的项目
 
-Many thanks to Jetbrains for kindly providing a license for me to work on this and other open-source projects.
+非常感谢 Jetbrains 友好地为我提供了一个许可，让我可以从事这个项目和其他开源项目。
 
 [![](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)](https://www.jetbrains.com/?from=https://github.com/overtrue)
 
