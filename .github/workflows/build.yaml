@@ -52,4 +52,3 @@ jobs:
           files: |
             dist/*.exe
             static/helper.ini
-            static/sys/*.sys
