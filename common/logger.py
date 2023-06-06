@@ -1,14 +1,11 @@
-import logging
+from common import globle
+from plugins.logger.console import ConsoleLog
+from plugins.logger.file import FileLog
+from plugins.logger.gui import GuiLog
 
-from common import helper, globle
-
-log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
-log.addHandler(logging.StreamHandler())
-
-fileLog = logging.getLogger(__name__)
-fileLog.setLevel(logging.DEBUG)
-fileLog.addHandler(logging.FileHandler(filename="logs/debug.log"))
+console_log = ConsoleLog()
+gui_log = GuiLog()
+file_log = FileLog()
 
 
 def info(msg: str, t: int):
@@ -18,13 +15,12 @@ def info(msg: str, t: int):
     :return:
     """
     if globle.cmd == "cmd":
-        log.debug("{} {}".format(helper.get_now_date(), msg))
-    else:
         if t == 1:
-            globle.win_app.add_func_content(msg)
+            console_log.info(msg)
         else:
-            globle.win_app.add_edit_content(msg)
-
-
-def file(msg: str):
-    fileLog.debug("{} {}".format(helper.get_now_date(), msg))
+            console_log.debug(msg)
+    if globle.cmd == "gui":
+        if t == 1:
+            gui_log.info(msg)
+        else:
+            gui_log.debug(msg)

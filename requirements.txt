@@ -1,8 +1,5 @@
-pefile==2023.2.7
-psutil==5.9.4
-pyinstaller==5.9.0
-Pymem==1.10.0
-pywin32==306
-xcgui~=0.1.7
 keyboard==0.13.5
-multiprocess==0.70.14
+psutil==5.9.5
+Pymem==1.12.0
+pywin32==306
+xcgui==0.1.7
