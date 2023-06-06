@@ -14,9 +14,7 @@ class FileLog(LogInterface):
         file_handler.setLevel(logging.DEBUG)
 
         # 创建 Formatter 对象
-        formatter = logging.Formatter(
-            fmt='%(asctime)s - %(filename)s:%(lineno)d - %(levelname)s - %(message)s %(name)s %(levelno)s  %(pathname)s %(funcName)s',
-            datefmt="%Y-%m-%d %H:%M:%S")
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
         file_handler.setFormatter(formatter)
 
         # 添加 Formatter 对象到 FileHandler 对象中
