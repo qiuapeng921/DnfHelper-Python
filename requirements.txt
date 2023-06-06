@@ -3,3 +3,4 @@ psutil==5.9.5
 Pymem==1.12.0
 pywin32==306
 xcgui==0.1.7
+pyinstaller==5.9.0
