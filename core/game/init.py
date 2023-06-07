@@ -30,6 +30,7 @@ def init_empty_addr():
     address.PtGgKbAddr = mem.allocate(2048)
     address.JnKbAddr = mem.allocate(2048)
     address.GtKbAddr = mem.allocate(2048)
+    address.CoolDownKbAddr = mem.allocate(2048)
 
 
 def hotkey2():

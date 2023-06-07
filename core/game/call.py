@@ -1,7 +1,7 @@
 import time
 
 from common import helper
-from core.game import init, address, skill
+from core.game import init, address
 from core.game import mem, fast_call as fc
 
 fast_call = fc.FastCall
@@ -335,3 +335,19 @@ def submit_task_call(task_id):
     helper.add_list(shell_code, call(address.TjCallAddr))
     helper.add_list(shell_code, add_rsp(48))
     compile_call(shell_code)
+
+
+def cool_down_call(skill_addr):
+    if skill_addr < 0:
+        return False
+    empty_addr = address.CoolDownKbAddr
+    mem.write_int(empty_addr, 0)
+    shell_code = [72, 131, 236, 32]
+    helper.add_list(shell_code, [49, 210])
+    helper.add_list(shell_code, [72, 185], helper.int_to_bytes(skill_addr, 8))
+    helper.add_list(shell_code, [255, 21, 2, 0, 0, 0, 235, 8])
+    helper.add_list(shell_code, helper.int_to_bytes(address.LqCallJudgeAddr, 8))
+    helper.add_list(shell_code, [72, 162], helper.int_to_bytes(empty_addr, 8))
+    helper.add_list(shell_code, [72, 131, 196, 32])
+    compile_call(shell_code)
+    return mem.read_int(empty_addr) < 1
