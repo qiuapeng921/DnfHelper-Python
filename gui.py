@@ -146,11 +146,11 @@ if __name__ == '__main__':
         app.run()
         app.exit()
     except KeyboardInterrupt as e:
-        logger.file("信道推出")
+        print("信道推出")
     except Exception as err:
         except_type, _, except_traceback = sys.exc_info()
         err_str = ','.join(str(i) for i in err.args)
-        logger.file(except_type)
-        logger.file(err_str)
+        print(except_type)
+        print(err_str)
         for i in traceback.extract_tb(except_traceback):
-            logger.file("函数{},文件:{},行:{}".format(i.name, i.filename, i.lineno))
+            print("函数{},文件:{},行:{}".format(i.name, i.filename, i.lineno))
