@@ -18,10 +18,6 @@
 
 <img src="static/qq.png" alt="alt text" width="276" height="319"> 
 
-#### 微信群
-
-<img src="static/wechat.png" alt="alt text" width="308" height="318">
-
 ## 赞赏
 
 如果我的项目对你有帮助, 可以通过以下方式支持我:
