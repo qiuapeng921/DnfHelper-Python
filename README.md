@@ -9,7 +9,7 @@
 3. pip install -i https://mirrors.cloud.tencent.com/pypi/simple -r requirements.txt
 4. 自己找破图标驱动 或者 进qq群下载破图标驱动。丢在C盘根目录 改名为3swg
 5. 复制根目录static下的helper.ini和main.py放同一级目录
-6. python main.py
+6. *** 管理员方式运行 python main.py ***
 ```
 
 ### 交流群: star后带上github用户名加群
