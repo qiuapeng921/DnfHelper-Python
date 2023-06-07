@@ -4,6 +4,7 @@ NcBhKbAddr = 0  # 内存汇编
 PtGgKbAddr = 0  # 普通公告
 JnKbAddr = 0  # 技能Call
 GtKbAddr = 0  # 过图Call
+CoolDownKbAddr = 0  # 冷却判断call
 
 RwAddr = 0x14A51F8E8  # 新人物基址
 RwAddr1 = 0x14A51F8D8  # 人物基址
