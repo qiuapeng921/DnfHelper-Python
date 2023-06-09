@@ -60,7 +60,7 @@ def get_key_state(key_code: int) -> bool:
     :param key_code:
     :return:
     """
-    get_key_state_api = user32.GetKeyState
+    get_key_state_api = ctypes.windll.user32.GetKeyState
     get_key_state_api.argtypes = [ctypes.c_int]
     get_key_state_api.restype = ctypes.c_short
     state = get_key_state_api(key_code)
