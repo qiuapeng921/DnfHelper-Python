@@ -50,3 +50,17 @@ def drive_button(vk_code: int, send_type: int, func_type: bool):
         ki.time = int(time.time() * 1000)
         inp = KeyboardInput(type=1, ki=ki)
         user32.SendInput(1, ctypes.byref(inp), ctypes.sizeof(inp))
+
+
+def get_key_state(key_code: int) -> bool:
+    """
+    °´¼ü×´Ì¬
+    :param key_code:
+    :return:
+    """
+    user32 = ctypes.windll.user32
+    get_key_state_api = user32.GetKeyState
+    get_key_state_api.argtypes = [ctypes.c_int]
+    get_key_state_api.restype = ctypes.c_short
+    state = get_key_state_api(key_code)
+    return state & 0x8000 != 0
