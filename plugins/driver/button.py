@@ -1,7 +1,7 @@
 # coding=gbk
 
-import time
 import ctypes
+import time
 
 
 class KeyboardInputKi(ctypes.Structure):
@@ -33,23 +33,25 @@ def drive_button(vk_code: int, send_type: int, func_type: bool):
     :param func_type: bool
     :return:
     """
-    user32 = ctypes.windll.user32
 
     ki = KeyboardInputKi()
     ki.wVk = vk_code
-    ki.wScan = user32.MapVirtualKeyW(vk_code, 0)
+    ki.wScan = ctypes.windll.user32.MapVirtualKeyW(vk_code, 0)
     ki.dwExtraInfo = ctypes.pointer(ctypes.c_ulong(0))
 
     if send_type == 0 or send_type == 1:
         ki.dwFlags = 1 if func_type else 0
         ki.time = int(time.time() * 1000)
         inp = KeyboardInput(type=1, ki=ki)
-        user32.SendInput(1, ctypes.byref(inp), ctypes.sizeof(inp))
+        ctypes.windll.user32.SendInput(1, ctypes.pointer(inp), ctypes.sizeof(inp))
+        time.sleep(0.01)
+
     if send_type == 0 or send_type == 2:
         ki.dwFlags = 3 if func_type else 2
         ki.time = int(time.time() * 1000)
         inp = KeyboardInput(type=1, ki=ki)
-        user32.SendInput(1, ctypes.byref(inp), ctypes.sizeof(inp))
+        ctypes.windll.user32.SendInput(1, ctypes.pointer(inp), ctypes.sizeof(inp))
+        time.sleep(0.01)
 
 
 def get_key_state(key_code: int) -> bool:
@@ -58,8 +60,7 @@ def get_key_state(key_code: int) -> bool:
     :param key_code:
     :return:
     """
-    user32 = ctypes.windll.user32
-    get_key_state_api = user32.GetKeyState
+    get_key_state_api = ctypes.windll.user32.GetKeyState
     get_key_state_api.argtypes = [ctypes.c_int]
     get_key_state_api.restype = ctypes.c_short
     state = get_key_state_api(key_code)
