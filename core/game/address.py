@@ -57,6 +57,7 @@ HChengCallAddr = 0x144F40CB0  # 回城CALL
 GtCallAddr = 0x143329640  # 过图CALL
 PyCall1Addr = 0x143194F50  # 漂移CALL
 PyCall2Addr = 0x1452D77E0  # 漂移CALL2
+GameTimeGetTime = 0x1469AA0A0
 BpCallAddr = 0x143726E30  # 奔跑CALL
 XrNcCallAddr = 0x14436D480  # 写入内存
 BpPyAddr1 = 0x1130  # 奔跑偏移_1
