@@ -5,6 +5,7 @@ PtGgKbAddr = 0  # 普通公告
 JnKbAddr = 0  # 技能Call
 GtKbAddr = 0  # 过图Call
 CoolDownKbAddr = 0  # 冷却判断call
+GlobalBlankAddr = 0  # 空白地址
 
 RwAddr = 0x14A51F8E8  # 新人物基址
 RwAddr1 = 0x14A51F8D8  # 人物基址
@@ -39,6 +40,7 @@ CutPlAddr = 0x14A51F88C  # 当前疲劳
 QyParamAddr = 0x14A573AF8  # 区域参数
 QyCallAddr = 0x144FB2BB0  # 区域CALL
 QyPyAddr = 0x8DF10  # 区域偏移
+HdQyCallAddr = 5454150896  # 活动区域
 XTuCallAddr = 0x144FF0080  # 选图CALL
 JTuCallAddr = 0x14502CD80  # 进图CALL
 HChengCallAddr = 0x144D88520  # 回城CALL
@@ -129,3 +131,6 @@ JnDjAddr = 0x19BC  # 技能等级
 JnSxDj1Addr = 0x2AC  # 技能上限等级1
 TranslateMessage = 0x1467A6D00
 GameTimeGetTime = 0x1467A70B0
+
+HdDtAddr_2 = 5399738400
+HdDtAddr_1 = 5399739120

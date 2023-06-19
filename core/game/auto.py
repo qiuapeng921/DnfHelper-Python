@@ -203,7 +203,7 @@ class Auto:
             init.global_data.map_id = map_ids[random_number]
             init.global_data.map_level = config().getint("自动配置", "地图难度")
         if auto_model == 3 and cls.map_data.get_role_level() == 110:
-            init.global_data.map_id = active_role_map(cls.map_data.get_role_level())
+            init.global_data.map_id = call.active_map_call()
             init.global_data.map_level = 0
 
 
@@ -213,7 +213,10 @@ class Auto:
 
         time.sleep(0.2)
         # 区域发包
-        call.area_call(init.global_data.map_id)
+        if auto_model == 2:
+            call.active_area_call(init.global_data.map_id)
+        else:
+            call.area_call(init.global_data.map_id)
 
         time.sleep(0.2)
         cls.select_map()

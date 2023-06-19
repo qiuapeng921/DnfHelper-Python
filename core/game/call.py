@@ -351,3 +351,36 @@ def cool_down_call(skill_addr):
     helper.add_list(shell_code, [72, 131, 196, 32])
     compile_call(shell_code)
     return mem.read_int(empty_addr) < 1
+
+
+def active_map_call():
+    shell_code = [72, 184] + helper.int_to_bytes(address.HdDtAddr_2, 4)
+    shell_code = helper.add_list(shell_code, [255, 208, 72, 137, 193])
+    shell_code = helper.add_list(shell_code, [72, 186], helper.int_to_bytes(0, 4))
+    shell_code = helper.add_list(shell_code, [72, 184], helper.int_to_bytes(address.HdDtAddr_1, 4))
+    shell_code = helper.add_list(shell_code, [255, 208])
+    shell_code = helper.add_list(shell_code, [163], helper.int_to_bytes(address.GlobalBlankAddr + 9120, 4))
+    shell_code = [72, 129, 236, 256] + helper.int_to_bytes(256, 4) + [72, 129, 196, 256] + helper.int_to_bytes(256, 4) + [195]
+    compile_call(shell_code)
+    map_id = mem.read_int(address.GlobalBlankAddr + 9120)
+    return map_id
+
+
+def active_area_call(map_id):
+    region_addr = mem.read_long(address.QyParamAddr)
+    shell_code = []
+    shell_code = shell_code + [72, 131, 236, 48]
+    shell_code = shell_code + [186] + helper.int_to_bytes(map_id, 4)
+    shell_code = shell_code + [72, 184, 255, 255, 255, 255, 0, 0, 0, 0]
+    shell_code = shell_code + [72, 185] + helper.int_to_bytes(mem.read_long(address.QyParamAddr), 8)
+    shell_code = shell_code + [72, 139, 9]
+    shell_code = shell_code + [76, 139, 201, 73, 129, 193] + helper.int_to_bytes(address.QyPyAddr, 4) + [73, 131, 233, 64]
+    shell_code = shell_code + [72, 184] + helper.int_to_bytes(address.HdQyCallAddr, 8)
+    shell_code = shell_code + [255, 208]
+    shell_code = shell_code + [72, 131, 196, 48]
+    compile_call(shell_code)
+    max_region = mem.read_int(region_addr + address.QyPyAddr + 0)
+    min_region = mem.read_int(region_addr + address.QyPyAddr + 4)
+    town_x = mem.read_int(region_addr + address.QyPyAddr + 8)
+    town_y = mem.read_int(region_addr + address.QyPyAddr + 12)
+    return move_call(max_region, min_region, town_x, town_y)
