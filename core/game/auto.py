@@ -11,6 +11,7 @@ from common import config
 from common import helper, logger
 from core.game import mem
 from core.game import call, init, address
+from core.game.active_role import active_role_map
 
 
 class Auto:
@@ -187,7 +188,7 @@ class Auto:
         # 分解装备
         cls.equip.handle_equip()
 
-        # 1 剧情 2 搬砖
+        # 1 剧情 2 搬砖 3活动角色
         auto_model = config().getint("自动配置", "自动模式")
         if auto_model == 1 and cls.map_data.get_role_level() < 110:
             init.global_data.map_id = cls.task.handle_main()
@@ -201,6 +202,10 @@ class Auto:
             random_number = random.randint(0, len(map_ids) - 1)
             init.global_data.map_id = map_ids[random_number]
             init.global_data.map_level = config().getint("自动配置", "地图难度")
+        if auto_model == 3 and cls.map_data.get_role_level() == 110:
+            init.global_data.map_id = active_role_map(cls.map_data.get_role_level())
+            init.global_data.map_level = 0
+
 
         if init.global_data.map_id == 0:
             logger.info("地图编号为空,无法切换区域", 2)
