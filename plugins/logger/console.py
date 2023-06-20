@@ -29,7 +29,7 @@ class ConsoleLog(LogInterface):
 
         # 使用彩色格式化程序创建控制台处理程序
         console_handler = logging.StreamHandler()
-        console_handler.setFormatter(ColoredFormatter('%(asctime)s [ %(message)s ]'))
+        console_handler.setFormatter(ColoredFormatter('%(asctime)s %(message)s'))
 
         # 将控制台处理程序添加到记录器
         self.logger.addHandler(console_handler)
