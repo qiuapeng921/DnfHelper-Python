@@ -30,6 +30,7 @@ YrlPyAddr = 0x600  # 玉荣力偏移
 JsYrlAddr = 0x4F40  # 角色玉荣力
 HBCallAddr = 0x13FDC0000  # 汇编CALL
 TranslateMessage = 0x1469A9CC0  # TranslateMessage
+GameTimeGetTime = 0x1469AA0A0
 JNCallAddr = 0x143EC3870  # 技能CALL
 JwCallAddr = 0x144148960  # 聚物CALL
 JwXyAddr = 0xF7F8  # 聚物校验
@@ -136,3 +137,8 @@ WplAddr = 0xF770  # 物品栏
 WplPyAddr = 0xA8  # 物品栏偏移
 JnlAddr = 0xF6E8  # 技能栏
 JnlPyAddr = 0x90  # 技能栏偏移
+
+HdDtAddr1 = 539973912  # 活动地图1
+HdDtAddr2 = 5399738400  # 活动地图2
+HdQyCallAddr = 5454150896  # 活动区域CALL
+HdKbAddr = 0  # 活动空白地址
