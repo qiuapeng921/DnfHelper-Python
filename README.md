@@ -1,4 +1,4 @@
-##  此代码库仅自己学习! 禁止商用和用于非法操作; 如果违反产生的任何纠纷与本人无任何关系!
+## 此代码库仅自己学习! 禁止商用和用于非法操作; 如果违反产生的任何纠纷与本人无任何关系!
 
 ## 如何启动
 
@@ -37,3 +37,21 @@
 ## License
 
 MIT
+
+## 贡献者
+
+这个项目的存在要感谢所有做出贡献的人
+
+[![Contributors](https://contributors-img.web.app/image?repo=qiuapeng921/DnfHelper-Python)](https://github.com/qiuapeng921/DnfHelper-Python/graphs/contributors)
+
+<div align="center">
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=qiuapeng921/DnfHelper-Python&type=Timeline)](https://star-history.com/#qiuapeng921/DnfHelper-Python&Timeline)
+
+## ⚡ Visitor count
+
+![](https://profile-counter.glitch.me/qiuapeng921/DnfHelper-Python/count.svg)
+
+</div>
