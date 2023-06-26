@@ -50,8 +50,4 @@ MIT
 
 [![Star History Chart](https://api.star-history.com/svg?repos=qiuapeng921/DnfHelper-Python&type=Timeline)](https://star-history.com/#qiuapeng921/DnfHelper-Python&Timeline)
 
-## ⚡ Visitor count
-
-![](https://profile-counter.glitch.me/qiuapeng921/DnfHelper-Python/count.svg)
-
 </div>
