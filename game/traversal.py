@@ -3,7 +3,8 @@ import time
 
 from common import config, helper
 from common import logger
-from core.game import call, init, address, skill
+from game import call, init, address
+from game import skill
 
 
 class Screen:

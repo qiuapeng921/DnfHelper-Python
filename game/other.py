@@ -2,7 +2,7 @@ import time
 
 from common import config
 from common import helper, logger
-from core.game import call, address
+from game import call, address
 
 
 class Pickup:

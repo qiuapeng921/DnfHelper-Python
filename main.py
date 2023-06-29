@@ -2,8 +2,7 @@ import sys
 import traceback
 
 from common import helper, logger, globle
-from core.game import init
-from core.game import mem
+from game import init, mem, call
 from plugins.driver import init_driver
 
 if __name__ == '__main__':
@@ -20,7 +19,7 @@ if __name__ == '__main__':
 
         init.init_empty_addr()
         # 初始化fastcall
-        init.call.init_call()
+        call.init_call()
 
         logger.info("加载成功-欢迎使用", 1)
         logger.info("当前时间：{}".format(helper.get_now_date()), 1)

@@ -4,10 +4,10 @@
 import keyboard
 
 from common import globle
-from core.game import auto as a
-from core.game import call, other as o, traversal as mt, game_map as gm, pack as p, task as t, address
-from core.game import map_data as md
-from core.game import mem
+from game import auto as a, other as o, game_map as gm, pack as p
+from game import call, traversal as mt, task as t, address
+from game import map_data as md
+from game import mem
 
 map_data = md.MapData(mem)
 game_map = gm.GameMap()

@@ -1,6 +1,6 @@
 from common import helper, globle
-from core.game import address as addr
-from core.game import call, address
+from game import address as addr
+from game import call, address
 
 
 class MapData:

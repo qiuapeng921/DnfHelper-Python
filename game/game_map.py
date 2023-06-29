@@ -1,7 +1,7 @@
 from common import globle
-from core.game import mem
-from core.game import address
-from core.game.map_data import MapData
+from game import mem
+from game import address
+from game.map_data import MapData
 
 
 class GameMap:

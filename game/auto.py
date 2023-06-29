@@ -9,8 +9,8 @@ import traceback
 
 from common import config
 from common import helper, logger
-from core.game import mem
-from core.game import call, init, address
+from game import mem
+from game import call, init, address
 
 
 class Auto:

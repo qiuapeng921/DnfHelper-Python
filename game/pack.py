@@ -1,5 +1,5 @@
 from common import helper
-from core.game import call, address
+from game import call, address
 
 
 class Pack:

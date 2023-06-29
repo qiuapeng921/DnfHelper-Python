@@ -1,7 +1,7 @@
 import time
 
 from common import helper
-from core.game import address
+from game import address
 
 
 class FastCall:

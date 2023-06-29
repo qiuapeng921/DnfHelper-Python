@@ -1,8 +1,8 @@
 import time
 
 from common import helper
-from core.game import init, address
-from core.game import mem, fast_call as fc
+from game import init, address
+from game import mem, fast_call as fc
 
 fast_call = fc.FastCall
 
