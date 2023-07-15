@@ -30,6 +30,7 @@ YrlPyAddr = 0x600  # 玉荣力偏移
 JsYrlAddr = 0x4F40  # 角色玉荣力
 HBCallAddr = 0x13FDC0000  # 汇编CALL
 TranslateMessage = 0x1469B0CC0  # TranslateMessage
+GameTimeGetTime = 0x1469B10A0
 JNCallAddr = 0x143EC9560  # 技能CALL
 JwCallAddr = 0x14414E860  # 聚物CALL
 JwXyAddr = 0xF800  # 聚物校验
