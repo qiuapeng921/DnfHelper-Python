@@ -57,10 +57,10 @@ class Screen:
                     obj_blood = mem.read_long(obj_ptr + address.GwXlAddr)
                     if obj_camp > 0 and obj_code > 0 and obj_blood > 0 and obj_ptr != rw_addr:
                         monster = map_obj.read_coordinate(obj_ptr)
-                        code = config().get("自动配置", "技能代码")
-                        harm = config().get("自动配置", "技能伤害")
-                        size = config().get("自动配置", "技能大小")
-                        number = config().get("自动配置", "技能代码")
+                        code = config().getint("自动配置", "技能代码")
+                        harm = config().getint("自动配置", "技能伤害")
+                        size = config().getint("自动配置", "技能大小")
+                        number = config().getint("自动配置", "技能个数")
                         call.skill_call(rw_addr, code, harm, monster.x, monster.y, 0, size)
                         num = num + 1
                         if num >= number:
