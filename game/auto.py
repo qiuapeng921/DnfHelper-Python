@@ -1,16 +1,17 @@
 """
 自动刷图主线程
 """
-import _thread
 import random
+import traceback
+
+import _thread
 import sys
 import time
-import traceback
 
 from common import config
 from common import helper, logger
-from game import mem
 from game import call, init, address
+from game import mem
 
 
 class Auto:
@@ -178,8 +179,7 @@ class Auto:
     @classmethod
     def town_handle(cls):
         """城镇处理"""
-        check_fatigue = config().getint("自动配置", "预留疲劳")
-        if cls.map_data.get_pl() <= check_fatigue:
+        if cls.map_data.get_pl() <= 8:
             cls.return_role()
             return
 
@@ -193,7 +193,7 @@ class Auto:
             init.global_data.map_id = cls.task.handle_main()
             init.global_data.map_level = 0
         if auto_model == 2 and cls.map_data.get_role_level() == 110:
-            if cls.map_data.get_fame() < 23330:
+            if cls.map_data.get_fame() < 25837:
                 map_ids = list(map(int, config().get("自动配置", "普通地图").split(",")))
             else:
                 map_ids = list(map(int, config().get("自动配置", "英豪地图").split(",")))

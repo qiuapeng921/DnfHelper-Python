@@ -24,16 +24,8 @@ class Screen:
 
     def screen_thread(self):
         while self._switch:
-            try:
-                code_config = list(map(int, config().get("自动配置", "全屏配置").split(",")))
-                if len(code_config) != 5:
-                    logger.info("全屏配置错误", 2)
-                    break
-                rate = code_config[0]
-                time.sleep(rate / 1000)
-                self.full_screen(code_config)
-            except Exception as e:
-                print(e)
+            self.full_screen()
+            time.sleep(0.3)
 
     @classmethod
     def screen_kill(cls):
@@ -41,7 +33,7 @@ class Screen:
         call.skill_call(0, 54141, 0, 0, 0, 0, 1.0)
         logger.info("秒杀完毕 [ √ ]", 1)
 
-    def full_screen(self, code_config):
+    def full_screen(self):
         """全屏遍历"""
         mem = self.mem
         map_obj = init.map_data
@@ -65,12 +57,13 @@ class Screen:
                     obj_blood = mem.read_long(obj_ptr + address.GwXlAddr)
                     if obj_camp > 0 and obj_code > 0 and obj_blood > 0 and obj_ptr != rw_addr:
                         monster = map_obj.read_coordinate(obj_ptr)
-                        code = int(code_config[1])
-                        harm = int(code_config[2])
-                        size = float(code_config[3])
+                        code = config().get("自动配置", "技能代码")
+                        harm = config().get("自动配置", "技能伤害")
+                        size = config().get("自动配置", "技能大小")
+                        number = config().get("自动配置", "技能代码")
                         call.skill_call(rw_addr, code, harm, monster.x, monster.y, 0, size)
                         num = num + 1
-                        if num >= code_config[4]:
+                        if num >= number:
                             break
 
     def follow_monster(self):
