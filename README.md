@@ -41,7 +41,8 @@ MIT
 <div align="center">
 
 
-[![Star History Chart](https://api.star-history.com/svg?repos=qiuapeng921/DnfHelper-Python&type=Timeline)](https://star-history.com/#qiuapeng921/DnfHelper-Python&Timeline)
+## Star History
 
+[![Star History Chart](https://api.star-history.com/svg?repos=qiuapeng921/DnfHelper-Python&type=Timeline)](https://star-history.com/#qiuapeng921/DnfHelper-Python&Timeline)
 
 </div>
