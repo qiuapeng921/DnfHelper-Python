@@ -12,7 +12,7 @@
 6. *** 管理员方式运行 python main.py ***
 ```
 
-### 交流群: star后带上github用户名加群
+### 交流群: star后带上你的github账号加群
 
 #### 企鹅群
 
