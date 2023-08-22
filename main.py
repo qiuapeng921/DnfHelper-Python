@@ -1,15 +1,13 @@
-import traceback
-
 import sys
+import traceback
 
 from common import helper, logger, globle
 from game import init, mem, call
-from plugins.driver import init_driver
 
 if __name__ == '__main__':
     try:
         globle.cmd = "cmd"
-        init_driver("TPqd640")
+        # init_driver("TPqd640")
         logger.info("驱动加载成功", 1)
         process_id = helper.get_process_id_by_name("DNF.exe")
         if process_id == 0:
