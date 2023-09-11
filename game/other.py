@@ -71,6 +71,8 @@ class Equip:
                 equip_level = mem.read_int(equip + address.ZbPjAddr)
                 name_addr = mem.read_long(equip + address.WpMcAddr)  # 装备名称
                 equip_name = helper.unicode_to_ascii(list(mem.read_bytes(name_addr, 100)))
+                if equip_name == "":
+                    break
                 if equip_level in [0, 1, 2]:
                     logger.info("处理装备 {}".format(equip_name), 1)
                     self.pack.decomposition(i + 9)
