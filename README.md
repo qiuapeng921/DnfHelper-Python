@@ -41,6 +41,11 @@ MIT
 <div align="center">
 
 
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/qiuapeng921/DnfHelper-Python.svg)](https://starchart.cc/qiuapeng921/DnfHelper-Python)
+
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=qiuapeng921/DnfHelper-Python&type=Timeline)](https://star-history.com/#qiuapeng921/DnfHelper-Python&Timeline)
