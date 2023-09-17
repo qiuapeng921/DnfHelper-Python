@@ -55,9 +55,6 @@ class Equip:
 
     def handle_equip(self):
         """处理装备"""
-        # if self.map_data.back_pack_weight() < 50:
-        #     return
-
         handle_type = config().getint("自动配置", "处理装备")
         if handle_type == 0:
             return
@@ -66,18 +63,17 @@ class Equip:
         mem = self.mem
         addr = mem.read_long(mem.read_long(address.BbJzAddr) + address.WplPyAddr) + 0x48  # 装备栏偏移
         for i in range(56):
-            equip = mem.read_long(mem.read_long(addr + i * 8) - 72 + 16)
+            equip = self.map_data.get_traversal_ptr(addr, i + 1, 1)
             if equip > 0:
                 equip_level = mem.read_int(equip + address.ZbPjAddr)
                 name_addr = mem.read_long(equip + address.WpMcAddr)  # 装备名称
-                equip_name = helper.unicode_to_ascii(list(mem.read_bytes(name_addr, 100)))
-                if equip_name == "":
-                    break
+                name_bytes = list(mem.read_bytes(name_addr, 100))
+                equip_name = helper.unicode_to_ascii(name_bytes)
                 if equip_level in [0, 1, 2]:
                     logger.info("处理装备 {}".format(equip_name), 1)
                     self.pack.decomposition(i + 9)
                     time.sleep(0.2)
                     num += 1
-                    continue
+
         self.pack.tidy_backpack(1, 0)
         logger.info("处理装备 {} 件".format(num), 1)

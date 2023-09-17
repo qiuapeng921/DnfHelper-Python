@@ -131,3 +131,17 @@ class MapData:
         """获取名望"""
         rw_addr = call.person_ptr()
         return self.mem.read_long(rw_addr + address.RwMwAddr)
+
+    def get_traversal_ptr(self, ptr: int, offset: int, t: int) -> int:
+        """
+        取遍历指针
+        t 1 物品 2 地图
+        """
+        result = 0
+
+        if t == 1:
+            result = self.mem.read_long(self.mem.read_long(self.mem.read_long(ptr + (offset - 1) * 8) - 72) + 16)
+        if t == 2:
+            result = self.mem.read_long(self.mem.read_long(ptr + (offset - 1) * 24) + 16) - 32
+
+        return result
