@@ -16,16 +16,14 @@ from game import mem
 class Auto:
     # 首次进图
     firstEnterMap = False
-
     # 已完成刷图次数
     completedNum = 0
     # 线程开关
     thread_switch = False
     # 线程句柄
     threadHande = None
-    # 任务对象
-    task = None
 
+    task = None
     traversal = None
     map_data = None
     pack = None
