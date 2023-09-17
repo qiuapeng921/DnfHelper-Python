@@ -1,14 +1,13 @@
 """
 自动刷图主线程
 """
-import random
-import traceback
-
 import _thread
+import random
 import sys
 import time
+import traceback
 
-from common import config
+from common import config, file
 from common import helper, logger
 from game import call, init, address
 from game import mem
@@ -28,15 +27,10 @@ class Auto:
     task = None
 
     traversal = None
-
     map_data = None
-
     pack = None
-
     pick = None
-
     equip = None
-
     game_map = None
 
     @classmethod
@@ -274,10 +268,21 @@ class Auto:
                     call.drift_over_map(direction)
 
     @classmethod
+    def pass_boss(cls):
+        """ 刷图次数处理 """
+        cfg_name = "C:\\config.ini"
+        complete_number = file.read_ini(cfg_name, "default", "count")
+        complete_number = int(complete_number) + 1
+        file.write_ini(cfg_name, "default", "count", complete_number)
+
+        map_data = cls.map_data
+        logger.info("{} [ {} ] 剩余疲劳 [ {} ]".format(map_data.get_map_name(), complete_number, map_data.get_pl()), 2)
+
+    @classmethod
     def quit_map(cls):
         """出图"""
-        cls.completedNum = cls.completedNum + 1
-        logger.info("自动刷图 [ {} ] 剩余疲劳 [ {} ]".format(cls.completedNum, cls.map_data.get_pl()), 2)
+        cls.pass_boss()
+
         time.sleep(0.2)
         # 翻牌
         cls.pack.get_income(0, random.randint(0, 3))

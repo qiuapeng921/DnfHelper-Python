@@ -1,7 +1,7 @@
 import sys
 import traceback
 
-from common import helper, logger, globle
+from common import helper, logger, globle, file
 from game import init, mem, call
 
 if __name__ == '__main__':
@@ -9,10 +9,21 @@ if __name__ == '__main__':
         globle.cmd = "cmd"
         # init_driver("TPqd640")
         # logger.info("驱动加载成功", 1)
-        process_id = helper.get_process_id_by_name("DNF.exe")
+
+        model_name = "DNF.exe"
+        process_id = helper.get_process_id_by_name(model_name)
         if process_id == 0:
-            helper.message_box("请打开dnf后运行")
-            exit()
+            logger.info("等待游戏运行...", 1)
+            while 1:
+                processId = helper.get_process_id_by_name(model_name)
+                if processId != 0:
+                    break
+
+        # 全局刷图计次初始化
+        countCfgName = "C:\\config.ini"
+        confExists = file.path_exists(countCfgName)
+        if not confExists:
+            file.write_ini(countCfgName, "default", "count", "0")
 
         mem.set_process_id(process_id)
 

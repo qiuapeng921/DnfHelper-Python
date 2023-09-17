@@ -1,10 +1,12 @@
 """
 初始化全局变量
 """
+import time
+
 import keyboard
 
 from common import globle
-from game import auto as a, other as o, game_map as gm, pack as p
+from game import auto as a, other, game_map as gm, pack as p
 from game import call, traversal as mt, task as t, address
 from game import map_data as md
 from game import mem
@@ -13,9 +15,9 @@ map_data = md.MapData(mem)
 game_map = gm.GameMap()
 global_data = globle.GlobalData()
 pack = p.Pack()
-task = t.Task(mem, pack, map_data, )
-pick = o.Pickup(mem, pack, map_data)
-equip = o.Equip(mem, pack, map_data)
+task = t.Task(mem, pack, map_data)
+pick = other.Pickup(mem, pack, map_data)
+equip = other.Equip(mem, pack, map_data)
 traversal = mt.Screen(mem)
 auto = a.Auto(task, traversal, map_data, pack, pick, equip, game_map)
 
@@ -31,6 +33,7 @@ def init_empty_addr():
     address.JnKbAddr = mem.allocate(2048)
     address.GtKbAddr = mem.allocate(2048)
     address.CoolDownKbAddr = mem.allocate(2048)
+    time.sleep(2)
 
 
 def hotkey2():

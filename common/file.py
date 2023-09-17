@@ -1,6 +1,35 @@
-import os
 import ctypes
+import os
 import time
+from configparser import ConfigParser
+
+
+def path_exists(path):
+    return os.path.exists(path)
+
+
+def write_ini(filename, section, key, value):
+    exists = os.path.exists(filename)
+    cfg = ConfigParser()
+
+    if exists:
+        cfg.read(filename)
+
+    if cfg.has_section(section) and cfg.has_option(section, key):
+        cfg.set(section, key, str(value))
+
+    with open(filename, 'w') as configfile:
+        cfg.write(configfile)
+
+
+def read_ini(filename, section, key):
+    cfg = ConfigParser()
+    cfg.read(filename)
+
+    if cfg.has_section(section) and cfg.has_option(section, key):
+        return cfg.get(section, key)
+
+    return None
 
 
 def force_delete_file(file_path: str):
