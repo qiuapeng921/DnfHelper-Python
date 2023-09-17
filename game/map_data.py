@@ -140,8 +140,11 @@ class MapData:
         result = 0
 
         if t == 1:
-            result = self.mem.read_long(self.mem.read_long(self.mem.read_long(ptr + (offset - 1) * 8) - 72) + 16)
+            one = self.mem.read_long(ptr + (offset - 1) * 8)
+            two = self.mem.read_long(one - 72)
+            result = self.mem.read_long(two + 16)
         if t == 2:
-            result = self.mem.read_long(self.mem.read_long(ptr + (offset - 1) * 24) + 16) - 32
+            one = self.mem.read_long(ptr + (offset - 1) * 24)
+            result = self.mem.read_long(one + 16) - 32
 
         return result
