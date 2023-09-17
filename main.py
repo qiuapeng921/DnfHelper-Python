@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
         logger.info("加载成功-欢迎使用", 1)
         logger.info("当前时间：{}".format(helper.get_now_date()), 1)
-        init.hotkey2()
+        init.hotkey()
     except KeyboardInterrupt as e:
         print("信道推出")
     except Exception as err:
