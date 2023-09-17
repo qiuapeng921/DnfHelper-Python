@@ -59,12 +59,13 @@ class Equip:
         if handle_type == 0:
             return
 
+        self.pack.tidy_backpack(1, 0)
         num = 0
         mem = self.mem
         addr = mem.read_long(mem.read_long(address.BbJzAddr) + address.WplPyAddr) + 0x48  # 装备栏偏移
         for i in range(56):
             equip = self.map_data.get_traversal_ptr(addr, i + 1, 1)
-            if equip > 0:
+            if equip is not None and equip > 0:
                 equip_level = mem.read_int(equip + address.ZbPjAddr)
                 name_addr = mem.read_long(equip + address.WpMcAddr)  # 装备名称
                 name_bytes = list(mem.read_bytes(name_addr, 100))

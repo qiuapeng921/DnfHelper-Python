@@ -49,7 +49,7 @@ class Screen:
         for obj_tmp in range(obj_num):
             obj_ptr = mem.read_long(start + obj_tmp * 24)
             obj_ptr = mem.read_long(obj_ptr + 16) - 32
-            if obj_ptr > 0:
+            if obj_ptr is not None and obj_ptr > 0:
                 obj_type_a = mem.read_int(obj_ptr + address.LxPyAddr)
                 obj_camp = mem.read_int(obj_ptr + address.ZyPyAddr)
                 obj_code = mem.read_int(obj_ptr + address.DmPyAddr)
@@ -81,7 +81,7 @@ class Screen:
         for obj_tmp in range(obj_num):
             obj_ptr = mem.read_long(start + obj_tmp * 24)
             obj_ptr = mem.read_long(obj_ptr + 16) - 32
-            if obj_ptr > 0:
+            if obj_ptr is not None and obj_ptr > 0:
                 obj_type_a = mem.read_int(obj_ptr + address.LxPyAddr)
                 if obj_type_a == 529 or obj_type_a == 545 or obj_type_a == 273 or obj_type_a == 61440:
                     obj_camp = mem.read_int(obj_ptr + address.ZyPyAddr)
