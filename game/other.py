@@ -59,6 +59,9 @@ class Equip:
         if handle_type == 0:
             return
 
+        if self.map_data.back_pack_weight() < 60:
+            return
+
         self.pack.tidy_backpack(1, 0)
         num = 0
         mem = self.mem
