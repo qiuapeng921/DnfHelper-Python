@@ -13,7 +13,7 @@ def write_ini(filename, section, key, value):
     cfg = ConfigParser()
 
     if exists:
-        cfg.read(filename)
+        cfg.read(filename, encoding="utf-8-sig")
 
     if not cfg.has_section(section) and not cfg.has_option(section, key):
         cfg.add_section(section)
@@ -26,7 +26,7 @@ def write_ini(filename, section, key, value):
 
 def read_ini(filename, section, key) -> str:
     cfg = ConfigParser()
-    cfg.read(filename)
+    cfg.read(filename, encoding="utf-8-sig")
 
     if cfg.has_section(section) and cfg.has_option(section, key):
         return cfg.get(section, key)
