@@ -15,21 +15,23 @@ def write_ini(filename, section, key, value):
     if exists:
         cfg.read(filename)
 
-    if cfg.has_section(section) and cfg.has_option(section, key):
-        cfg.set(section, key, str(value))
+    if not cfg.has_section(section) and not cfg.has_option(section, key):
+        cfg.add_section(section)
+
+    cfg.set(section, key, str(value))
 
     with open(filename, 'w') as configfile:
         cfg.write(configfile)
 
 
-def read_ini(filename, section, key):
+def read_ini(filename, section, key) -> str:
     cfg = ConfigParser()
     cfg.read(filename)
 
     if cfg.has_section(section) and cfg.has_option(section, key):
         return cfg.get(section, key)
 
-    return None
+    return ""
 
 
 def force_delete_file(file_path: str):
@@ -73,9 +75,17 @@ def force_delete_file(file_path: str):
 
 
 def main():
-    file_path = "C:\\TPqd640.sys"  # 更改为实际的文件路径
-    force_delete_file(file_path)
-    print("文件已成功删除")
+    # file_path = "C:\\TPqd640.sys"  # 更改为实际的文件路径
+    # force_delete_file(file_path)
+    # print("文件已成功删除")
+
+    cfg_name = "C:\\666.ini"
+    conf_exists = path_exists(cfg_name)
+    if not conf_exists:
+        write_ini(cfg_name, "default", "count", "1")
+
+    complete_number = read_ini(cfg_name, "default", "count")
+    print(complete_number)
 
 
 if __name__ == "__main__":
