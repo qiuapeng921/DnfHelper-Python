@@ -1,5 +1,3 @@
-## 此代码库仅自己学习! 禁止售卖和用于非法操作; 如违反需自行承担相应后果，作者不承担任何法律及连带责任!
-
 ## 如何启动
 
 ```markdown
@@ -18,6 +16,10 @@
 
 <img src="static/qq.png" alt="alt text" width="276" height="319"> 
 
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/qiuapeng921/DnfHelper-Python.svg)](https://starchart.cc/qiuapeng921/DnfHelper-Python)
+
 ## 免责声明
 
 程序是免费开源的产品，仅用于学习交流使用！       
@@ -34,12 +36,3 @@
 ## License
 
 MIT
-
-
-
-
-## Stargazers over time
-
-[![Stargazers over time](https://starchart.cc/qiuapeng921/DnfHelper-Python.svg)](https://starchart.cc/qiuapeng921/DnfHelper-Python)
-
-
