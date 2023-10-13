@@ -185,11 +185,7 @@ class Auto:
             init.global_data.map_id = cls.task.handle_main()
             init.global_data.map_level = 0
         if auto_model == 2 and cls.map_data.get_role_level() == 110:
-            if cls.map_data.get_fame() < 25837:
-                map_ids = list(map(int, config().get("自动配置", "普通地图").split(",")))
-            else:
-                map_ids = list(map(int, config().get("自动配置", "英豪地图").split(",")))
-
+            map_ids = list(map(int, config().get("自动配置", "普通地图").split(",")))
             random_number = random.randint(0, len(map_ids) - 1)
             init.global_data.map_id = map_ids[random_number]
             init.global_data.map_level = config().getint("自动配置", "地图难度")
