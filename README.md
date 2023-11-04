@@ -18,7 +18,7 @@
 
 ## Stargazers over time
 
-[![Stargazers over time](https://starchart.cc/SunnyEmbrace/DnfHelper-Python.svg)](https://starchart.cc/qiuapeng921/DnfHelper-Python)
+[![Stargazers over time](https://starchart.cc/SunnyEmbrace/DnfHelper-Python.svg)](https://starchart.cc/SunnyEmbrace/DnfHelper-Python)
 
 ## 免责声明
 
