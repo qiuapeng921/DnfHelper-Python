@@ -161,7 +161,7 @@ def drift_call(ptr, x, y, z, speed):
     :return:
     """
     shell_code = [72, 129, 236, 0, 8, 0, 0]
-    shell_code = helper.add_list(shell_code, [185, 241, 0, 0, 0])
+    shell_code = helper.add_list(shell_code, [185, 240, 0, 0, 0])
     shell_code = helper.add_list(shell_code, [72, 184], helper.int_to_bytes(address.SqNcCallAddr, 8))
     shell_code = helper.add_list(shell_code, [255, 208])
     shell_code = helper.add_list(shell_code, [72, 139, 240, 72, 139, 200])
