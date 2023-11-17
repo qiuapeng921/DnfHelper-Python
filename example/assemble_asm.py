@@ -19,6 +19,9 @@ def main():
         print("Assembly succeeded:")
         print(bytecode)
         print(list(bytecode))
+        list(bytecode)
+        hex_bytecode = ' '.join([hex(byte) for byte in bytecode])
+        print(hex_bytecode)
 
 
 if __name__ == '__main__':
