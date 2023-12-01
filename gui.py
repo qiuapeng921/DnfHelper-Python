@@ -134,7 +134,7 @@ class AppWindow(XWindow):
 if __name__ == '__main__':
     try:
         globle.cmd = "gui"
-        init_driver("3swg")
+        init_driver("LoveRw")
         app = XApp()
         win = AppWindow()
         globle.win_app = win

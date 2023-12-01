@@ -5,7 +5,7 @@
    https://www.python.org/ftp/python/3.10.8/python-3.10.8-amd64.exe)
 2. git clone https://ghproxy.com/https://github.com/SunnyEmbrace/DnfHelper-Python.git
 3. pip install -i https://mirrors.cloud.tencent.com/pypi/simple -r requirements.txt
-4. 自己找破图标驱动 或者 进qq群下载破图标驱动。丢在C盘根目录 改名为3swg
+4. 自己找破图标驱动 或者 进qq群下载破图标驱动。丢在C盘根目录 改名为LoveRw
 5. 复制根目录static下的helper.ini和main.py放同一级目录
 6. *** 管理员方式运行 python main.py ***
 ```
