@@ -25,8 +25,7 @@ class Pickup:
         end = mem.read_long(map_data + address.DtJs2)
         obj_num = int((end - start) / 24)
         for obj_tmp in range(obj_num):
-            obj_ptr = mem.read_long(start + obj_tmp * 24)
-            obj_ptr = mem.read_long(obj_ptr + 16) - 32
+            obj_ptr = self.map_data.get_traversal_ptr(start, obj_tmp + 1, 2)
             obj_type_a = mem.read_int(obj_ptr + address.LxPyAddr)
             obj_type_b = mem.read_int(obj_ptr + address.LxPyAddr + 4)
             obj_camp = mem.read_int(obj_ptr + address.ZyPyAddr)

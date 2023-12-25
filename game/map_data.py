@@ -145,6 +145,6 @@ class MapData:
             result = self.mem.read_long(two + 16)
         if t == 2:
             one = self.mem.read_long(ptr + (offset - 1) * 24)
-            result = self.mem.read_long(one + 16) - 32
+            result = self.mem.read_long(one + 16) - 48
 
         return result
