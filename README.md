@@ -31,7 +31,7 @@
 
 非常感谢 Jetbrains 友好地为我提供了一个许可，让我可以从事这个项目和其他开源项目。
 
-[![](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)](https://www.jetbrains.com/?from=https://github.com/overtrue)
+[![](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)](https://www.jetbrains.com/?from=https://github.com/qiuapeng921)
 
 ## License
 
