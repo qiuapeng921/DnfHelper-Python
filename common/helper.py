@@ -186,7 +186,7 @@ def key_press(list_key: list, delay: float):
 
 
 def print_trace(title, err):
-    print("-----------{}:出错-----------", title)
+    print("-----------{}:出错-----------".format(title))
     except_type, _, except_traceback = sys.exc_info()
     err_str = ','.join(str(i) for i in err.args)
     print(except_type)

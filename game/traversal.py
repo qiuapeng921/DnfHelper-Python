@@ -12,6 +12,36 @@ class Traversal:
         self.pack = pack
         self.map_data = map_data
 
+    def is_exists_item(self) -> bool:
+        """
+        是否存在物品
+        :return: bool
+        """
+        if self.map_data.get_stat() != 3:
+            return False
+
+        mem = self.mem
+        item_config = config().get("自动配置", "过滤物品").split(",")
+        data = self.map_data.get_map_data()
+
+        for data.obj_tmp in range(1, data.obj_num):
+            obj_ptr = self.map_data.get_traversal_ptr(data.start, data.obj_tmp, 2)
+            obj_type_a = mem.read_int(obj_ptr + address.LxPyAddr)
+            obj_type_b = mem.read_int(obj_ptr + address.LxPyAddr + 4)
+            obj_camp = mem.read_int(obj_ptr + address.ZyPyAddr)
+
+            if (obj_type_a == 289 or obj_type_b == 289) and obj_camp == 200:
+                goods_name_ptr = mem.read_long(mem.read_long(obj_ptr + address.DmWpAddr) + address.WpMcAddr)
+                goods_name_byte = mem.read_bytes(goods_name_ptr, 100)
+                obj_type_b_name = helper.unicode_to_ascii(list(goods_name_byte))
+                if obj_type_b_name in item_config:
+                    continue
+
+                if obj_ptr != data.rw_addr:
+                    return True
+
+        return False
+
     def pickup(self):
         """
         组包捡物
@@ -93,8 +123,8 @@ class Traversal:
         num = 0
         mem = self.mem
         addr = mem.read_long(mem.read_long(address.BbJzAddr) + address.WplPyAddr) + 0x48  # 装备栏偏移
-        for i in range(56):
-            equip = self.map_data.get_traversal_ptr(addr, i + 1, 1)
+        for i in range(1, 56):
+            equip = self.map_data.get_traversal_ptr(addr, i, 1)
             if equip is not None and equip > 0:
                 equip_level = mem.read_int(equip + address.ZbPjAddr)
                 name_addr = mem.read_long(equip + address.WpMcAddr)  # 装备名称
@@ -108,33 +138,3 @@ class Traversal:
 
         self.pack.tidy_backpack(1, 0)
         logger.info("处理装备 {} 件".format(num), 1)
-
-    def is_exists_item(self) -> bool:
-        """
-        是否存在物品
-        :return: bool
-        """
-        if self.map_data.get_stat() != 3:
-            return False
-
-        mem = self.mem
-        item_config = config().get("自动配置", "过滤物品").split(",")
-        data = self.map_data.get_map_data()
-
-        for data.obj_tmp in range(1, data.obj_num):
-            obj_ptr = self.map_data.get_traversal_ptr(data.start, data.obj_tmp, 2)
-            obj_type_a = mem.read_int(data.obj_ptr + address.LxPyAddr)
-            obj_type_b = mem.read_int(obj_ptr + address.LxPyAddr + 4)
-            obj_camp = mem.read_int(data.obj_ptr + address.ZyPyAddr)
-
-            if (obj_type_a == 289 or obj_type_b == 289) and obj_camp == 200:
-                goods_name_ptr = mem.read_long(mem.read_long(obj_ptr + address.DmWpAddr) + address.WpMcAddr)
-                goods_name_byte = mem.read_bytes(goods_name_ptr, 100)
-                obj_type_b_name = helper.unicode_to_ascii(list(goods_name_byte))
-                if obj_type_b_name in item_config:
-                    continue
-
-                if obj_ptr != data.rw_addr:
-                    return True
-
-        return False

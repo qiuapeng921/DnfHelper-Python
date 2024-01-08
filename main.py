@@ -1,6 +1,3 @@
-import sys
-import traceback
-
 from common import helper, logger, globle, file
 from game import init, mem
 from plugins.driver import init_driver

@@ -88,20 +88,19 @@ class Auto:
                         sss_score = random.randint(5201314, 9999999)
                         mem.write_long(mem.read_long(address.PFAddr) + address.CEPfAddr, sss_score)
                         # 无视建筑
-                        # cls.traversal.ignore_building(True)
+                        cls.traversal.ignore_building(True)
                         # 进图开启功能
-                        # cls.start_func()
+                        cls.start_func()
                         cls.firstEnterMap = True
                         continue
 
                     # 跟随怪物
                     if config().getint("自动配置", "跟随打怪") > 0:
                         cls.traversal.follow_monster()
-                        continue
 
                     # 过图
                     if cls.map_data.is_open_door() is True and cls.map_data.is_boss_room() is False:
-                        if cls.traversal.is_exists_item():
+                        if cls.traversal.is_exists_item() is True:
                             # 捡物品
                             cls.traversal.pickup()
                             continue
@@ -112,14 +111,14 @@ class Auto:
 
                     # 通关
                     if cls.map_data.is_boss_room() and cls.map_data.is_pass():
-                        if cls.traversal.is_exists_item():
+                        if cls.traversal.is_exists_item() is True:
                             # 捡物品
                             cls.traversal.pickup()
                             continue
                         # 关闭功能
-                        # cls.start_func()
+                        cls.start_func()
                         # 关闭穿透
-                        # cls.traversal.ignore_building(False)
+                        cls.traversal.ignore_building(False)
                         # 退出副本
                         cls.quit_map()
                         cls.firstEnterMap = False

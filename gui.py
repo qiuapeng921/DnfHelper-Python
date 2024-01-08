@@ -1,8 +1,6 @@
 import _thread
 import ctypes
-import sys
 import time
-import traceback
 
 import xcgui._xcgui as gui
 from xcgui import XApp

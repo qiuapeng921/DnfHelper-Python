@@ -29,36 +29,26 @@ class MapData:
     def is_town(self) -> bool:
         """是否城镇"""
         person_ptr = call.person_ptr()
-        if self.mem.read_int(person_ptr + addr.DtPyAddr) == 0:
-            return True
-        return False
+        return self.mem.read_int(person_ptr + addr.DtPyAddr) == 0
 
     def is_open_door(self) -> bool:
         """是否开门"""
         person_ptr = call.person_ptr()
         encode_data = self.mem.read_long(self.mem.read_long(person_ptr + addr.DtPyAddr) + 16)
-        if self.decode(encode_data + addr.SfKmAddr) == 0:
-            return True
-        return False
+        return self.decode(encode_data + addr.SfKmAddr) == 0
 
     def is_boss_room(self):
         """是否boss房"""
         cut = self.get_cut_room()
         boss = self.get_boss_room()
-        if cut.x == boss.x and cut.y == boss.y:
-            return True
-
-        return False
+        return cut.x == boss.x and cut.y == boss.y
 
     def is_pass(self):
         """是否通关"""
         rw = self.mem
         room_data = rw.read_long(rw.read_long(rw.read_long(addr.FJBHAddr) + addr.SJAddr) + addr.MxPyAddr)
         data_val = rw.read_int(room_data + addr.GouHuoAddr)
-        if data_val == 2 or data_val == 0:
-            return True
-
-        return False
+        return data_val == 2 or data_val == 0
 
     def get_boss_room(self) -> globle.CoordinateType:
         """获取boss房间坐标"""
@@ -122,7 +112,7 @@ class MapData:
         """取背包负重"""
         rw_addr = call.person_ptr()
         back_pack_ptr = self.mem.read_long(rw_addr + address.WplAddr)  # 物品栏
-        cut_weigh = self.decode(back_pack_ptr + address.DqFzAddr)  # 当前负重
+        cut_weigh = self.decode(back_pack_ptr + 0x58)  # 当前负重
         max_weigh = self.decode(rw_addr + address.ZdFzAddr)  # 最大负重
         result = float(cut_weigh) / float(max_weigh) * 100
         return int(result)
@@ -159,5 +149,5 @@ class MapData:
         data.map_data = self.mem.read_long(self.mem.read_long(data.rw_addr + address.DtPyAddr) + 16)
         data.start = self.mem.read_long(data.map_data + address.DtKs2)
         data.end = self.mem.read_long(data.map_data + address.DtJs2)
-        data.obj_num = (data.end - data.start) / 24
+        data.obj_num = int((data.end - data.start) / 24)
         return data
