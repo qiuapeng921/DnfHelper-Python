@@ -8,6 +8,7 @@
 4. 自己找破图标驱动 或者 进qq群下载破图标驱动。丢在C盘根目录 改名为LoveRw
 5. 复制根目录static下的helper.ini和main.py放同一级目录
 6. *** 管理员方式运行 python main.py ***
+7. 功能热键 F1.全屏打怪 End.自动刷图
 ```
 
 ### 交流群: star后带上你的github账号加群
