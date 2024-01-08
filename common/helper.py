@@ -1,5 +1,7 @@
 import struct
+import sys
 import time
+import traceback
 from datetime import datetime
 
 import keyboard
@@ -181,3 +183,13 @@ def key_press(list_key: list, delay: float):
             key_press_release_delay(key, delay)
             return
         keyboard.press(key)
+
+
+def print_trace(title, err):
+    print("-----------{}:出错-----------", title)
+    except_type, _, except_traceback = sys.exc_info()
+    err_str = ','.join(str(i) for i in err.args)
+    print(except_type)
+    print(err_str)
+    for i in traceback.extract_tb(except_traceback):
+        print("函数{},文件:{},行:{}".format(i.name, i.filename, i.lineno))

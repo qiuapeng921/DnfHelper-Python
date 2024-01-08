@@ -3,9 +3,7 @@
 """
 import _thread
 import random
-import sys
 import time
-import traceback
 
 from common import config, file
 from common import helper, logger
@@ -27,18 +25,14 @@ class Auto:
     traversal = None
     map_data = None
     pack = None
-    pick = None
-    equip = None
     game_map = None
 
     @classmethod
-    def __init__(cls, task, traversal, map_data, pack, pick, equip, game_map):
+    def __init__(cls, task, traversal, map_data, pack, game_map):
         cls.task = task
         cls.traversal = traversal
         cls.map_data = map_data
         cls.pack = pack
-        cls.pick = pick
-        cls.equip = equip
         cls.game_map = game_map
 
     @classmethod
@@ -98,41 +92,39 @@ class Auto:
                         # 进图开启功能
                         # cls.start_func()
                         cls.firstEnterMap = True
+                        continue
 
                     # 跟随怪物
                     if config().getint("自动配置", "跟随打怪") > 0:
                         cls.traversal.follow_monster()
+                        continue
 
                     # 过图
                     if cls.map_data.is_open_door() is True and cls.map_data.is_boss_room() is False:
-                        # 捡物品
-                        cls.pick.pickup()
+                        if cls.traversal.is_exists_item():
+                            # 捡物品
+                            cls.traversal.pickup()
+                            continue
+
                         # 过图
                         cls.pass_map()
                         continue
 
                     # 通关
-                    if cls.map_data.is_boss_room():
-                        if cls.map_data.is_pass():
+                    if cls.map_data.is_boss_room() and cls.map_data.is_pass():
+                        if cls.traversal.is_exists_item():
                             # 捡物品
-                            cls.pick.pickup()
-                            # 关闭功能
-                            cls.start_func()
-                            # 关闭穿透
-                            # cls.traversal.ignore_building(False)
-                            # 退出副本
-                            cls.quit_map()
-                            cls.firstEnterMap = False
+                            cls.traversal.pickup()
+                            continue
+                        # 关闭功能
+                        # cls.start_func()
+                        # 关闭穿透
+                        # cls.traversal.ignore_building(False)
+                        # 退出副本
+                        cls.quit_map()
+                        cls.firstEnterMap = False
             except Exception as err:
-                print("-----------自动线程开始-----------")
-                except_type, _, except_traceback = sys.exc_info()
-                print(except_type)
-                print(err.args)
-                print(except_traceback)
-                print('-----------')
-                for i in traceback.extract_tb(except_traceback):
-                    print(i)
-                print("-----------自动线程结束-----------")
+                helper.print_trace("自动线程开始", err)
 
     @classmethod
     def start_func(cls):
@@ -177,7 +169,7 @@ class Auto:
 
         time.sleep(0.5)
         # 分解装备
-        cls.equip.handle_equip()
+        cls.traversal.handle_equip()
 
         # 1 剧情 2 搬砖
         auto_model = config().getint("自动配置", "自动模式")

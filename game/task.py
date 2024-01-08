@@ -1,5 +1,7 @@
 import time
 
+from typing import Tuple
+
 from common import helper, logger
 from game import init, address, call
 
@@ -97,7 +99,7 @@ class Task:
 
         return map_id
 
-    def main_line_task(self) -> tuple[str, str, int]:
+    def main_line_task(self) -> Tuple[str, str, int]:
         mem = self.mem
         task_addr = mem.read_long(address.TaskAddr)
         start = mem.read_long(task_addr + address.QbRwStartAddr)

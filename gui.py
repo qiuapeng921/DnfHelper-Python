@@ -148,9 +148,4 @@ if __name__ == '__main__':
     except KeyboardInterrupt as e:
         print("信道推出")
     except Exception as err:
-        except_type, _, except_traceback = sys.exc_info()
-        err_str = ','.join(str(i) for i in err.args)
-        print(except_type)
-        print(err_str)
-        for i in traceback.extract_tb(except_traceback):
-            print("函数{},文件:{},行:{}".format(i.name, i.filename, i.lineno))
+        helper.print_trace("gui", err)

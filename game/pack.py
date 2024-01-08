@@ -128,9 +128,10 @@ class Pack:
         cls.jm_call(y, 2)
         cls.jm_call(5, 1)
         cls.jm_call(38, 4)
-        cls.jm_call(0, 2)
+        cls.jm_call(1, 2)
         cls.jm_call(0, 4)
         cls.jm_call(0, 1)
+        cls.jm_call(5, 1)
         cls.fb_call()
 
     @classmethod
@@ -142,13 +143,14 @@ class Pack:
         cls.jm_call(addr, 4)
         cls.jm_call(0, 1)
         cls.jm_call(1, 1)
-        cls.jm_call(566, 2)
-        cls.jm_call(291, 2)
-        cls.jm_call(9961, 2)
-        cls.jm_call(553, 2)
-        cls.jm_call(285, 2)
-        cls.jm_call(18802, 2)
-        cls.jm_call(24743, 2)
+        cls.jm_call(420, 2)
+        cls.jm_call(254, 2)
+        cls.jm_call(4501, 2)
+        cls.jm_call(435, 2)
+        cls.jm_call(271, 2)
+        cls.jm_call(22624, 2)
+        cls.jm_call(28402, 2)
+        cls.jm_call(0, 1)
         cls.fb_call()
 
     @classmethod

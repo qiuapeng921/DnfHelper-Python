@@ -8,8 +8,8 @@ from plugins.driver import init_driver
 if __name__ == '__main__':
     try:
         globle.cmd = "cmd"
-        init_driver("LoveRw")
-        logger.info("驱动加载成功", 1)
+        # init_driver("LoveRw")
+        # logger.info("驱动加载成功", 1)
 
         model_name = "DNF.exe"
         process_id = helper.get_process_id_by_name(model_name)
@@ -41,9 +41,4 @@ if __name__ == '__main__':
     except KeyboardInterrupt as e:
         print("信道推出")
     except Exception as err:
-        except_type, _, except_traceback = sys.exc_info()
-        err_str = ','.join(str(i) for i in err.args)
-        print(except_type)
-        print(err_str)
-        for i in traceback.extract_tb(except_traceback):
-            print("函数{},文件:{},行:{}".format(i.name, i.filename, i.lineno))
+        helper.print_trace("main", err)

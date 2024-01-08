@@ -148,3 +148,16 @@ class MapData:
             result = self.mem.read_long(one + 16) - 48
 
         return result
+
+    def get_map_data(self) -> globle.MapTraversalType:
+        """
+        地图遍历数据
+        :return:
+        """
+        data = globle.MapTraversalType()
+        data.rw_addr = call.person_ptr()
+        data.map_data = self.mem.read_long(self.mem.read_long(data.rw_addr + address.DtPyAddr) + 16)
+        data.start = self.mem.read_long(data.map_data + address.DtKs2)
+        data.end = self.mem.read_long(data.map_data + address.DtJs2)
+        data.obj_num = (data.end - data.start) / 24
+        return data

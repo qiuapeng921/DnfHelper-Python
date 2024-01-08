@@ -91,3 +91,25 @@ class MapNodeType:
         self.h = 0
         self.current_coordinates = CoordinateType()
         self.final_coordinates = CoordinateType()
+
+
+class MapTraversalType:
+    def __init__(self):
+        # 地图遍历类型的属性
+        self.rw_addr = 0  # 地图地址
+        self.map_data = 0  # 地图数据
+        self.start = 0  # 起始位置
+        self.end = 0  # 结束位置
+        self.obj_num = 0  # 物体数量
+        self.obj_tmp = 0  # 物体临时变量
+        self.obj_ptr = 0  # 物体指针
+        self.obj_camp = 0  # 物体阵营
+        self.obj_blood = 0  # 物体血量
+        self.obj_type_a = 0  # 物体类型A
+        self.obj_type_b = 0  # 物体类型B
+        self.obj_code = 0  # 物体代码
+        self.obj_name_a = ""  # 物体名称A
+        self.obj_name_b = ""  # 物体名称B
+        self.rw_coordinate = CoordinateType()  # 地图坐标类型
+        self.gw_coordinate = CoordinateType()  # 游戏坐标类型
+        self.wp_coordinate = CoordinateType()  # 终点坐标类型

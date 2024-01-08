@@ -6,8 +6,8 @@ import time
 import keyboard
 
 from common import globle
-from game import auto as a, other, game_map as gm, pack as p
-from game import call, traversal as mt, task as t, address
+from game import auto as a, game_map as gm, pack as p
+from game import call, traversal as tr, task as ts, screen as ac, address
 from game import map_data as md
 from game import mem
 
@@ -15,11 +15,10 @@ map_data = md.MapData(mem)
 game_map = gm.GameMap()
 global_data = globle.GlobalData()
 pack = p.Pack()
-task = t.Task(mem, pack, map_data)
-pick = other.Pickup(mem, pack, map_data)
-equip = other.Equip(mem, pack, map_data)
-traversal = mt.Screen(mem)
-auto = a.Auto(task, traversal, map_data, pack, pick, equip, game_map)
+task = ts.Task(mem, pack, map_data)
+traversal = tr.Traversal(mem, pack, map_data)
+screen = ac.Screen(mem, map_data)
+auto = a.Auto(task, traversal, map_data, pack, game_map)
 
 
 def init_empty_addr():
@@ -37,8 +36,8 @@ def init_empty_addr():
 
 
 def hotkey2():
-    keyboard.add_hotkey('f1', traversal.screen_switch)
-    keyboard.add_hotkey('`', traversal.screen_kill)
+    keyboard.add_hotkey('f1', screen.screen_switch)
+    keyboard.add_hotkey('`', screen.screen_kill)
     keyboard.add_hotkey('end', auto.switch)
     keyboard.add_hotkey('ctrl+up', call.over_map_call, args=(2,))
     keyboard.add_hotkey('ctrl+down', call.over_map_call, args=(3,))
@@ -75,11 +74,11 @@ def hotkey():
     while user32.GetMessageA(ctypes.byref(msg), None, 0, 0) > 0:
         if msg.message == win32con.WM_HOTKEY:
             if win32api.HIWORD(msg.lParam) == win32con.VK_F1:
-                traversal.screen_switch()
+                screen.screen_switch()
             if win32api.HIWORD(msg.lParam) == win32con.VK_END:
                 auto.switch()
             if win32api.HIWORD(msg.lParam) == 192:
-                traversal.screen_kill()
+                screen.screen_kill()
             if win32api.HIWORD(msg.lParam) == win32con.VK_UP:
                 call.over_map_call(2)
             if win32api.HIWORD(msg.lParam) == win32con.VK_DOWN:
