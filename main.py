@@ -8,16 +8,16 @@ from game import init, mem
 if __name__ == '__main__':
     try:
         globle.cmd = "cmd"
-        model_name = "DNF.exe"
-        process_id = helper.get_process_id_by_name(model_name)
-        if process_id == 0:
+        modelName = "DNF.exe"
+        processId = helper.get_process_id_by_name(modelName)
+        if processId == 0:
             logger.info("等待游戏运行...", 1)
             while True:
                 window = pygetwindow.getWindowsWithTitle("地下城与勇士：创新世纪")
                 if window:
-                    process_id = helper.get_process_id_by_name(model_name)
-                    if process_id != 0:
-                        mem.set_process_id(process_id)
+                    processId = helper.get_process_id_by_name(modelName)
+                    if processId != 0:
+                        mem.set_process_id(processId)
                         print("附加游戏成功")
                         break
                 time.sleep(0.2)
