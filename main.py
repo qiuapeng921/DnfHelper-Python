@@ -7,14 +7,14 @@ from common import helper, logger, globle, file
 from game import init, mem
 
 
-def check_windows() -> int:
+def check_windows(model_name) -> int:
     """
     读窗口句柄
     """
     while True:
         result = helper.find_window("地下城与勇士", "地下城与勇士：创新世纪")
         if result is not None:
-            process_id = helper.get_process_id_by_name(modelName)
+            process_id = helper.get_process_id_by_name(model_name)
             if process_id != 0:
                 logger.info("附加游戏成功", 1)
                 return process_id
@@ -37,7 +37,7 @@ def main():
     process_id = helper.get_process_id_by_name(model_name)
     if process_id == 0:
         logger.info("等待游戏运行...", 1)
-        process_id = check_windows()
+        process_id = check_windows(model_name)
 
     mem.set_process_id(process_id)
     # 判断是否有图标
