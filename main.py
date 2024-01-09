@@ -6,10 +6,6 @@ import win32gui
 from common import helper, logger, globle, file
 from game import init, mem
 
-
-
-
-
 if __name__ == '__main__':
     try:
         globle.cmd = "cmd"
