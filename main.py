@@ -16,11 +16,10 @@ if __name__ == '__main__':
             while True:
                 result = helper.find_window("地下城与勇士", "地下城与勇士：创新世纪")
                 if result is not None:
-                    print(f"Window found! Handle: {result}")
                     processId = helper.get_process_id_by_name(modelName)
                     if processId != 0:
                         mem.set_process_id(processId)
-                        print("附加游戏成功")
+                        logger.info("附加游戏成功", 1)
                         break
                 time.sleep(0.2)
 
