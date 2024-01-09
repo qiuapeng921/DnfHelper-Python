@@ -1,9 +1,14 @@
 import time
 
 import pygetwindow
+import win32gui
 
 from common import helper, logger, globle, file
 from game import init, mem
+
+
+
+
 
 if __name__ == '__main__':
     try:
@@ -13,8 +18,9 @@ if __name__ == '__main__':
         if processId == 0:
             logger.info("等待游戏运行...", 1)
             while True:
-                window = pygetwindow.getWindowsWithTitle("地下城与勇士：创新世纪")
-                if window:
+                result = helper.find_window("地下城与勇士", "地下城与勇士：创新世纪")
+                if result is not None:
+                    print(f"Window found! Handle: {result}")
                     processId = helper.get_process_id_by_name(modelName)
                     if processId != 0:
                         mem.set_process_id(processId)

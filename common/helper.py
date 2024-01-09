@@ -31,6 +31,16 @@ def get_process_id_by_name(name: str) -> int:
     return pid
 
 
+def find_window(lp_class_name, lp_window_name):
+    """
+    获取指定窗口句柄
+    """
+    h_wnd = win32gui.FindWindow(lp_class_name, lp_window_name)
+    if h_wnd == 0:
+        return None
+    return h_wnd
+
+
 def get_module_handle(pid: int, name: str) -> int:
     """
     获取模块句柄
