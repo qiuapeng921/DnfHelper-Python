@@ -5,3 +5,4 @@ pywin32==306
 xcgui==0.1.7
 pyinstaller==5.13.2
 keystone_engine==0.9.2
+pygetwindow==0.0.9
