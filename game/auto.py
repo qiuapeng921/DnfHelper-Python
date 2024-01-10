@@ -9,6 +9,8 @@ from common import config, file
 from common import helper, logger
 from game import call, init, address
 from game import mem
+from plugins.driver.button import drive_button
+from plugins.driver.keyboard import *
 
 
 class Auto:
@@ -54,13 +56,10 @@ class Auto:
         while cls.thread_switch:
             try:
                 time.sleep(0.3)
-                if cls.map_data.is_dialog_esc():
-                    helper.key_press_release('esc')
-                    helper.key_press_release('space')
-                    continue
-                if cls.map_data.is_dialog_esc() and (cls.map_data.is_dialog_a() and cls.map_data.is_dialog_b()()):
-                    helper.key_press_release('esc')
-                    helper.key_press_release('space')
+                if cls.map_data.is_dialog_esc() or cls.map_data.is_dialog_a() or cls.map_data.is_dialog_b():
+                    drive_button(VK_ESC, 0, False)
+                    time.sleep(0.2)
+                    drive_button(VK_SPACE, 0, False)
                     continue
 
                 # 进入城镇

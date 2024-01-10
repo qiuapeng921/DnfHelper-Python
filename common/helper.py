@@ -1,3 +1,4 @@
+import random
 import struct
 import sys
 import time
@@ -175,27 +176,16 @@ def unicode_to_ascii(ls: list) -> str:
     return text
 
 
-def key_press_release(key: str):
-    keyboard.press(key)
-    time.sleep(0.01)
-    keyboard.release(key)
+def sleep(timer: int):
+    time.sleep(timer / 1000)
 
 
-def key_press_release_delay(key: str, delay: float):
-    keyboard.press(key)
-    time.sleep(delay)
-    keyboard.release(key)
+def array_rand(data: list):
+    index = random.randint(0, len(data) - 1)
+    return data[index]
 
 
-def key_press(list_key: list, delay: float):
-    for key in list_key:
-        if delay > 0:
-            key_press_release_delay(key, delay)
-            return
-        keyboard.press(key)
-
-
-def print_trace(title, err):
+def print_trace(title: str, err):
     print("-----------{}:出错-----------".format(title))
     except_type, _, except_traceback = sys.exc_info()
     err_str = ','.join(str(i) for i in err.args)

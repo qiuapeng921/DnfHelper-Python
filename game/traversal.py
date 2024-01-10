@@ -1,9 +1,8 @@
-import time
-
 from common import config, helper
 from common import logger
-from game import call, address
-from game import skill
+from game import call, address, rand_skill
+from plugins.driver.button import drive_button
+from plugins.driver.keyboard import VK_X
 
 
 class Traversal:
@@ -90,12 +89,15 @@ class Traversal:
                     monster = map_obj.read_coordinate(obj_ptr)
                     if obj_blood > 0:
                         call.drift_call(data.rw_addr, monster.x, monster.y, 0, 2)
-                        time.sleep(0.2)
+                        helper.sleep(200)
                         if config().getint("自动配置", "跟随打怪") == 2:
                             title = helper.get_process_name()
                             if title == "地下城与勇士：创新世纪":
-                                keys = skill.pick_key()
-                                helper.key_press(keys, 0.3)
+                                drive_button(VK_X, 1, False)
+                                helper.sleep(800)
+                                drive_button(VK_X, 2, False)
+                                helper.sleep(100)
+                                drive_button(rand_skill(), 0, False)
                         if config().getint("自动配置", "跟随打怪") == 3:
                             call.skill_call(data.rw_addr, 70231, 99999, monster.x, monster.y, 0, 1.0)
 
@@ -133,7 +135,7 @@ class Traversal:
                 if equip_level in [0, 1, 2]:
                     logger.info("处理装备 {}".format(equip_name), 1)
                     self.pack.decomposition(i + 9)
-                    time.sleep(0.2)
+                    helper.sleep(200)
                     num += 1
 
         self.pack.tidy_backpack(1, 0)
