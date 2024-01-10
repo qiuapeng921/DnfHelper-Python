@@ -177,7 +177,7 @@ def unicode_to_ascii(ls: list) -> str:
 
 
 def sleep(timer: int):
-    time.sleep(timer / 1000)
+    time.sleep(timer / 1000.0)
 
 
 def array_rand(data: list):
