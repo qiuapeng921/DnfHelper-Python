@@ -5,7 +5,6 @@ import time
 import traceback
 from datetime import datetime
 
-import keyboard
 import psutil
 import win32api
 import win32gui

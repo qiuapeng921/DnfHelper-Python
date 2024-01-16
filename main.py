@@ -1,8 +1,5 @@
 import time
 
-import pygetwindow
-import win32gui
-
 from common import helper, logger, globle, file
 from game import init, mem
 
