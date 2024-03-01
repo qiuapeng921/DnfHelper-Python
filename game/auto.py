@@ -217,16 +217,18 @@ class Auto:
     def enter_map(cls, map_id: int, map_level: int):
         """进图"""
         if map_level == 5:
-            for i in range(4, -1, -1):
-                if cls.map_data.get_stat() == 3:
-                    break
-                if cls.map_data.get_stat() == 2:
-                    cls.pack.go_map(map_id, i, 0, 0)
-                    time.sleep(1)
-                if cls.map_data.get_stat() == 1:
-                    cls.select_map()
+            drive_button(VK_SPACE, 0, False)
+            # for i in range(4, -1, -1):
+            #     if cls.map_data.get_stat() == 3:
+            #         break
+            #     if cls.map_data.get_stat() == 2:
+            #         cls.pack.go_map(map_id, i, 0, 0)
+            #         time.sleep(1)
+            #     if cls.map_data.get_stat() == 1:
+            #         cls.select_map()
         else:
-            cls.pack.go_map(map_id, map_level, 0, 0)
+            drive_button(VK_SPACE, 0, False)
+            # cls.pack.go_map(map_id, map_level, 0, 0)
 
         while cls.thread_switch:
             time.sleep(0.2)
