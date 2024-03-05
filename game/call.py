@@ -206,7 +206,7 @@ def move_call(max_map, mix_map, x, y):
     compile_call(shell_code)
 
 
-def area_call(map_num):
+def area_call(map_num) -> int:
     """区域Call"""
     region_addr = mem.read_long(address.QyParamAddr)
     tmp_region_call = address.QyCallAddr
@@ -224,7 +224,8 @@ def area_call(map_num):
     min_region = mem.read_int(region_addr + address.QyPyAddr + 4)
     town_x = mem.read_int(region_addr + address.QyPyAddr + 8)
     town_y = mem.read_int(region_addr + address.QyPyAddr + 12)
-    return move_call(max_region, min_region, town_x, town_y)
+    move_call(max_region, min_region, town_x, town_y)
+    return max_region
 
 
 def over_map_call(fx):

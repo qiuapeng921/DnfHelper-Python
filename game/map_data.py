@@ -34,7 +34,7 @@ class MapData:
     def is_open_door(self) -> bool:
         """是否开门"""
         person_ptr = call.person_ptr()
-        encode_data = self.mem.read_long(self.mem.read_long(person_ptr + addr.DtPyAddr-8) + 16)
+        encode_data = self.mem.read_long(self.mem.read_long(person_ptr + addr.DtPyAddr - 8) + 16)
         return self.decode(encode_data + addr.SfKmAddr) == 0
 
     def is_boss_room(self):
@@ -146,8 +146,11 @@ class MapData:
         """
         data = globle.MapTraversalType()
         data.rw_addr = call.person_ptr()
-        data.map_data = self.mem.read_long(self.mem.read_long(data.rw_addr + address.DtPyAddr-8) + 16)
+        data.map_data = self.mem.read_long(self.mem.read_long(data.rw_addr + address.DtPyAddr - 8) + 16)
         data.start = self.mem.read_long(data.map_data + address.DtKs2)
         data.end = self.mem.read_long(data.map_data + address.DtJs2)
         data.obj_num = int((data.end - data.start) / 24)
         return data
+
+    def get_max_region(self) -> int:
+        return self.mem.read_int(address.CzDqyAddr)

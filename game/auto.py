@@ -184,11 +184,14 @@ class Auto:
             logger.info("地图编号为空,无法切换区域", 2)
             return
 
-        time.sleep(0.2)
         # 区域发包
-        call.area_call(init.global_data.map_id)
+        max_region = call.area_call(init.global_data.map_id)
+        time.sleep(0.5)
+        if cls.map_data.get_max_region() != max_region:
+            logger.info("未切换到区域,检查是否完成该地图区域任务", 2)
+            return
 
-        time.sleep(0.2)
+        time.sleep(0.5)
         cls.select_map()
 
     @classmethod
@@ -217,18 +220,18 @@ class Auto:
     def enter_map(cls, map_id: int, map_level: int):
         """进图"""
         if map_level == 5:
-            drive_button(VK_SPACE, 0, False)
-            # for i in range(4, -1, -1):
-            #     if cls.map_data.get_stat() == 3:
-            #         break
-            #     if cls.map_data.get_stat() == 2:
-            #         cls.pack.go_map(map_id, i, 0, 0)
-            #         time.sleep(1)
-            #     if cls.map_data.get_stat() == 1:
-            #         cls.select_map()
+            # drive_button(VK_SPACE, 0, False)
+            for i in range(4, -1, -1):
+                if cls.map_data.get_stat() == 3:
+                    break
+                if cls.map_data.get_stat() == 2:
+                    cls.pack.go_map(map_id, i, 0, 0)
+                    time.sleep(1)
+                if cls.map_data.get_stat() == 1:
+                    cls.select_map()
         else:
-            drive_button(VK_SPACE, 0, False)
-            # cls.pack.go_map(map_id, map_level, 0, 0)
+            # drive_button(VK_SPACE, 0, False)
+            cls.pack.go_map(map_id, map_level, 0, 0)
 
         while cls.thread_switch:
             time.sleep(0.2)

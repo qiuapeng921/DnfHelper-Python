@@ -127,11 +127,11 @@ class Pack:
         cls.jm_call(x, 2)
         cls.jm_call(y, 2)
         cls.jm_call(5, 1)
-        cls.jm_call(38, 4)
+        cls.jm_call(78, 4)
         cls.jm_call(1, 2)
         cls.jm_call(0, 4)
         cls.jm_call(0, 1)
-        cls.jm_call(5, 1)
+        cls.jm_call(0, 1)
         cls.fb_call()
 
     @classmethod
